@@ -56,12 +56,12 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .card.rare{--c:var(--rare)} .card.epique{--c:var(--epique)} .card.legendaire{--c:var(--legendaire)}
 .card.mythique{--c:var(--mythique);border-image:linear-gradient(var(--a,0deg),#ff5fa2,#ffc23d,#4da3ff,#b46bff) 1;animation:myth 3s linear infinite}
 @keyframes myth{0%{box-shadow:0 0 22px #ff5fa2}33%{box-shadow:0 0 22px #ffc23d}66%{box-shadow:0 0 22px #4da3ff}100%{box-shadow:0 0 22px #ff5fa2}}
-.card .art{width:100%;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#0008}
+.card .art{width:100%;aspect-ratio:1/.88;border-radius:10px;overflow:hidden;background:#0008;flex-shrink:0}
 .card .art img{width:100%;height:100%;object-fit:cover;display:block}
-.card .name{font-weight:800;margin-top:6px;font-size:14px;line-height:1.1;word-break:break-word}
-.card .rar{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--c)}
-.card .stars{color:var(--gold);font-size:12px;letter-spacing:1px;min-height:14px}
-.card .quote{font-size:10.5px;color:var(--mute);font-style:italic;margin-top:auto;line-height:1.2}
+.card .name{font-weight:800;margin-top:6px;font-size:14px;line-height:1.1;word-break:break-word;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;max-width:100%;flex-shrink:0}
+.card .rar{flex-shrink:0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--c)}
+.card .stars{flex-shrink:0;color:var(--gold);font-size:12px;letter-spacing:1px;min-height:14px}
+.card .quote{font-size:10.5px;color:var(--mute);font-style:italic;margin-top:auto;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;max-width:100%;flex-shrink:0}
 .card.shiny::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,#ffffff55 45%,#a0f0ff44 50%,#ff9ff044 55%,transparent 70%);background-size:250% 250%;animation:holo 2.5s ease-in-out infinite;pointer-events:none;mix-blend-mode:screen}
 @keyframes holo{0%{background-position:100% 100%}100%{background-position:0 0}}
 .tag{position:absolute;top:6px;left:6px;font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;background:#ff5fa2;color:#fff;z-index:2}
@@ -165,6 +165,28 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .ach .bar i{background:var(--gold)}
 .ach .row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
 .badge{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--gold);color:#2a1a00;font-size:12px;margin-left:4px}
+
+/* ---------- Parallaxe 3D ---------- */
+.card{transform:perspective(800px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .25s ease-out;transform-style:preserve-3d}
+.card.moving{transition:transform .06s linear}
+.card .art img{transform:translate(var(--ix,0px),var(--iy,0px)) scale(1.12);transition:transform .25s ease-out}
+.card.moving .art img{transition:transform .06s linear}
+.card .glare{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),#ffffff55,transparent 55%);opacity:0;transition:opacity .25s;z-index:3;mix-blend-mode:overlay}
+.card.moving .glare{opacity:1}
+.card.clickable{cursor:pointer}
+.mini{cursor:pointer}
+
+/* ---------- Détail d'une carte ---------- */
+#detail{z-index:55}
+.detail-box{display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:760px}
+#detailCard .card{width:250px}
+#detailCard .card .name{font-size:18px}
+#detailCard .card .quote{font-size:12px;-webkit-line-clamp:3}
+.detail-info{max-width:400px;min-width:260px}
+.detail-info h2{margin:0 0 4px;font-size:26px;word-break:break-word}
+.detail-info .r{font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.detail-info blockquote{margin:16px 0;padding:12px 14px;border-left:3px solid var(--accent);background:#ffffff0d;border-radius:8px;font-style:italic;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto}
+.detail-info .meta{color:var(--mute);font-size:14px}
 
 /* ---------- Confettis ---------- */
 .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
@@ -299,6 +321,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li><b>/carte</b>, <b>/liste</b>, <b>/desinscription</b>.</li>
         <li>Admin : <b>/rarete</b> pour changer la rareté de quelqu'un, <b>/retirer</b> pour enlever une carte.</li>
       </ul>
+      <p>Clique sur une carte pour la voir en grand avec sa phrase en entier.</p>
       <p>Ta collection est sauvegardée dans ce navigateur.</p>
       <button class="danger" id="reset">Réinitialiser ma partie</button>
     </div>
@@ -311,6 +334,21 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
   <div class="ov-btns">
     <button id="revealAll">Tout révéler</button>
     <button id="closeOv">Fermer</button>
+  </div>
+</div>
+<div class="overlay hidden" id="detail">
+  <div class="detail-box">
+    <div id="detailCard"></div>
+    <div class="detail-info">
+      <h2 id="dName"></h2>
+      <div class="r" id="dRar"></div>
+      <blockquote id="dQuote"></blockquote>
+      <div class="meta" id="dMeta"></div>
+      <div class="ov-btns">
+        <button id="dSwap">Voir le shiny ✨</button>
+        <button id="dClose">Fermer</button>
+      </div>
+    </div>
   </div>
 </div>
 <div class="toast hidden" id="toast"></div>
@@ -425,8 +463,52 @@ function cardEl(card, opts = {}) {
   c.appendChild(el("div", "rar", RARITIES[RIDX[card.rarete]].nom));
   c.appendChild(el("div", "stars", opts.locked ? "" : "★".repeat(stars(copies))));
   if (card.phrase && !opts.locked) c.appendChild(el("div", "quote", "« " + card.phrase + " »"));
+  c.appendChild(el("div", "glare"));
+  if (!opts.locked) {
+    attachTilt(c, opts.big ? 18 : 14);
+    if (!opts.noDetail) { c.classList.add("clickable"); c.onclick = () => openDetail(card, !!opts.shiny); }
+  }
   return c;
 }
+
+// ---------- Parallaxe ----------
+function attachTilt(c, strength) {
+  c.addEventListener("pointermove", e => {
+    const r = c.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+    c.classList.add("moving");
+    c.style.setProperty("--ry", ((x - .5) * strength).toFixed(2) + "deg");
+    c.style.setProperty("--rx", ((.5 - y) * strength).toFixed(2) + "deg");
+    c.style.setProperty("--mx", (x * 100).toFixed(1) + "%");
+    c.style.setProperty("--my", (y * 100).toFixed(1) + "%");
+    c.style.setProperty("--ix", ((x - .5) * -12).toFixed(1) + "px");
+    c.style.setProperty("--iy", ((y - .5) * -12).toFixed(1) + "px");
+  });
+  c.addEventListener("pointerleave", () => {
+    c.classList.remove("moving");
+    for (const v of ["--rx", "--ry", "--ix", "--iy"]) c.style.removeProperty(v);
+  });
+}
+
+// ---------- Détail d'une carte ----------
+let detailState = null;
+function openDetail(card, shiny) {
+  detailState = { card, shiny };
+  const o = own(card.id);
+  const box = $("#detailCard"); box.replaceChildren(cardEl(card, { shiny, big: true, noDetail: true }));
+  $("#dName").textContent = card.pseudo + (shiny ? " ✨" : "");
+  const r = $("#dRar"); r.textContent = RARITIES[RIDX[card.rarete]].nom + (shiny ? " · Shiny" : ""); r.style.color = `var(--${card.rarete})`;
+  const q = $("#dQuote"); q.textContent = card.phrase || "Pas de phrase."; 
+  $("#dMeta").textContent = `Copies : ${o.copies} normale${o.copies > 1 ? "s" : ""} · ${o.shinyCopies} shiny`;
+  const sw = $("#dSwap");
+  const other = shiny ? o.copies > 0 : o.shinyCopies > 0;
+  sw.classList.toggle("hidden", !other);
+  sw.textContent = shiny ? "Voir la normale" : "Voir le shiny ✨";
+  $("#detail").classList.remove("hidden");
+}
+$("#dSwap").onclick = () => detailState && openDetail(detailState.card, !detailState.shiny);
+$("#dClose").onclick = () => $("#detail").classList.add("hidden");
+$("#detail").addEventListener("click", e => { if (e.target.id === "detail") $("#detail").classList.add("hidden"); });
 
 // ---------- Pote du jour ----------
 function featured() {
@@ -534,10 +616,10 @@ function showReveal(results) {
     const inner = el("div", "inner");
     const back = el("div", "face back", r.shiny ? "✨" : "?");
     const front = el("div", "face front");
-    front.appendChild(cardEl(r.card, { shiny: r.shiny, isNew: r.isNew, tagShiny: r.shiny }));
+    front.appendChild(cardEl(r.card, { shiny: r.shiny, isNew: r.isNew, tagShiny: r.shiny, noDetail: true }));
     inner.append(back, front); f.appendChild(inner);
     f.onclick = () => {
-      if (f.classList.contains("open")) return;
+      if (f.classList.contains("open")) return openDetail(r.card, r.shiny);
       f.classList.add("open");
       if (r.shiny) confetti(["#9ee8ff", "#ff9ff0", "#ffffff", "#fff3a0"]);
       else if (r.tier === 4) confetti(["#ff5fa2", "#ffc23d", "#4da3ff", "#b46bff"]);
@@ -551,7 +633,7 @@ function showReveal(results) {
   const refund = results.reduce((s, r) => s + r.refund, 0);
   $(".hint-txt").textContent = (anyShiny ? "✨ Quelque chose scintille étrangement... " : best >= 3 ? "🔥 Quelque chose de rare brille... " : "Clique sur les cartes pour les retourner") + (refund ? ` · Doublons : +${refund} 🪙` : "");
 }
-$("#revealAll").onclick = () => document.querySelectorAll(".flip:not(.open)").forEach((f, i) => setTimeout(() => f.click(), i * 120));
+$("#revealAll").onclick = () => document.querySelectorAll(".flip:not(.open)").forEach((f, i) => setTimeout(() => { if (!f.classList.contains("open")) f.click(); }, i * 120));
 $("#closeOv").onclick = () => { $("#overlay").classList.add("hidden"); renderCollection(); };
 
 // ---------- Roue de la chance ----------
@@ -685,6 +767,7 @@ function renderHistory() {
   for (const e of state.history) {
     const c = byId[e.id]; if (!c) continue;
     const m = el("div", "mini " + c.rarete + (e.s ? " shiny" : "")); m.title = c.pseudo + (e.s ? " ✨" : "");
+    m.onclick = () => openDetail(c, !!e.s);
     m.appendChild(avatarImg(c)); h.appendChild(m);
   }
   if (!h.children.length) h.appendChild(el("p", null, "Aucun tirage pour l'instant."));

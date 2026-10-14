@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KIWI GACHA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#110809; --bg2:#1f0c10; --panel:#241015; --line:#4a1a24; --txt:#ffeef0; --mute:#c99aa2;
+  --accent:#e8263a; --gold:#ffc23d;
+  --commun:#9aa3b2; --rare:#4da3ff; --epique:#b46bff; --legendaire:#ffc23d; --mythique:#ff5fa2;
+}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(1200px 600px at 50% -200px,#5a0f1a 0%,var(--bg) 60%) fixed,var(--bg);color:var(--txt);font-family:Outfit,system-ui,sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer}
+header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:16px;max-width:1100px;margin:0 auto}
+h1{font-family:Bungee,sans-serif;font-size:clamp(22px,4vw,32px);margin:0;background:linear-gradient(90deg,#ff2e44,#ff6b3d,#ffb03d);-webkit-background-clip:text;background-clip:text;color:transparent}
+.coins{display:flex;gap:8px;align-items:center;background:var(--panel);border:1px solid var(--line);padding:8px 14px;border-radius:999px;font-weight:800}
+.coin{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3b0,var(--gold) 55%,#b67d00);box-shadow:0 0 10px #ffc23d88}
+nav{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:0 16px}
+nav button{background:transparent;border:1px solid var(--line);color:var(--mute);padding:10px 18px;border-radius:12px;font-weight:600}
+nav button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+.banner{background:#3a2a10;border:1px solid #7a5a1a;color:#ffd98a;padding:10px 14px;border-radius:12px;margin-bottom:16px;font-size:14px}
+.err{background:#3a1020;border-color:#7a1a3a;color:#ffb3c8}
+.hidden{display:none!important}
+
+/* Tirage */
+.altar{text-align:center;padding:30px 16px;background:linear-gradient(180deg,var(--bg2),transparent);border:1px solid var(--line);border-radius:24px}
+.orb{width:160px;height:160px;margin:0 auto 20px;border-radius:50%;background:conic-gradient(from 0deg,#ff2e44,#7a0010,#ff6b3d,#b5001c,#ff2e44);filter:blur(1px);animation:spin 8s linear infinite;box-shadow:0 0 70px #e8263a99;position:relative}
+.orb::after{content:"";position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#ff4a5c 0%,#8a0016 45%,#1a0306 100%)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pull-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.big{border:none;color:#fff;font-weight:800;font-size:17px;padding:14px 26px;border-radius:16px;background:linear-gradient(135deg,#c4001c,#ff3b4f);box-shadow:0 6px 20px #e8263a66;transition:transform .1s}
+.big.gold{background:linear-gradient(135deg,#ff8a3d,#ffc23d);box-shadow:0 6px 20px #ffc23d55;color:#2a1a00}
+.big:active{transform:scale(.96)}
+.big:disabled{opacity:.4;cursor:not-allowed}
+.big small{display:block;font-weight:600;font-size:12px;opacity:.85}
+.pity{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:18px;color:var(--mute);font-size:14px}
+.bar{width:140px;height:8px;background:var(--line);border-radius:9px;overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;background:var(--epique)}
+.bar.leg i{background:var(--legendaire)}
+.side{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:16px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px}
+.box h3{margin:0 0 8px}
+.box p{color:var(--mute);margin:0 0 12px;font-size:14px}
+.small-btn{background:var(--accent);color:#fff;border:none;padding:10px 16px;border-radius:12px;font-weight:700}
+.small-btn:disabled{opacity:.4;cursor:not-allowed}
+.rates{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.rates div{display:flex;justify-content:space-between}
+
+/* Cartes */
+.card{--c:var(--commun);position:relative;width:150px;aspect-ratio:3/4.3;border-radius:14px;padding:8px;background:linear-gradient(160deg,color-mix(in srgb,var(--c) 35%,#1a1535),#120f26 70%);border:2px solid var(--c);box-shadow:0 0 18px color-mix(in srgb,var(--c) 45%,transparent);display:flex;flex-direction:column;align-items:center;text-align:center;overflow:hidden}
+.card.rare{--c:var(--rare)} .card.epique{--c:var(--epique)} .card.legendaire{--c:var(--legendaire)}
+.card.mythique{--c:var(--mythique);border-image:linear-gradient(var(--a,0deg),#ff5fa2,#ffc23d,#4da3ff,#b46bff) 1;animation:myth 3s linear infinite}
+@keyframes myth{0%{box-shadow:0 0 22px #ff5fa2}33%{box-shadow:0 0 22px #ffc23d}66%{box-shadow:0 0 22px #4da3ff}100%{box-shadow:0 0 22px #ff5fa2}}
+.card .art{width:100%;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#0008}
+.card .art img{width:100%;height:100%;object-fit:cover;display:block}
+.card .name{font-weight:800;margin-top:6px;font-size:14px;line-height:1.1;word-break:break-word}
+.card .rar{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--c)}
+.card .stars{color:var(--gold);font-size:12px;letter-spacing:1px;min-height:14px}
+.card .quote{font-size:10.5px;color:var(--mute);font-style:italic;margin-top:auto;line-height:1.2}
+.card.shiny::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,#ffffff55 45%,#a0f0ff44 50%,#ff9ff044 55%,transparent 70%);background-size:250% 250%;animation:holo 2.5s ease-in-out infinite;pointer-events:none;mix-blend-mode:screen}
+@keyframes holo{0%{background-position:100% 100%}100%{background-position:0 0}}
+.tag{position:absolute;top:6px;left:6px;font-size:10px;font-weight:800;padding:2px 6px;border-radius:6px;background:#ff5fa2;color:#fff;z-index:2}
+.tag.sh{left:auto;right:6px;background:linear-gradient(90deg,#4da3ff,#ff5fa2)}
+.card.locked{--c:#3a3466;box-shadow:none}
+.card.locked img{filter:brightness(0) opacity(.6)}
+.card.locked .name,.card.locked .quote{color:#5a5390}
+
+/* Collection */
+.col-head{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.progress{flex:1;min-width:200px}
+.progress .bar{width:100%;height:12px}
+.progress .bar i{background:linear-gradient(90deg,#4da3ff,#b46bff,#ff5fa2)}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters button{background:var(--panel);border:1px solid var(--line);color:var(--mute);padding:6px 12px;border-radius:999px;font-size:13px}
+.filters button.on{color:#fff;border-color:var(--accent);background:#e8263a44}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;justify-items:center}
+.grid .card{width:100%;max-width:170px}
+
+/* Overlay tirage */
+.overlay{position:fixed;inset:0;background:#05040dee;backdrop-filter:blur(6px);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;overflow:auto}
+.reveal{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-width:900px}
+.flip{width:150px;aspect-ratio:3/4.3;perspective:900px;cursor:pointer}
+.flip .inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d}
+.flip.open .inner{transform:rotateY(180deg)}
+.flip .face{position:absolute;inset:0;backface-visibility:hidden}
+.flip .back{border-radius:14px;border:2px solid var(--line);background:repeating-linear-gradient(45deg,#241015 0 10px,#2e121a 10px 20px);display:flex;align-items:center;justify-content:center;font-family:Bungee;font-size:44px;color:#e8263a;box-shadow:0 0 22px var(--hint,#e8263a55)}
+.flip .front{transform:rotateY(180deg)}
+.flip .front .card{width:100%}
+.flip.open.legendaire,.flip.open.mythique{animation:burst .8s ease-out}
+@keyframes burst{0%{filter:brightness(3)}100%{filter:brightness(1)}}
+.ov-btns{display:flex;gap:10px;margin-top:20px}
+.ov-btns button{background:var(--panel);border:1px solid var(--line);color:var(--txt);padding:12px 20px;border-radius:12px;font-weight:700}
+.hint-txt{color:var(--mute);margin-bottom:14px}
+
+/* Quiz */
+.quiz{display:flex;flex-direction:column;align-items:center;gap:14px}
+.quiz .pic{width:180px;height:180px;border-radius:20px;overflow:hidden;border:3px solid var(--line)}
+.quiz .pic img{width:100%;height:100%;object-fit:cover;filter:blur(14px) saturate(1.3);transition:filter .5s}
+.quiz .pic.shown img{filter:none}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:420px}
+.choices button{background:var(--panel);border:2px solid var(--line);color:var(--txt);padding:12px;border-radius:12px;font-weight:700}
+.choices button.ok{border-color:#3ddc84;background:#3ddc8433}
+.choices button.ko{border-color:#ff5f6d;background:#ff5f6d33}
+
+.rules{line-height:1.6}
+.rules h3{margin-top:22px}
+.rules li{margin-bottom:4px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:10px 18px;border-radius:12px;font-weight:700;z-index:60;transition:opacity .3s}
+.danger{background:transparent;border:1px solid #7a1a3a;color:#ff8fa8;padding:8px 14px;border-radius:10px;margin-top:20px}
+@media(max-width:500px){.flip{width:calc(50% - 6px);max-width:150px}.card{width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <h1>KIWI GACHA</h1>
+  <div class="coins"><span class="coin"></span><span id="coins">0</span></div>
+</header>
+<nav>
+  <button data-tab="tirage" class="on">🎰 Tirage</button>
+  <button data-tab="collection">📚 Collection</button>
+  <button data-tab="quiz">❓ Qui est-ce ?</button>
+  <button data-tab="regles">📜 Règles</button>
+</nav>
+<main>
+  <div id="demoBanner" class="banner hidden">Mode démo : cartes d'exemple. Remplis <b>CONFIG</b> en haut du script pour charger les vraies cartes du bot.</div>
+  <div id="errBanner" class="banner err hidden"></div>
+
+  <section id="tab-tirage">
+    <div class="altar">
+      <div class="orb"></div>
+      <div class="pull-btns">
+        <button class="big" id="pull1">Tirage ×1<small>🪙 100</small></button>
+        <button class="big gold" id="pull10">Tirage ×10<small>🪙 900 · 1 Rare+ garanti</small></button>
+      </div>
+      <div class="pity">
+        <div>Épique garanti dans <b id="pE">10</b><div class="bar"><i id="bE"></i></div></div>
+        <div>Légendaire garanti dans <b id="pL">50</b><div class="bar leg"><i id="bL"></i></div></div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="box">
+        <h3>🎁 Récompense du jour</h3>
+        <p>500 pièces gratuites chaque jour.</p>
+        <button class="small-btn" id="daily">Récupérer</button>
+      </div>
+      <div class="box">
+        <h3>📊 Taux</h3>
+        <div class="rates" id="rates"></div>
+      </div>
+      <div class="box">
+        <h3>📈 Stats</h3>
+        <p id="stats"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-collection" class="hidden">
+    <div class="col-head">
+      <div class="progress"><b id="colTxt"></b><div class="bar"><i id="colBar"></i></div></div>
+      <div class="filters" id="filters"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="tab-quiz" class="hidden">
+    <div class="box quiz" id="quiz"></div>
+  </section>
+
+  <section id="tab-regles" class="hidden">
+    <div class="box rules">
+      <h3>🎴 Le principe</h3>
+      <p>Chaque carte est un membre du serveur. Pour apparaître dans le jeu, il tape <b>/inscription</b> sur Discord : le bot récupère sa pdp et son pseudo, et lui tire une rareté au hasard. Ton but : <b>compléter la collection</b>.</p>
+      <h3>🪙 Gagner des pièces</h3>
+      <ul>
+        <li>Tu commences avec 1000 pièces.</li>
+        <li>Récompense du jour : +500.</li>
+        <li>« Qui est-ce ? » : devine le pote derrière la pdp floutée, +50 par bonne réponse (20 récompenses max par jour).</li>
+        <li>Doublons : chaque doublon te rend des pièces selon sa rareté.</li>
+      </ul>
+      <h3>🎰 Les tirages</h3>
+      <ul>
+        <li>×1 = 100 pièces. ×10 = 900 pièces avec au moins un Rare garanti.</li>
+        <li>Taux : Commun 60 %, Rare 25 %, Épique 10 %, Légendaire 4 %, Mythique 1 %.</li>
+        <li><b>Pitié</b> : un Épique ou mieux tous les 10 tirages max, un Légendaire ou mieux tous les 50 tirages max.</li>
+        <li><b>Shiny</b> : 1 % de chances qu'une carte sorte en version holographique. Elle reste shiny dans ta collection.</li>
+      </ul>
+      <h3>⭐ Doublons et étoiles</h3>
+      <ul>
+        <li>Chaque copie fait monter la carte : ★2 à 2 copies, ★3 à 5, ★4 à 10, ★5 à 20.</li>
+        <li>Remboursement par doublon : Commun 10, Rare 20, Épique 40, Légendaire 80, Mythique 150.</li>
+      </ul>
+      <h3>🛠️ Commandes Discord</h3>
+      <ul>
+        <li><b>/inscription</b> (+ phrase optionnelle) : crée ta carte.</li>
+        <li><b>/maj</b> : met à jour ta pdp, ton pseudo ou ta phrase.</li>
+        <li><b>/carte</b>, <b>/liste</b>, <b>/desinscription</b>.</li>
+        <li>Admin : <b>/rarete</b> pour changer la rareté de quelqu'un, <b>/retirer</b> pour enlever une carte.</li>
+      </ul>
+      <p>Ta collection est sauvegardée dans ce navigateur.</p>
+      <button class="danger" id="reset">Réinitialiser ma partie</button>
+    </div>
+  </section>
+</main>
+
+<div class="overlay hidden" id="overlay">
+  <div class="hint-txt">Clique sur les cartes pour les retourner</div>
+  <div class="reveal" id="reveal"></div>
+  <div class="ov-btns">
+    <button id="revealAll">Tout révéler</button>
+    <button id="closeOv">Fermer</button>
+  </div>
+</div>
+<div class="toast hidden" id="toast"></div>
+
+<script>
+// ================== CONFIG ==================
+// Remplis ces deux valeurs avec celles de ton projet Firebase.
+// Laisse vide pour jouer en mode démo.
+const CONFIG = {
+  projectId: "",   // ex : "kiwi-gacha-1234"
+  apiKey: ""       // ex : "AIzaSy..."
+};
+// ============================================
+
+const RARITIES = [
+  { id: "commun",     nom: "Commun",     taux: 60, refund: 10 },
+  { id: "rare",       nom: "Rare",       taux: 25, refund: 20 },
+  { id: "epique",     nom: "Épique",     taux: 10, refund: 40 },
+  { id: "legendaire", nom: "Légendaire", taux: 4,  refund: 80 },
+  { id: "mythique",   nom: "Mythique",   taux: 1,  refund: 150 },
+];
+const RIDX = Object.fromEntries(RARITIES.map((r, i) => [r.id, i]));
+const COST1 = 100, COST10 = 900, DAILY = 500, QUIZ_REWARD = 50, QUIZ_MAX = 20;
+const PITY_EPIC = 10, PITY_LEG = 50, SHINY = 0.01;
+const SAVE_KEY = "kiwi-gacha-save-v1";
+
+const $ = s => document.querySelector(s);
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const today = () => new Date().toLocaleDateString("fr-CA");
+
+let CARDS = [];
+let state;
+
+function defaultState() {
+  return { coins: 1000, lastDaily: "", pityE: 0, pityL: 0, owned: {}, pulls: 0, quizDate: "", quizCount: 0 };
+}
+function load() {
+  try { state = Object.assign(defaultState(), JSON.parse(localStorage.getItem(SAVE_KEY) || "{}")); }
+  catch { state = defaultState(); }
+}
+function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch {} }
+
+// ---------- Avatars de secours ----------
+function fallbackAvatar(name) {
+  const colors = ["#ff5fa2", "#4da3ff", "#b46bff", "#ffc23d", "#3ddc84", "#ff8a3d"];
+  let h = 0; for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const col = colors[h % colors.length];
+  const initial = (name.trim()[0] || "?").toUpperCase().replace(/[<>&"]/g, "");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="#241015"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><text x="50" y="66" font-family="Arial" font-weight="bold" font-size="48" fill="#fff" text-anchor="middle">${initial}</text></svg>`;
+  return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+}
+
+const DEMO = [
+  ["Lucas", "legendaire", "Le roi du ranked"], ["Kenzo", "rare", "Toujours en retard"],
+  ["Inès", "mythique", "Ne perd jamais"], ["Noah", "commun", "AFK depuis 2019"],
+  ["Jade", "epique", "Carry tout le monde"], ["Yanis", "commun", "J'arrive dans 5 min"],
+  ["Léa", "rare", "Spam les emojis"], ["Sami", "commun", "Micro qui grésille"],
+  ["Emma", "epique", "Reine des memes"], ["Rayan", "rare", "Rage quit pro"],
+  ["Hugo", "commun", "Dort en vocal"], ["Chloé", "legendaire", "Admin suprême"],
+].map(([p, r, q], i) => ({ id: "demo" + i, pseudo: p, rarete: r, phrase: q, avatar: fallbackAvatar(p) }));
+
+async function loadCards() {
+  if (!CONFIG.projectId) { $("#demoBanner").classList.remove("hidden"); return DEMO; }
+  const out = []; let token = "";
+  do {
+    let url = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(CONFIG.projectId)}/databases/(default)/documents/cartes?pageSize=300`;
+    if (token) url += "&pageToken=" + encodeURIComponent(token);
+    if (CONFIG.apiKey) url += "&key=" + encodeURIComponent(CONFIG.apiKey);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Firebase a répondu " + res.status);
+    const data = await res.json();
+    for (const d of data.documents || []) {
+      const f = d.fields || {}; const s = k => (f[k] && f[k].stringValue) || "";
+      const rarete = RIDX[s("rarete")] != null ? s("rarete") : "commun";
+      out.push({ id: d.name.split("/").pop(), pseudo: s("pseudo") || "?", avatar: s("avatar"), rarete, phrase: s("phrase") });
+    }
+    token = data.nextPageToken || "";
+  } while (token);
+  return out;
+}
+
+// ---------- Rendu d'une carte ----------
+function stars(n) { return n >= 20 ? 5 : n >= 10 ? 4 : n >= 5 ? 3 : n >= 2 ? 2 : 1; }
+function cardEl(card, opts = {}) {
+  const own = state.owned[card.id];
+  const c = el("div", "card " + card.rarete);
+  if (opts.locked) c.classList.add("locked");
+  if ((opts.shiny || (own && own.shiny)) && !opts.locked) c.classList.add("shiny");
+  if (opts.isNew) c.appendChild(el("span", "tag", "NEW"));
+  if (opts.shiny) c.appendChild(el("span", "tag sh", "SHINY"));
+  const art = el("div", "art"); const img = el("img");
+  img.alt = card.pseudo; img.loading = "lazy";
+  img.src = /^https:\/\//.test(card.avatar) || card.avatar.startsWith("data:") ? card.avatar : fallbackAvatar(card.pseudo);
+  img.onerror = () => { img.onerror = null; img.src = fallbackAvatar(card.pseudo); };
+  art.appendChild(img); c.appendChild(art);
+  c.appendChild(el("div", "name", opts.locked ? "???" : card.pseudo));
+  c.appendChild(el("div", "rar", RARITIES[RIDX[card.rarete]].nom));
+  c.appendChild(el("div", "stars", own && !opts.locked ? "★".repeat(stars(own.copies)) : ""));
+  if (card.phrase && !opts.locked) c.appendChild(el("div", "quote", "« " + card.phrase + " »"));
+  return c;
+}
+
+// ---------- Logique de tirage ----------
+function rollTier(minTier = 0) {
+  state.pityE++; state.pityL++;
+  let t;
+  if (state.pityL >= PITY_LEG) t = Math.random() < 0.2 ? 4 : 3;
+  else {
+    let r = Math.random() * 100; t = 0;
+    for (let i = 0; i < RARITIES.length; i++) { r -= RARITIES[i].taux; if (r < 0) { t = i; break; } }
+    if (state.pityE >= PITY_EPIC) t = Math.max(t, 2);
+  }
+  t = Math.max(t, minTier);
+  if (t >= 2) state.pityE = 0;
+  if (t >= 3) state.pityL = 0;
+  return t;
+}
+function pickCard(tier) {
+  const order = [tier]; for (let d = 1; d < 5; d++) { if (tier - d >= 0) order.push(tier - d); if (tier + d < 5) order.push(tier + d); }
+  for (const t of order) {
+    const pool = CARDS.filter(c => RIDX[c.rarete] === t);
+    if (pool.length) return pool[Math.floor(Math.random() * pool.length)];
+  }
+  return null;
+}
+function pullOnce(minTier) {
+  const tier = rollTier(minTier);
+  const card = pickCard(tier);
+  const shiny = Math.random() < SHINY;
+  const own = state.owned[card.id];
+  let isNew = false, refund = 0;
+  if (own) { own.copies++; refund = RARITIES[RIDX[card.rarete]].refund; state.coins += refund; if (shiny) own.shiny = true; }
+  else { state.owned[card.id] = { copies: 1, shiny }; isNew = true; }
+  state.pulls++;
+  return { card, shiny, isNew, refund, tier };
+}
+function doPull(n) {
+  const cost = n === 10 ? COST10 : COST1;
+  if (!CARDS.length) return toast("Aucune carte : personne ne s'est encore inscrit !");
+  if (state.coins < cost) return toast("Pas assez de pièces 🪙");
+  state.coins -= cost;
+  const results = [];
+  for (let i = 0; i < n; i++) {
+    const needRare = n === 10 && i === 9 && results.every(r => r.tier === 0);
+    results.push(pullOnce(needRare ? 1 : 0));
+  }
+  save(); refresh(); showReveal(results);
+}
+
+// ---------- Animation ----------
+function showReveal(results) {
+  const box = $("#reveal"); box.replaceChildren();
+  const hints = ["#e8263a55", "#4da3ff88", "#b46bffaa", "#ffc23dcc", "#ff5fa2ee"];
+  for (const r of results) {
+    const f = el("div", "flip " + r.card.rarete);
+    f.style.setProperty("--hint", hints[RIDX[r.card.rarete]]);
+    const inner = el("div", "inner");
+    const back = el("div", "face back", "?");
+    const front = el("div", "face front");
+    front.appendChild(cardEl(r.card, { shiny: r.shiny, isNew: r.isNew }));
+    inner.append(back, front); f.appendChild(inner);
+    f.onclick = () => f.classList.add("open");
+    box.appendChild(f);
+  }
+  $("#overlay").classList.remove("hidden");
+  const best = Math.max(...results.map(r => RIDX[r.card.rarete]));
+  const refund = results.reduce((s, r) => s + r.refund, 0);
+  $(".hint-txt").textContent = (best >= 3 ? "✨ Quelque chose de rare brille... " : "Clique sur les cartes pour les retourner") + (refund ? ` · Doublons : +${refund} 🪙` : "");
+}
+$("#revealAll").onclick = () => document.querySelectorAll(".flip").forEach((f, i) => setTimeout(() => f.classList.add("open"), i * 120));
+$("#closeOv").onclick = () => { $("#overlay").classList.add("hidden"); renderCollection(); };
+
+// ---------- UI ----------
+function toast(msg) {
+  const t = $("#toast"); t.textContent = msg; t.classList.remove("hidden"); t.style.opacity = 1;
+  clearTimeout(toast.t); toast.t = setTimeout(() => { t.style.opacity = 0; setTimeout(() => t.classList.add("hidden"), 300); }, 2200);
+}
+function refresh() {
+  $("#coins").textContent = state.coins.toLocaleString("fr-FR");
+  $("#pull1").disabled = state.coins < COST1;
+  $("#pull10").disabled = state.coins < COST10;
+  $("#pE").textContent = Math.max(1, PITY_EPIC - state.pityE);
+  $("#pL").textContent = Math.max(1, PITY_LEG - state.pityL);
+  $("#bE").style.width = (state.pityE / PITY_EPIC * 100) + "%";
+  $("#bL").style.width = (state.pityL / PITY_LEG * 100) + "%";
+  const d = $("#daily"); const done = state.lastDaily === today();
+  d.disabled = done; d.textContent = done ? "Reviens demain ⏳" : "Récupérer +500";
+  const owned = CARDS.filter(c => state.owned[c.id]).length;
+  $("#stats").textContent = `${state.pulls} tirages · ${owned}/${CARDS.length} potes trouvés · ${CARDS.filter(c => state.owned[c.id]?.shiny).length} shiny`;
+}
+function renderRates() {
+  const box = $("#rates"); box.replaceChildren();
+  for (const r of RARITIES) {
+    const row = el("div"); const n = el("span", null, r.nom); n.style.color = `var(--${r.id})`; n.style.fontWeight = 700;
+    const count = CARDS.filter(c => c.rarete === r.id).length;
+    row.append(n, el("span", null, `${r.taux} % · ${count} carte${count > 1 ? "s" : ""}`)); box.appendChild(row);
+  }
+}
+let filter = "all";
+function renderFilters() {
+  const box = $("#filters"); box.replaceChildren();
+  for (const [id, nom] of [["all", "Toutes"], ...RARITIES.map(r => [r.id, r.nom]), ["owned", "Obtenues"]]) {
+    const b = el("button", filter === id ? "on" : "", nom);
+    b.onclick = () => { filter = id; renderFilters(); renderCollection(); }; box.appendChild(b);
+  }
+}
+function renderCollection() {
+  const owned = CARDS.filter(c => state.owned[c.id]).length;
+  const pct = CARDS.length ? Math.round(owned / CARDS.length * 100) : 0;
+  $("#colTxt").textContent = `Collection : ${owned}/${CARDS.length} (${pct} %)`;
+  $("#colBar").style.width = pct + "%";
+  const g = $("#grid"); g.replaceChildren();
+  const list = CARDS.filter(c => filter === "all" || (filter === "owned" ? state.owned[c.id] : c.rarete === filter))
+    .sort((a, b) => RIDX[b.rarete] - RIDX[a.rarete] || a.pseudo.localeCompare(b.pseudo));
+  for (const c of list) g.appendChild(cardEl(c, { locked: !state.owned[c.id] }));
+  if (!list.length) g.appendChild(el("p", null, "Rien ici pour l'instant."));
+}
+
+// ---------- Quiz ----------
+function renderQuiz() {
+  const q = $("#quiz"); q.replaceChildren();
+  if (state.quizDate !== today()) { state.quizDate = today(); state.quizCount = 0; save(); }
+  q.appendChild(el("h3", null, "Qui se cache derrière cette pdp ?"));
+  if (CARDS.length < 4) { q.appendChild(el("p", null, "Il faut au moins 4 potes inscrits pour jouer.")); return; }
+  const left = QUIZ_MAX - state.quizCount;
+  q.appendChild(el("p", null, left > 0 ? `+${QUIZ_REWARD} 🪙 par bonne réponse · ${left} récompense(s) restante(s) aujourd'hui` : "Plus de récompenses aujourd'hui, mais tu peux continuer pour le fun !"));
+  const pool = [...CARDS].sort(() => Math.random() - .5).slice(0, 4);
+  const answer = pool[Math.floor(Math.random() * 4)];
+  const pic = el("div", "pic"); const img = el("img"); img.src = answer.avatar || fallbackAvatar(answer.pseudo);
+  img.onerror = () => { img.onerror = null; img.src = fallbackAvatar(answer.pseudo); };
+  pic.appendChild(img); q.appendChild(pic);
+  const ch = el("div", "choices");
+  for (const c of pool) {
+    const b = el("button", null, c.pseudo);
+    b.onclick = () => {
+      ch.querySelectorAll("button").forEach(x => x.disabled = true);
+      pic.classList.add("shown");
+      if (c === answer) {
+        b.classList.add("ok");
+        if (state.quizCount < QUIZ_MAX) { state.quizCount++; state.coins += QUIZ_REWARD; toast(`Bien joué ! +${QUIZ_REWARD} 🪙`); }
+        else toast("Bien joué !");
+      } else {
+        b.classList.add("ko");
+        [...ch.children][pool.indexOf(answer)].classList.add("ok");
+        toast(`Raté, c'était ${answer.pseudo} !`);
+      }
+      save(); refresh();
+      setTimeout(renderQuiz, 1600);
+    };
+    ch.appendChild(b);
+  }
+  q.appendChild(ch);
+}
+
+// ---------- Navigation & boutons ----------
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  for (const t of ["tirage", "collection", "quiz", "regles"]) $("#tab-" + t).classList.toggle("hidden", t !== b.dataset.tab);
+  if (b.dataset.tab === "collection") renderCollection();
+  if (b.dataset.tab === "quiz") renderQuiz();
+});
+$("#pull1").onclick = () => doPull(1);
+$("#pull10").onclick = () => doPull(10);
+$("#daily").onclick = () => {
+  if (state.lastDaily === today()) return;
+  state.lastDaily = today(); state.coins += DAILY; save(); refresh(); toast(`+${DAILY} 🪙 Reviens demain !`);
+};
+$("#reset").onclick = () => {
+  if (!confirm("Effacer toute ta collection et tes pièces ?")) return;
+  state = defaultState(); save(); refresh(); renderCollection(); toast("Partie réinitialisée");
+};
+
+(async () => {
+  load();
+  try { CARDS = await loadCards(); }
+  catch (e) { const b = $("#errBanner"); b.textContent = "Impossible de charger les cartes : " + e.message + ". Vérifie CONFIG et les règles Firestore."; b.classList.remove("hidden"); CARDS = []; }
+  renderRates(); renderFilters(); renderCollection(); refresh();
+})();
+</script>
+</body>
+</html>

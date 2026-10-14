@@ -113,6 +113,62 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;padding:10px 18px;border-radius:12px;font-weight:700;z-index:60;transition:opacity .3s}
 .danger{background:transparent;border:1px solid #7a1a3a;color:#ff8fa8;padding:8px 14px;border-radius:10px;margin-top:20px}
 @media(max-width:500px){.flip{width:calc(50% - 6px);max-width:150px}.card{width:100%}}
+
+/* ---------- Shiny : couleurs inversées ---------- */
+.card.shiny{background:linear-gradient(160deg,#fff4f6 0%,#e9ecff 55%,#d8f3ff 100%);border-color:color-mix(in srgb,var(--c) 70%,#fff)}
+.card.shiny .art img{filter:invert(1)}
+.card.shiny .name{color:#1a0b10}
+.card.shiny .quote{color:#5a4a55}
+.card.shiny .stars{color:#c98a00}
+.card.shiny .rar{filter:brightness(.75)}
+.card.locked.shiny-slot .name::before{content:"✨ "}
+.mini.shiny img{filter:invert(1)}
+
+/* ---------- Bannière pote du jour ---------- */
+.featured{display:flex;align-items:center;gap:14px;justify-content:center;margin:0 auto 22px;padding:10px 16px;border-radius:16px;background:#0006;border:1px solid var(--line);max-width:420px;text-align:left}
+.featured img{width:56px;height:56px;border-radius:12px;object-fit:cover;border:2px solid var(--c,var(--accent));box-shadow:0 0 16px var(--c,var(--accent))}
+.featured small{color:var(--mute);display:block;font-size:12px}
+.featured b{font-size:17px}
+.bar.shy i{background:linear-gradient(90deg,#9ee8ff,#ff9ff0)}
+
+/* ---------- Roue ---------- */
+.wheel-wrap{position:relative;width:210px;height:210px;margin:6px auto 12px}
+.wheel{width:100%;height:100%;border-radius:50%;border:4px solid var(--gold);box-shadow:0 0 24px #ffc23d55;transition:transform 4.5s cubic-bezier(.12,.8,.1,1);position:relative;overflow:hidden}
+.wheel span{position:absolute;left:50%;top:50%;font-size:11px;font-weight:800;white-space:nowrap;color:#fff;text-shadow:0 1px 3px #000}
+.pointer{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:22px solid #fff;z-index:2;filter:drop-shadow(0 2px 3px #000)}
+.wheel-wrap .hub{position:absolute;inset:0;margin:auto;width:34px;height:34px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff3b0,var(--gold) 60%,#b67d00);z-index:2}
+.center{text-align:center}
+
+/* ---------- Inventaire / historique ---------- */
+.inv{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ticket{font-size:28px}
+.hist{display:flex;flex-wrap:wrap;gap:6px}
+.mini{width:36px;height:36px;border-radius:9px;overflow:hidden;border:2px solid var(--c);box-shadow:0 0 6px color-mix(in srgb,var(--c) 60%,transparent)}
+.mini img{width:100%;height:100%;object-fit:cover;display:block}
+.mini.commun{--c:var(--commun)}.mini.rare{--c:var(--rare)}.mini.epique{--c:var(--epique)}.mini.legendaire{--c:var(--legendaire)}.mini.mythique{--c:var(--mythique)}
+
+/* ---------- Collection : onglets normal / shiny ---------- */
+.mode{display:flex;gap:6px;margin-bottom:14px}
+.mode button{flex:1;max-width:200px;background:var(--panel);border:1px solid var(--line);color:var(--mute);padding:10px;border-radius:12px;font-weight:700}
+.mode button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.mode button.on.sh{background:linear-gradient(90deg,#9ee8ff,#ff9ff0);color:#1a0b10;border-color:transparent}
+
+/* ---------- Succès ---------- */
+.ach-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.ach{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.ach.done{border-color:var(--gold);box-shadow:0 0 14px #ffc23d33}
+.ach.claimed{opacity:.55}
+.ach h4{margin:0;font-size:16px}
+.ach p{margin:0;color:var(--mute);font-size:13px}
+.ach .rew{font-size:13px;font-weight:700;color:var(--gold)}
+.ach .bar{width:100%}
+.ach .bar i{background:var(--gold)}
+.ach .row{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+.badge{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--gold);color:#2a1a00;font-size:12px;margin-left:4px}
+
+/* ---------- Confettis ---------- */
+.confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
 </style>
 </head>
 <body>
@@ -123,6 +179,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <nav>
   <button data-tab="tirage" class="on">🎰 Tirage</button>
   <button data-tab="collection">📚 Collection</button>
+  <button data-tab="succes">🏆 Succès<span id="achBadge"></span></button>
   <button data-tab="quiz">❓ Qui est-ce ?</button>
   <button data-tab="regles">📜 Règles</button>
 </nav>
@@ -132,14 +189,16 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 
   <section id="tab-tirage">
     <div class="altar">
+      <div id="featured"></div>
       <div class="orb"></div>
       <div class="pull-btns">
-        <button class="big" id="pull1">Tirage ×1<small>🪙 100</small></button>
-        <button class="big gold" id="pull10">Tirage ×10<small>🪙 900 · 1 Rare+ garanti</small></button>
+        <button class="big" id="pull1">Tirage ×1<small id="cost1">🪙 100</small></button>
+        <button class="big gold" id="pull10">Tirage ×10<small id="cost10">🪙 900 · 1 Rare+ garanti</small></button>
       </div>
       <div class="pity">
         <div>Épique garanti dans <b id="pE">10</b><div class="bar"><i id="bE"></i></div></div>
         <div>Légendaire garanti dans <b id="pL">50</b><div class="bar leg"><i id="bL"></i></div></div>
+        <div>Shiny garanti dans <b id="pS">200</b><div class="bar shy"><i id="bS"></i></div></div>
       </div>
     </div>
     <div class="side">
@@ -147,6 +206,19 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <h3>🎁 Récompense du jour</h3>
         <p>500 pièces gratuites chaque jour.</p>
         <button class="small-btn" id="daily">Récupérer</button>
+      </div>
+      <div class="box center">
+        <h3>🎡 Roue de la chance</h3>
+        <p>Un tour gratuit par jour.</p>
+        <div class="wheel-wrap"><div class="pointer"></div><div class="wheel" id="wheel"></div><div class="hub"></div></div>
+        <button class="small-btn" id="spin">Tourner</button>
+      </div>
+      <div class="box">
+        <h3>🎟️ Tickets Mythiques</h3>
+        <p>Réunis 10 fragments ✦ (succès, roue) pour fusionner un ticket. Un ticket = une carte Mythique garantie.</p>
+        <div class="inv" style="margin-bottom:10px"><span>✦ <b id="frags">0</b> / 10 fragments</span><button class="small-btn" id="fuse">Fusionner</button></div>
+        <div class="bar" style="width:100%;margin-bottom:12px"><i id="fragBar" style="background:linear-gradient(90deg,#ff5fa2,#ffc23d)"></i></div>
+        <div class="inv"><span class="ticket">🎟️ × <b id="tickets">0</b></span><button class="small-btn" id="useTicket">Utiliser</button></div>
       </div>
       <div class="box">
         <h3>📊 Taux</h3>
@@ -156,15 +228,27 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <h3>📈 Stats</h3>
         <p id="stats"></p>
       </div>
+      <div class="box">
+        <h3>🕘 Derniers tirages</h3>
+        <div class="hist" id="hist"></div>
+      </div>
     </div>
   </section>
 
   <section id="tab-collection" class="hidden">
+    <div class="mode">
+      <button id="modeN" class="on">📚 Normales</button>
+      <button id="modeS" class="sh">✨ Shiny</button>
+    </div>
     <div class="col-head">
       <div class="progress"><b id="colTxt"></b><div class="bar"><i id="colBar"></i></div></div>
       <div class="filters" id="filters"></div>
     </div>
     <div class="grid" id="grid"></div>
+  </section>
+
+  <section id="tab-succes" class="hidden">
+    <div class="ach-list" id="achList"></div>
   </section>
 
   <section id="tab-quiz" class="hidden">
@@ -174,11 +258,12 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
   <section id="tab-regles" class="hidden">
     <div class="box rules">
       <h3>🎴 Le principe</h3>
-      <p>Chaque carte est un membre du serveur. Pour apparaître dans le jeu, il tape <b>/inscription</b> sur Discord : le bot récupère sa pdp et son pseudo, et lui tire une rareté au hasard. Ton but : <b>compléter la collection</b>.</p>
+      <p>Chaque carte est un membre du serveur. Pour apparaître dans le jeu, il tape <b>/inscription</b> sur Discord : le bot récupère sa pdp et son pseudo, et lui tire une rareté au hasard. Ton but : <b>compléter la collection</b>, puis la <b>collection shiny</b>.</p>
       <h3>🪙 Gagner des pièces</h3>
       <ul>
         <li>Tu commences avec 1000 pièces.</li>
         <li>Récompense du jour : +500.</li>
+        <li>Roue de la chance : un tour gratuit par jour (pièces, tirages gratuits, ou un rare fragment Mythique).</li>
         <li>« Qui est-ce ? » : devine le pote derrière la pdp floutée, +50 par bonne réponse (20 récompenses max par jour).</li>
         <li>Doublons : chaque doublon te rend des pièces selon sa rareté.</li>
       </ul>
@@ -187,12 +272,25 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li>×1 = 100 pièces. ×10 = 900 pièces avec au moins un Rare garanti.</li>
         <li>Taux : Commun 60 %, Rare 25 %, Épique 10 %, Légendaire 4 %, Mythique 1 %.</li>
         <li><b>Pitié</b> : un Épique ou mieux tous les 10 tirages max, un Légendaire ou mieux tous les 50 tirages max.</li>
-        <li><b>Shiny</b> : 1 % de chances qu'une carte sorte en version holographique. Elle reste shiny dans ta collection.</li>
+        <li><b>Pote du jour</b> : chaque jour, un pote est en vedette. Quand tu tombes sur sa rareté, tu as 1 chance sur 2 que ce soit lui.</li>
+      </ul>
+      <h3>✨ Les shiny</h3>
+      <ul>
+        <li>Chaque carte tirée a 1 % de chances d'être shiny : pdp aux couleurs inversées, carte claire et reflet holographique.</li>
+        <li>Pitié shiny : un shiny garanti au bout de 200 tirages sans shiny.</li>
+        <li>Les shiny ont leur <b>propre collection</b>, séparée des cartes normales.</li>
+        <li>Un doublon shiny rembourse 3 fois plus qu'un doublon normal.</li>
+      </ul>
+      <h3>🏆 Succès et tickets Mythiques</h3>
+      <ul>
+        <li>Les succès rapportent des pièces et des <b>fragments ✦</b>. La roue en donne parfois un aussi.</li>
+        <li><b>10 fragments</b> se fusionnent en un <b>ticket Mythique</b>.</li>
+        <li>Un ticket donne une carte Mythique garantie (ou la meilleure rareté disponible s'il n'y a pas encore de Mythique).</li>
       </ul>
       <h3>⭐ Doublons et étoiles</h3>
       <ul>
         <li>Chaque copie fait monter la carte : ★2 à 2 copies, ★3 à 5, ★4 à 10, ★5 à 20.</li>
-        <li>Remboursement par doublon : Commun 10, Rare 20, Épique 40, Légendaire 80, Mythique 150.</li>
+        <li>Remboursement par doublon : Commun 10, Rare 20, Épique 40, Légendaire 80, Mythique 150 (×3 pour un shiny).</li>
       </ul>
       <h3>🛠️ Commandes Discord</h3>
       <ul>
@@ -219,11 +317,10 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 
 <script>
 // ================== CONFIG ==================
-// Remplis ces deux valeurs avec celles de ton projet Firebase.
-// Laisse vide pour jouer en mode démo.
+// Laisse projectId vide pour jouer en mode démo.
 const CONFIG = {
   projectId: "kiwi-gacha",
-  apiKey: ""       // ex : "AIzaSy..."
+  apiKey: ""
 };
 // ============================================
 
@@ -236,7 +333,8 @@ const RARITIES = [
 ];
 const RIDX = Object.fromEntries(RARITIES.map((r, i) => [r.id, i]));
 const COST1 = 100, COST10 = 900, DAILY = 500, QUIZ_REWARD = 50, QUIZ_MAX = 20;
-const PITY_EPIC = 10, PITY_LEG = 50, SHINY = 0.01;
+const PITY_EPIC = 10, PITY_LEG = 50, SHINY = 0.01, SHINY_PITY = 200, FEATURED_CHANCE = 0.5;
+const FRAG_PER_TICKET = 10;
 const SAVE_KEY = "kiwi-gacha-save-v1";
 
 const $ = s => document.querySelector(s);
@@ -247,13 +345,25 @@ let CARDS = [];
 let state;
 
 function defaultState() {
-  return { coins: 1000, lastDaily: "", pityE: 0, pityL: 0, owned: {}, pulls: 0, quizDate: "", quizCount: 0 };
+  return {
+    coins: 1000, lastDaily: "", dailyCount: 0, pityE: 0, pityL: 0, shinyPity: 0,
+    owned: {}, pulls: 0, quizDate: "", quizCount: 0, quizTotal: 0,
+    tickets: 0, fragments: 0, free1: 0, free10: 0, wheelDate: "", claimed: {}, notified: {},
+    history: [], bestTen: 0
+  };
 }
 function load() {
   try { state = Object.assign(defaultState(), JSON.parse(localStorage.getItem(SAVE_KEY) || "{}")); }
   catch { state = defaultState(); }
+  // Migration des anciennes sauvegardes (shiny = simple drapeau)
+  for (const o of Object.values(state.owned)) {
+    if (o.shinyCopies == null) o.shinyCopies = o.shiny ? 1 : 0;
+    delete o.shiny;
+    if (o.copies == null) o.copies = 0;
+  }
 }
 function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch {} }
+const own = id => state.owned[id] || { copies: 0, shinyCopies: 0 };
 
 // ---------- Avatars de secours ----------
 function fallbackAvatar(name) {
@@ -263,6 +373,12 @@ function fallbackAvatar(name) {
   const initial = (name.trim()[0] || "?").toUpperCase().replace(/[<>&"]/g, "");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="#241015"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><text x="50" y="66" font-family="Arial" font-weight="bold" font-size="48" fill="#fff" text-anchor="middle">${initial}</text></svg>`;
   return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+}
+function avatarImg(card) {
+  const img = el("img"); img.alt = card.pseudo; img.loading = "lazy";
+  img.src = /^https:\/\//.test(card.avatar) || (card.avatar || "").startsWith("data:") ? card.avatar : fallbackAvatar(card.pseudo);
+  img.onerror = () => { img.onerror = null; img.src = fallbackAvatar(card.pseudo); };
+  return img;
 }
 
 const DEMO = [
@@ -295,24 +411,39 @@ async function loadCards() {
 }
 
 // ---------- Rendu d'une carte ----------
-function stars(n) { return n >= 20 ? 5 : n >= 10 ? 4 : n >= 5 ? 3 : n >= 2 ? 2 : 1; }
+function stars(n) { return n >= 20 ? 5 : n >= 10 ? 4 : n >= 5 ? 3 : n >= 2 ? 2 : n >= 1 ? 1 : 0; }
 function cardEl(card, opts = {}) {
-  const own = state.owned[card.id];
+  const o = own(card.id);
+  const copies = opts.shiny ? o.shinyCopies : o.copies;
   const c = el("div", "card " + card.rarete);
-  if (opts.locked) c.classList.add("locked");
-  if ((opts.shiny || (own && own.shiny)) && !opts.locked) c.classList.add("shiny");
+  if (opts.locked) { c.classList.add("locked"); if (opts.shiny) c.classList.add("shiny-slot"); }
+  else if (opts.shiny) c.classList.add("shiny");
   if (opts.isNew) c.appendChild(el("span", "tag", "NEW"));
-  if (opts.shiny) c.appendChild(el("span", "tag sh", "SHINY"));
-  const art = el("div", "art"); const img = el("img");
-  img.alt = card.pseudo; img.loading = "lazy";
-  img.src = /^https:\/\//.test(card.avatar) || card.avatar.startsWith("data:") ? card.avatar : fallbackAvatar(card.pseudo);
-  img.onerror = () => { img.onerror = null; img.src = fallbackAvatar(card.pseudo); };
-  art.appendChild(img); c.appendChild(art);
+  if (opts.tagShiny) c.appendChild(el("span", "tag sh", "SHINY"));
+  const art = el("div", "art"); art.appendChild(avatarImg(card)); c.appendChild(art);
   c.appendChild(el("div", "name", opts.locked ? "???" : card.pseudo));
   c.appendChild(el("div", "rar", RARITIES[RIDX[card.rarete]].nom));
-  c.appendChild(el("div", "stars", own && !opts.locked ? "★".repeat(stars(own.copies)) : ""));
+  c.appendChild(el("div", "stars", opts.locked ? "" : "★".repeat(stars(copies))));
   if (card.phrase && !opts.locked) c.appendChild(el("div", "quote", "« " + card.phrase + " »"));
   return c;
+}
+
+// ---------- Pote du jour ----------
+function featured() {
+  if (!CARDS.length) return null;
+  const sorted = [...CARDS].sort((a, b) => a.id.localeCompare(b.id));
+  let h = 7; for (const ch of today()) h = (h * 131 + ch.charCodeAt(0)) >>> 0;
+  return sorted[h % sorted.length];
+}
+function renderFeatured() {
+  const box = $("#featured"); box.replaceChildren();
+  const f = featured(); if (!f) return;
+  const wrap = el("div", "featured"); wrap.style.setProperty("--c", `var(--${f.rarete})`);
+  wrap.appendChild(avatarImg(f));
+  const t = el("div"); t.appendChild(el("small", null, "⭐ Pote du jour · chances boostées"));
+  const b = el("b", null, f.pseudo); b.style.color = `var(--${f.rarete})`; t.appendChild(b);
+  t.appendChild(el("small", null, RARITIES[RIDX[f.rarete]].nom));
+  wrap.appendChild(t); box.appendChild(wrap);
 }
 
 // ---------- Logique de tirage ----------
@@ -338,80 +469,237 @@ function pickCard(tier) {
   }
   return null;
 }
-function pullOnce(minTier) {
-  const tier = rollTier(minTier);
-  const card = pickCard(tier);
-  const shiny = Math.random() < SHINY;
-  const own = state.owned[card.id];
+function pullOnce(minTier = 0, forceTier = null) {
+  const tier = forceTier != null ? forceTier : rollTier(minTier);
+  let card = pickCard(tier);
+  const f = featured();
+  if (forceTier == null && f && f.rarete === card.rarete && Math.random() < FEATURED_CHANCE) card = f;
+  state.shinyPity++;
+  const shiny = Math.random() < SHINY || state.shinyPity >= SHINY_PITY;
+  if (shiny) state.shinyPity = 0;
+  const o = state.owned[card.id] || (state.owned[card.id] = { copies: 0, shinyCopies: 0 });
+  const base = RARITIES[RIDX[card.rarete]].refund;
   let isNew = false, refund = 0;
-  if (own) { own.copies++; refund = RARITIES[RIDX[card.rarete]].refund; state.coins += refund; if (shiny) own.shiny = true; }
-  else { state.owned[card.id] = { copies: 1, shiny }; isNew = true; }
+  if (shiny) { if (o.shinyCopies > 0) refund = base * 3; else isNew = true; o.shinyCopies++; }
+  else { if (o.copies > 0) refund = base; else isNew = true; o.copies++; }
+  state.coins += refund;
   state.pulls++;
-  return { card, shiny, isNew, refund, tier };
+  state.history.unshift({ id: card.id, s: shiny ? 1 : 0 });
+  if (state.history.length > 30) state.history.length = 30;
+  return { card, shiny, isNew, refund, tier: RIDX[card.rarete] };
 }
 function doPull(n) {
-  const cost = n === 10 ? COST10 : COST1;
   if (!CARDS.length) return toast("Aucune carte : personne ne s'est encore inscrit !");
-  if (state.coins < cost) return toast("Pas assez de pièces 🪙");
-  state.coins -= cost;
+  const freeKey = n === 10 ? "free10" : "free1";
+  if (state[freeKey] > 0) state[freeKey]--;
+  else {
+    const cost = n === 10 ? COST10 : COST1;
+    if (state.coins < cost) return toast("Pas assez de pièces 🪙");
+    state.coins -= cost;
+  }
   const results = [];
   for (let i = 0; i < n; i++) {
     const needRare = n === 10 && i === 9 && results.every(r => r.tier === 0);
     results.push(pullOnce(needRare ? 1 : 0));
   }
-  save(); refresh(); showReveal(results);
+  if (n === 10) state.bestTen = Math.max(state.bestTen, results.filter(r => r.tier >= 3).length);
+  afterAction(); showReveal(results);
+}
+function useTicket() {
+  if (!CARDS.length) return toast("Aucune carte pour l'instant !");
+  if (state.tickets <= 0) return toast("Tu n'as pas de ticket 🎟️");
+  state.tickets--;
+  const r = pullOnce(0, 4);
+  afterAction(); showReveal([r]);
 }
 
 // ---------- Animation ----------
+function confetti(colors) {
+  for (let i = 0; i < 70; i++) {
+    const c = el("div", "confetti");
+    c.style.left = Math.random() * 100 + "vw";
+    c.style.background = colors[i % colors.length];
+    c.style.animationDuration = 1.8 + Math.random() * 1.6 + "s";
+    c.style.animationDelay = Math.random() * .4 + "s";
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 4200);
+  }
+}
 function showReveal(results) {
   const box = $("#reveal"); box.replaceChildren();
   const hints = ["#e8263a55", "#4da3ff88", "#b46bffaa", "#ffc23dcc", "#ff5fa2ee"];
   for (const r of results) {
     const f = el("div", "flip " + r.card.rarete);
-    f.style.setProperty("--hint", hints[RIDX[r.card.rarete]]);
+    f.style.setProperty("--hint", r.shiny ? "#bff3ff" : hints[RIDX[r.card.rarete]]);
     const inner = el("div", "inner");
-    const back = el("div", "face back", "?");
+    const back = el("div", "face back", r.shiny ? "✨" : "?");
     const front = el("div", "face front");
-    front.appendChild(cardEl(r.card, { shiny: r.shiny, isNew: r.isNew }));
+    front.appendChild(cardEl(r.card, { shiny: r.shiny, isNew: r.isNew, tagShiny: r.shiny }));
     inner.append(back, front); f.appendChild(inner);
-    f.onclick = () => f.classList.add("open");
+    f.onclick = () => {
+      if (f.classList.contains("open")) return;
+      f.classList.add("open");
+      if (r.shiny) confetti(["#9ee8ff", "#ff9ff0", "#ffffff", "#fff3a0"]);
+      else if (r.tier === 4) confetti(["#ff5fa2", "#ffc23d", "#4da3ff", "#b46bff"]);
+      else if (r.tier === 3) confetti(["#ffc23d", "#fff3b0", "#ff8a3d"]);
+    };
     box.appendChild(f);
   }
   $("#overlay").classList.remove("hidden");
-  const best = Math.max(...results.map(r => RIDX[r.card.rarete]));
+  const best = Math.max(...results.map(r => r.tier));
+  const anyShiny = results.some(r => r.shiny);
   const refund = results.reduce((s, r) => s + r.refund, 0);
-  $(".hint-txt").textContent = (best >= 3 ? "✨ Quelque chose de rare brille... " : "Clique sur les cartes pour les retourner") + (refund ? ` · Doublons : +${refund} 🪙` : "");
+  $(".hint-txt").textContent = (anyShiny ? "✨ Quelque chose scintille étrangement... " : best >= 3 ? "🔥 Quelque chose de rare brille... " : "Clique sur les cartes pour les retourner") + (refund ? ` · Doublons : +${refund} 🪙` : "");
 }
-$("#revealAll").onclick = () => document.querySelectorAll(".flip").forEach((f, i) => setTimeout(() => f.classList.add("open"), i * 120));
+$("#revealAll").onclick = () => document.querySelectorAll(".flip:not(.open)").forEach((f, i) => setTimeout(() => f.click(), i * 120));
 $("#closeOv").onclick = () => { $("#overlay").classList.add("hidden"); renderCollection(); };
+
+// ---------- Roue de la chance ----------
+const WHEEL = [
+  { label: "100 🪙", w: 25, col: "#5a1520", give: s => (s.coins += 100, "+100 pièces") },
+  { label: "Tirage ×1", w: 14, col: "#2a3d7a", give: s => (s.free1++, "un tirage ×1 gratuit") },
+  { label: "200 🪙", w: 20, col: "#7a1c2a", give: s => (s.coins += 200, "+200 pièces") },
+  { label: "✦ Fragment", w: 4, col: "#a0306f", give: s => (s.fragments++, "un fragment Mythique ✦ !") },
+  { label: "300 🪙", w: 16, col: "#5a1520", give: s => (s.coins += 300, "+300 pièces") },
+  { label: "Tirage ×10", w: 3, col: "#7a5a10", give: s => (s.free10++, "un tirage ×10 gratuit !") },
+  { label: "500 🪙", w: 12, col: "#7a1c2a", give: s => (s.coins += 500, "+500 pièces") },
+  { label: "1000 🪙", w: 8, col: "#4a2a7a", give: s => (s.coins += 1000, "+1000 pièces !") },
+];
+let wheelRot = 0, spinning = false;
+function buildWheel() {
+  const w = $("#wheel"); const seg = 360 / WHEEL.length;
+  w.style.background = "conic-gradient(" + WHEEL.map((s, i) => `${s.col} ${i * seg}deg ${(i + 1) * seg}deg`).join(",") + ")";
+  WHEEL.forEach((s, i) => {
+    const sp = el("span", null, s.label);
+    sp.style.transform = `rotate(${i * seg + seg / 2 - 90}deg) translate(24px,-50%)`;
+    sp.style.transformOrigin = "0 0";
+    w.appendChild(sp);
+  });
+}
+function spin() {
+  if (spinning) return;
+  if (state.wheelDate === today()) return toast("Reviens demain pour un nouveau tour 🎡");
+  spinning = true; state.wheelDate = today(); save(); refresh();
+  const total = WHEEL.reduce((s, x) => s + x.w, 0);
+  let r = Math.random() * total, idx = 0;
+  for (let i = 0; i < WHEEL.length; i++) { r -= WHEEL[i].w; if (r < 0) { idx = i; break; } }
+  const seg = 360 / WHEEL.length;
+  const target = 360 - (idx * seg + seg / 2) + (Math.random() - .5) * seg * .6;
+  wheelRot += 360 * 6 + ((target - (wheelRot % 360)) + 360) % 360;
+  $("#wheel").style.transform = `rotate(${wheelRot}deg)`;
+  setTimeout(() => {
+    const msg = WHEEL[idx].give(state);
+    spinning = false; afterAction();
+    toast("🎡 Tu gagnes " + msg);
+    if (idx === 3) confetti(["#ff5fa2", "#ffc23d", "#4da3ff"]);
+  }, 4700);
+}
+
+// ---------- Succès ----------
+const countBy = (pred) => CARDS.filter(pred).length;
+const ACH = [
+  { id: "first", nom: "Premier pas", desc: "Fais ton premier tirage", val: () => state.pulls, goal: () => 1, rew: { coins: 300 } },
+  { id: "p100", nom: "Accro au gacha", desc: "Fais 100 tirages", val: () => state.pulls, goal: () => 100, rew: { frags: 2 } },
+  { id: "p500", nom: "Baleine", desc: "Fais 500 tirages", val: () => state.pulls, goal: () => 500, rew: { frags: 5 } },
+  { id: "col25", nom: "Collectionneur", desc: "Obtiens 25 % des cartes", val: () => pct(), goal: () => 25, rew: { coins: 1000 } },
+  { id: "col50", nom: "À mi-chemin", desc: "Obtiens 50 % des cartes", val: () => pct(), goal: () => 50, rew: { frags: 3 } },
+  { id: "col100", nom: "Complétionniste", desc: "Obtiens toutes les cartes", val: () => pct(), goal: () => 100, rew: { frags: 10, coins: 5000 } },
+  { id: "leg3", nom: "Légendes vivantes", desc: "Obtiens 3 cartes Légendaires ou Mythiques différentes", val: () => countBy(c => RIDX[c.rarete] >= 3 && own(c.id).copies > 0), goal: () => Math.max(1, Math.min(3, countBy(c => RIDX[c.rarete] >= 3))), rew: { coins: 1500 } },
+  { id: "lucky", nom: "Main en or", desc: "Obtiens 2 Légendaires+ dans un même ×10", val: () => state.bestTen, goal: () => 2, rew: { frags: 3 } },
+  { id: "myth", nom: "Mythe vivant", desc: "Obtiens une carte Mythique", val: () => countBy(c => c.rarete === "mythique" && (own(c.id).copies + own(c.id).shinyCopies) > 0), goal: () => 1, rew: { coins: 2000 } },
+  { id: "shiny1", nom: "Ça brille !", desc: "Obtiens ton premier shiny", val: () => shinyCount(), goal: () => 1, rew: { frags: 3 } },
+  { id: "shiny5", nom: "Chasseur de shiny", desc: "Obtiens 5 shiny différents", val: () => shinyCount(), goal: () => Math.max(1, Math.min(5, CARDS.length)), rew: { frags: 5 } },
+  { id: "star5", nom: "Fan absolu", desc: "Monte une carte à ★5 (20 copies)", val: () => Math.max(0, ...CARDS.map(c => own(c.id).copies)), goal: () => 20, rew: { frags: 5 } },
+  { id: "daily7", nom: "Fidèle au poste", desc: "Récupère la récompense du jour 7 fois", val: () => state.dailyCount, goal: () => 7, rew: { frags: 3 } },
+  { id: "quiz50", nom: "Détective", desc: "50 bonnes réponses à « Qui est-ce ? »", val: () => state.quizTotal, goal: () => 50, rew: { frags: 3 } },
+];
+function pct() { return CARDS.length ? Math.floor(countBy(c => own(c.id).copies > 0) / CARDS.length * 100) : 0; }
+function shinyCount() { return countBy(c => own(c.id).shinyCopies > 0); }
+function rewText(r) { return [r.frags && `✦ ${r.frags} fragment${r.frags > 1 ? "s" : ""}`, r.tickets && `🎟️ ${r.tickets} ticket${r.tickets > 1 ? "s" : ""} Mythique`, r.coins && `🪙 ${r.coins}`].filter(Boolean).join(" + "); }
+const achDone = a => CARDS.length > 0 && a.val() >= a.goal();
+function checkAch() {
+  for (const a of ACH) if (achDone(a) && !state.notified[a.id]) { state.notified[a.id] = true; toast("🏆 Succès débloqué : " + a.nom); }
+  const n = ACH.filter(a => achDone(a) && !state.claimed[a.id]).length;
+  $("#achBadge").replaceChildren(); if (n) $("#achBadge").appendChild(el("span", "badge", n));
+}
+function renderAch() {
+  const box = $("#achList"); box.replaceChildren();
+  for (const a of ACH) {
+    const done = achDone(a), claimed = !!state.claimed[a.id];
+    const d = el("div", "ach" + (claimed ? " claimed" : done ? " done" : ""));
+    d.appendChild(el("h4", null, (claimed ? "✅ " : done ? "🏆 " : "🔒 ") + a.nom));
+    d.appendChild(el("p", null, a.desc));
+    d.appendChild(el("div", "rew", "Récompense : " + rewText(a.rew)));
+    const g = a.goal(), v = Math.min(a.val(), g);
+    const bar = el("div", "bar"); const i = el("i"); i.style.width = (v / g * 100) + "%"; bar.appendChild(i); d.appendChild(bar);
+    const row = el("div", "row"); row.appendChild(el("span", null, `${v} / ${g}`));
+    if (done && !claimed) {
+      const b = el("button", "small-btn", "Récupérer");
+      b.onclick = () => {
+        state.claimed[a.id] = true;
+        state.coins += a.rew.coins || 0; state.tickets += a.rew.tickets || 0; state.fragments += a.rew.frags || 0;
+        if (a.rew.frags) confetti(["#ff5fa2", "#ffc23d", "#4da3ff", "#b46bff"]);
+        toast("Récompense obtenue : " + rewText(a.rew));
+        afterAction(); renderAch();
+      };
+      row.appendChild(b);
+    }
+    d.appendChild(row); box.appendChild(d);
+  }
+}
 
 // ---------- UI ----------
 function toast(msg) {
   const t = $("#toast"); t.textContent = msg; t.classList.remove("hidden"); t.style.opacity = 1;
-  clearTimeout(toast.t); toast.t = setTimeout(() => { t.style.opacity = 0; setTimeout(() => t.classList.add("hidden"), 300); }, 2200);
+  clearTimeout(toast.t); toast.t = setTimeout(() => { t.style.opacity = 0; setTimeout(() => t.classList.add("hidden"), 300); }, 2400);
 }
+function afterAction() { save(); refresh(); checkAch(); }
 function refresh() {
   $("#coins").textContent = state.coins.toLocaleString("fr-FR");
-  $("#pull1").disabled = state.coins < COST1;
-  $("#pull10").disabled = state.coins < COST10;
+  $("#cost1").textContent = state.free1 > 0 ? `🎁 Gratuit (${state.free1})` : "🪙 100";
+  $("#cost10").textContent = state.free10 > 0 ? `🎁 Gratuit (${state.free10})` : "🪙 900 · 1 Rare+ garanti";
+  $("#pull1").disabled = state.coins < COST1 && state.free1 <= 0;
+  $("#pull10").disabled = state.coins < COST10 && state.free10 <= 0;
   $("#pE").textContent = Math.max(1, PITY_EPIC - state.pityE);
   $("#pL").textContent = Math.max(1, PITY_LEG - state.pityL);
+  $("#pS").textContent = Math.max(1, SHINY_PITY - state.shinyPity);
   $("#bE").style.width = (state.pityE / PITY_EPIC * 100) + "%";
   $("#bL").style.width = (state.pityL / PITY_LEG * 100) + "%";
+  $("#bS").style.width = (state.shinyPity / SHINY_PITY * 100) + "%";
   const d = $("#daily"); const done = state.lastDaily === today();
   d.disabled = done; d.textContent = done ? "Reviens demain ⏳" : "Récupérer +500";
-  const owned = CARDS.filter(c => state.owned[c.id]).length;
-  $("#stats").textContent = `${state.pulls} tirages · ${owned}/${CARDS.length} potes trouvés · ${CARDS.filter(c => state.owned[c.id]?.shiny).length} shiny`;
+  const sp = $("#spin"); const spun = state.wheelDate === today();
+  sp.disabled = spun || spinning; sp.textContent = spun ? "Reviens demain ⏳" : "Tourner";
+  $("#tickets").textContent = state.tickets;
+  $("#useTicket").disabled = state.tickets <= 0;
+  $("#frags").textContent = state.fragments;
+  $("#fragBar").style.width = Math.min(100, state.fragments / FRAG_PER_TICKET * 100) + "%";
+  $("#fuse").disabled = state.fragments < FRAG_PER_TICKET;
+  const owned = countBy(c => own(c.id).copies > 0);
+  $("#stats").textContent = `${state.pulls} tirages · ${owned}/${CARDS.length} potes trouvés · ${shinyCount()}/${CARDS.length} shiny`;
+  renderHistory();
+}
+function renderHistory() {
+  const h = $("#hist"); h.replaceChildren();
+  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+  for (const e of state.history) {
+    const c = byId[e.id]; if (!c) continue;
+    const m = el("div", "mini " + c.rarete + (e.s ? " shiny" : "")); m.title = c.pseudo + (e.s ? " ✨" : "");
+    m.appendChild(avatarImg(c)); h.appendChild(m);
+  }
+  if (!h.children.length) h.appendChild(el("p", null, "Aucun tirage pour l'instant."));
 }
 function renderRates() {
   const box = $("#rates"); box.replaceChildren();
   for (const r of RARITIES) {
     const row = el("div"); const n = el("span", null, r.nom); n.style.color = `var(--${r.id})`; n.style.fontWeight = 700;
-    const count = CARDS.filter(c => c.rarete === r.id).length;
+    const count = countBy(c => c.rarete === r.id);
     row.append(n, el("span", null, `${r.taux} % · ${count} carte${count > 1 ? "s" : ""}`)); box.appendChild(row);
   }
+  const row = el("div"); const n = el("span", null, "✨ Shiny"); n.style.fontWeight = 700; n.style.color = "#bff3ff";
+  row.append(n, el("span", null, "1 % par carte")); box.appendChild(row);
 }
-let filter = "all";
+let filter = "all", shinyMode = false;
 function renderFilters() {
   const box = $("#filters"); box.replaceChildren();
   for (const [id, nom] of [["all", "Toutes"], ...RARITIES.map(r => [r.id, r.nom]), ["owned", "Obtenues"]]) {
@@ -420,16 +708,21 @@ function renderFilters() {
   }
 }
 function renderCollection() {
-  const owned = CARDS.filter(c => state.owned[c.id]).length;
-  const pct = CARDS.length ? Math.round(owned / CARDS.length * 100) : 0;
-  $("#colTxt").textContent = `Collection : ${owned}/${CARDS.length} (${pct} %)`;
-  $("#colBar").style.width = pct + "%";
+  const has = c => shinyMode ? own(c.id).shinyCopies > 0 : own(c.id).copies > 0;
+  const owned = countBy(has);
+  const p = CARDS.length ? Math.round(owned / CARDS.length * 100) : 0;
+  $("#colTxt").textContent = `${shinyMode ? "Collection shiny" : "Collection"} : ${owned}/${CARDS.length} (${p} %)`;
+  $("#colBar").style.width = p + "%";
+  $("#colBar").style.background = shinyMode ? "linear-gradient(90deg,#9ee8ff,#ff9ff0)" : "";
+  $("#modeN").classList.toggle("on", !shinyMode); $("#modeS").classList.toggle("on", shinyMode);
   const g = $("#grid"); g.replaceChildren();
-  const list = CARDS.filter(c => filter === "all" || (filter === "owned" ? state.owned[c.id] : c.rarete === filter))
+  const list = CARDS.filter(c => filter === "all" || (filter === "owned" ? has(c) : c.rarete === filter))
     .sort((a, b) => RIDX[b.rarete] - RIDX[a.rarete] || a.pseudo.localeCompare(b.pseudo));
-  for (const c of list) g.appendChild(cardEl(c, { locked: !state.owned[c.id] }));
+  for (const c of list) g.appendChild(cardEl(c, { locked: !has(c), shiny: shinyMode }));
   if (!list.length) g.appendChild(el("p", null, "Rien ici pour l'instant."));
 }
+$("#modeN").onclick = () => { shinyMode = false; renderCollection(); };
+$("#modeS").onclick = () => { shinyMode = true; renderCollection(); };
 
 // ---------- Quiz ----------
 function renderQuiz() {
@@ -441,9 +734,7 @@ function renderQuiz() {
   q.appendChild(el("p", null, left > 0 ? `+${QUIZ_REWARD} 🪙 par bonne réponse · ${left} récompense(s) restante(s) aujourd'hui` : "Plus de récompenses aujourd'hui, mais tu peux continuer pour le fun !"));
   const pool = [...CARDS].sort(() => Math.random() - .5).slice(0, 4);
   const answer = pool[Math.floor(Math.random() * 4)];
-  const pic = el("div", "pic"); const img = el("img"); img.src = answer.avatar || fallbackAvatar(answer.pseudo);
-  img.onerror = () => { img.onerror = null; img.src = fallbackAvatar(answer.pseudo); };
-  pic.appendChild(img); q.appendChild(pic);
+  const pic = el("div", "pic"); pic.appendChild(avatarImg(answer)); q.appendChild(pic);
   const ch = el("div", "choices");
   for (const c of pool) {
     const b = el("button", null, c.pseudo);
@@ -451,7 +742,7 @@ function renderQuiz() {
       ch.querySelectorAll("button").forEach(x => x.disabled = true);
       pic.classList.add("shown");
       if (c === answer) {
-        b.classList.add("ok");
+        b.classList.add("ok"); state.quizTotal++;
         if (state.quizCount < QUIZ_MAX) { state.quizCount++; state.coins += QUIZ_REWARD; toast(`Bien joué ! +${QUIZ_REWARD} 🪙`); }
         else toast("Bien joué !");
       } else {
@@ -459,8 +750,8 @@ function renderQuiz() {
         [...ch.children][pool.indexOf(answer)].classList.add("ok");
         toast(`Raté, c'était ${answer.pseudo} !`);
       }
-      save(); refresh();
-      setTimeout(renderQuiz, 1600);
+      afterAction();
+      setTimeout(() => { if (!$("#tab-quiz").classList.contains("hidden")) renderQuiz(); }, 1600);
     };
     ch.appendChild(b);
   }
@@ -468,28 +759,37 @@ function renderQuiz() {
 }
 
 // ---------- Navigation & boutons ----------
+const TABS = ["tirage", "collection", "succes", "quiz", "regles"];
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
   document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
-  for (const t of ["tirage", "collection", "quiz", "regles"]) $("#tab-" + t).classList.toggle("hidden", t !== b.dataset.tab);
+  for (const t of TABS) $("#tab-" + t).classList.toggle("hidden", t !== b.dataset.tab);
   if (b.dataset.tab === "collection") renderCollection();
+  if (b.dataset.tab === "succes") renderAch();
   if (b.dataset.tab === "quiz") renderQuiz();
 });
 $("#pull1").onclick = () => doPull(1);
 $("#pull10").onclick = () => doPull(10);
+$("#useTicket").onclick = useTicket;
+$("#fuse").onclick = () => {
+  if (state.fragments < FRAG_PER_TICKET) return;
+  state.fragments -= FRAG_PER_TICKET; state.tickets++;
+  confetti(["#ff5fa2", "#ffc23d", "#b46bff"]); toast("🎟️ Ticket Mythique fusionné !"); afterAction();
+};
+$("#spin").onclick = spin;
 $("#daily").onclick = () => {
   if (state.lastDaily === today()) return;
-  state.lastDaily = today(); state.coins += DAILY; save(); refresh(); toast(`+${DAILY} 🪙 Reviens demain !`);
+  state.lastDaily = today(); state.dailyCount++; state.coins += DAILY; afterAction(); toast(`+${DAILY} 🪙 Reviens demain !`);
 };
 $("#reset").onclick = () => {
-  if (!confirm("Effacer toute ta collection et tes pièces ?")) return;
-  state = defaultState(); save(); refresh(); renderCollection(); toast("Partie réinitialisée");
+  if (!confirm("Effacer toute ta collection, tes pièces et tes succès ?")) return;
+  state = defaultState(); afterAction(); renderCollection(); toast("Partie réinitialisée");
 };
 
 (async () => {
-  load();
+  load(); buildWheel();
   try { CARDS = await loadCards(); }
   catch (e) { const b = $("#errBanner"); b.textContent = "Impossible de charger les cartes : " + e.message + ". Vérifie CONFIG et les règles Firestore."; b.classList.remove("hidden"); CARDS = []; }
-  renderRates(); renderFilters(); renderCollection(); refresh();
+  renderFeatured(); renderRates(); renderFilters(); renderCollection(); refresh(); checkAch(); save();
 })();
 </script>
 </body>

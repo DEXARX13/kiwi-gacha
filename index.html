@@ -352,6 +352,13 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .build button.ld{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
 @media(max-width:560px){.build{flex-wrap:wrap}.build .bn{flex-basis:100%}}
 
+.abtns{display:flex;flex-direction:column;gap:5px}
+.abtns .small-btn{padding:7px 10px;font-size:12px;white-space:nowrap}
+.small-btn.alt{background:#5865f2}
+#inviteBar{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:70;background:var(--panel);border:2px solid var(--gold);border-radius:16px;padding:12px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;box-shadow:0 10px 40px #000;max-width:94vw;animation:pop .4s}
+@keyframes pop{from{transform:translate(-50%,-30px);opacity:0}}
+#verBar{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:69;background:#3a2a10;border:1px solid #7a5a1a;color:#ffd98a;border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:center;max-width:94vw;font-size:14px}
+
 /* ---------- Confettis ---------- */
 .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
@@ -494,7 +501,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       </div>
       <div class="box">
         <h3>🏟️ Arène</h3>
-        <p>Affronte l'équipe de tes potes (contrôlée par l'ordi) pour gagner des trophées. 5 combats classés par jour.</p>
+        <p>Affronte l'équipe de tes potes <b>jouée par l'ordinateur</b> (🤖) pour gagner des trophées, 5 combats classés par jour. Pour jouer contre eux en vrai, utilise 🤺 <b>Inviter en duel</b>.</p>
         <p id="arenaInfo" style="font-weight:700"></p>
         <div id="arenaList"></div>
       </div>
@@ -682,11 +689,14 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
     </div>
   </div>
 </div>
+<div id="inviteBar" class="hidden"></div>
+<div id="verBar" class="hidden">🔄 Une nouvelle version du jeu est disponible. <button class="small-btn" id="verReload">Recharger</button></div>
 <div class="toast hidden" id="toast"></div>
 
 <script>
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
+const APP_VERSION = "2026.10.15-1"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -2152,7 +2162,10 @@ async function renderCombatTab() {
     const minis = el("div", "hist");
     for (const t of p.equipe.t.slice(0, 3)) { const c = byId[t.id]; if (!c) continue; const m = el("div", "mini " + c.rarete + (t.s === 1 ? " shiny" : t.s === 2 ? " gold" : "")); m.appendChild(avatarImg(c)); minis.appendChild(m); }
     mid.appendChild(minis); row.appendChild(mid);
-    const b = el("button", "small-btn", "Défier"); b.onclick = () => startArena(p); row.appendChild(b);
+    const btns = el("div", "abtns");
+    const b = el("button", "small-btn", "🤖 Contre l'IA"); b.title = "Combat contre son équipe, jouée par l'ordinateur"; b.onclick = () => startArena(p);
+    const inv = el("button", "small-btn alt", "🤺 Inviter en duel"); inv.title = "Duel en direct : il joue lui-même ses cartes"; inv.onclick = () => createDuel(p);
+    btns.append(b, inv); row.appendChild(btns);
     list.appendChild(row);
   }
 }
@@ -2257,10 +2270,10 @@ async function duelPatch(code, fields, extra = "") {
 function myDuelTeam() {
   return JSON.stringify({ t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s) })), b: mySupportBonus() });
 }
-async function createDuel() {
+async function createDuel(invite = null) {
   if (!AUTH) return toast("Connecte-toi avec /connexion pour jouer en duel");
   if (needTeam()) return;
-  if (DUEL) return;
+  if (DUEL) return toast("Tu as déjà un duel en attente (annule-le d'abord)");
   let code = "";
   for (let i = 0; i < 6; i++) code += DUEL_CODE_CHARS[Math.floor(Math.random() * DUEL_CODE_CHARS.length)];
   try {
@@ -2268,12 +2281,15 @@ async function createDuel() {
       host: { stringValue: AUTH.uid }, hostName: { stringValue: AUTH.pseudo }, hostTeam: { stringValue: myDuelTeam() },
       guest: { stringValue: "" }, guestName: { stringValue: "" }, guestTeam: { stringValue: "" },
       seed: { integerValue: String(Math.floor(Math.random() * 2e9)) }, status: { stringValue: "wait" },
-      actions: { stringValue: "[]" }, maj: { stringValue: new Date().toISOString() }
+      actions: { stringValue: "[]" }, maj: { stringValue: new Date().toISOString() },
+      ver: { stringValue: APP_VERSION }, invite: { stringValue: invite ? invite.uid : "" }
     }, "&currentDocument.exists=false");
   } catch (e) { return toast("Impossible de créer le duel (" + e.message + ")"); }
-  DUEL = { code, role: "host" };
+  DUEL = { code, role: "host", inviteName: invite ? invite.pseudo : "" };
+  if (invite) { document.querySelectorAll("nav button").forEach(x => { if (x.dataset.tab === "combat") x.click(); }); toast(`🤺 Invitation envoyée à ${invite.pseudo}`); }
   renderDuelBox();
   DUEL.poll = setInterval(duelLobbyPoll, 1500);
+  $("#duelBox").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 async function duelLobbyPoll() {
   if (!DUEL || DUEL.started) return;
@@ -2295,6 +2311,10 @@ async function joinDuel(code) {
   const f = d.fields || {};
   if (fsStr(f, "host") === AUTH.uid) return toast("C'est ton propre duel 😄");
   if (fsStr(f, "guest")) return toast("Ce duel a déjà commencé");
+  if (fsStr(f, "ver") !== APP_VERSION) {
+    checkVersion(true);
+    return toast("⚠️ Vous n'avez pas la même version du jeu : rechargez la page tous les deux (Ctrl+F5)");
+  }
   try {
     d = await duelPatch(code, {
       guest: { stringValue: AUTH.uid }, guestName: { stringValue: AUTH.pseudo }, guestTeam: { stringValue: myDuelTeam() },
@@ -2401,7 +2421,7 @@ function renderDuelBox() {
   if (!CONFIG.projectId) return box.appendChild(el("p", "lb-note", "Pas disponible en mode démo."));
   if (!AUTH) return box.appendChild(el("p", "lb-note", "Connecte-toi avec /connexion sur Discord pour jouer en duel."));
   if (DUEL && !DUEL.started) {
-    box.appendChild(el("p", null, "Envoie ce code à ton adversaire :"));
+    box.appendChild(el("p", null, DUEL.inviteName ? `Invitation envoyée à ${DUEL.inviteName} ! Il la verra s'afficher sur son écran. Tu peux aussi lui donner ce code :` : "Envoie ce code à ton adversaire :"));
     const c = el("div", "duel-code", DUEL.code); box.appendChild(c);
     const row = el("div", "ov-btns");
     const cp = el("button", "small-btn", "📋 Copier");
@@ -2476,6 +2496,60 @@ function renderBuilds() {
     box.appendChild(row);
   });
 }
+
+// ---------- Invitations de duel reçues ----------
+const seenInvites = new Set();
+async function pollInvites() {
+  if (!AUTH || !CONFIG.projectId || document.visibilityState !== "visible" || B || DUEL) return;
+  try {
+    const r = await fetch(`${FS()}:runQuery`, {
+      method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer " + await getIdToken() },
+      body: JSON.stringify({ structuredQuery: { from: [{ collectionId: "duels" }], where: { fieldFilter: { field: { fieldPath: "invite" }, op: "EQUAL", value: { stringValue: AUTH.uid } } }, limit: 10 } })
+    });
+    if (!r.ok) return;
+    const rows = await r.json();
+    const fresh = rows.filter(x => x.document).map(x => x.document).filter(d => {
+      const f = d.fields || {};
+      return fsStr(f, "status") === "wait" && !fsStr(f, "guest") && Date.now() - Date.parse(fsStr(f, "maj")) < 10 * 60000;
+    });
+    const d = fresh.find(d => !seenInvites.has(d.name.split("/").pop()));
+    if (d) showInvite(d);
+  } catch (e) { console.warn(e); }
+}
+function showInvite(d) {
+  const f = d.fields || {}, code = d.name.split("/").pop();
+  seenInvites.add(code);
+  const bar = $("#inviteBar"); bar.replaceChildren();
+  bar.appendChild(el("b", null, `🤺 ${fsStr(f, "hostName")} te défie en duel en direct !`));
+  const ok = el("button", "small-btn", "Accepter");
+  ok.onclick = () => { bar.classList.add("hidden"); joinDuel(code); };
+  const no = el("button", "small-btn alt", "Plus tard");
+  no.onclick = () => bar.classList.add("hidden");
+  bar.append(ok, no); bar.classList.remove("hidden");
+  sfx("shiny");
+  setTimeout(() => bar.classList.add("hidden"), 60000);
+}
+setInterval(pollInvites, 6000);
+
+// ---------- Détection d'une nouvelle version du site ----------
+async function checkVersion(force = false) {
+  if (location.protocol === "file:") return;
+  try {
+    const r = await fetch(location.pathname + "?v=" + Date.now(), { cache: "no-store" });
+    const m = (await r.text()).match(/APP_VERSION = "([^"]+)"/);
+    if (m && m[1] !== APP_VERSION) $("#verBar").classList.remove("hidden");
+    else if (force) toast("Tu as la dernière version : c'est ton adversaire qui doit recharger");
+  } catch {}
+}
+$("#verReload").onclick = () => { location.href = location.pathname + "?v=" + Date.now(); };
+setInterval(checkVersion, 5 * 60000);
+setTimeout(checkVersion, 3000);
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible") return;
+  if (DUEL && !DUEL.started) duelLobbyPoll();
+  if (B && B.duel) duelBattlePoll();
+  pollInvites();
+});
 
 // ---------- Navigation & boutons ----------
 const TABS = ["tirage", "collection", "succes", "combat", "classement", "quiz", "regles"];

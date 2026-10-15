@@ -371,6 +371,10 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .spec-opt.on b::after{content:" ✅"}
 @media(max-width:560px){.spec-row{grid-template-columns:1fr}}
 
+.tag.gd{left:auto;right:6px;top:6px;background:linear-gradient(135deg,#ffd76a,#ff9f1c);color:#2a1a00;font-size:12px;padding:1px 5px;box-shadow:0 0 10px #ffc23d;animation:gdpulse 1.6s ease-in-out infinite}
+@keyframes gdpulse{50%{transform:scale(1.15)}}
+.badge.gdb{background:linear-gradient(135deg,#ffd76a,#ff9f1c)}
+
 /* ---------- Confettis ---------- */
 .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
@@ -387,7 +391,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 </header>
 <nav>
   <button data-tab="tirage" class="on">🎰 Tirage</button>
-  <button data-tab="collection">📚 Collection</button>
+  <button data-tab="collection">📚 Collection<span id="goldBadge"></span></button>
   <button data-tab="succes">🏆 Succès<span id="achBadge"></span></button>
   <button data-tab="combat">⚔️ Combat</button>
   <button data-tab="classement">🏅 Classement</button>
@@ -607,6 +611,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li><b>/maj</b> : met à jour ta pdp, ton pseudo ou ta phrase.</li>
         <li><b>/connexion</b> : reçois ton lien perso pour sauvegarder ta partie en ligne.</li>
         <li><b>/collection</b> : montre ta collection (ou celle d'un pote) directement dans Discord.</li>
+        <li><b>/personnaliser</b> (admin) : change la classe et/ou le type de soutien de la carte d'un pote. Si la classe change, les joueurs qui avaient spécialisé cette carte pourront rechoisir gratuitement.</li>
         <li><b>/carte</b>, <b>/liste</b>.</li>
         <li>Admin : <b>/desinscription</b> et <b>/retirer</b> pour enlever une carte (la rareté est mémorisée : en revenant, on récupère la même), <b>/ajouter</b> pour inscrire quelqu'un à sa place, <b>/ajouter-tous</b> pour inscrire tout le serveur (ou un rôle), <b>/rarete</b> pour changer sa rareté.</li>
       </ul>
@@ -717,7 +722,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <script>
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
-const APP_VERSION = "2026.10.15-3"; // à changer à chaque mise en ligne : les duels exigent la même version
+const APP_VERSION = "2026.10.15-5"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -815,7 +820,7 @@ async function loadCards() {
     for (const d of data.documents || []) {
       const f = d.fields || {}; const s = k => (f[k] && f[k].stringValue) || "";
       const rarete = RIDX[s("rarete")] != null ? s("rarete") : "commun";
-      out.push({ id: d.name.split("/").pop(), pseudo: s("pseudo") || "?", avatar: s("avatar"), rarete, phrase: s("phrase") });
+      out.push({ id: d.name.split("/").pop(), pseudo: s("pseudo") || "?", avatar: s("avatar"), rarete, phrase: s("phrase"), inscrit: s("inscrit_le"), classe: s("classe"), soutien: s("soutien") });
     }
     token = data.nextPageToken || "";
   } while (token);
@@ -832,6 +837,7 @@ function cardEl(card, opts = {}) {
   else if (opts.gold) c.classList.add("gold");
   else if (opts.shiny) c.classList.add("shiny");
   if (opts.isNew) c.appendChild(el("span", "tag", "NEW"));
+  if (!opts.locked && !opts.gold && !opts.shiny && !opts.noDetail && canGold(card.id)) { const g = el("span", "tag gd", "🏅"); g.title = "Fusion Dorée disponible !"; c.appendChild(g); }
   if (opts.tagShiny) c.appendChild(el("span", "tag sh", "SHINY"));
   const art = el("div", "art"); art.appendChild(avatarImg(card)); c.appendChild(art);
   c.appendChild(el("div", "name", opts.locked ? "???" : card.pseudo));
@@ -904,7 +910,7 @@ function renderSpecBox(card) {
     box.appendChild(el("div", "lb-note", `⭐ Spécialisation débloquée à 3★ (${Math.max(o.copies || 0, o.shinyCopies || 0)}/${SPEC_NEED} copies)`));
     return;
   }
-  const cur = o.spec;
+  const cur = o.spec && SPECS[o.spec] && SPECS[o.spec].cls === cls ? o.spec : null; // si la classe a changé, nouveau choix gratuit
   box.appendChild(el("div", "lb-note", cur ? `⭐ Spécialisation : changer coûte ${SPEC_RESPEC} 🪙` : "⭐ Choisis une spécialisation (gratuit la première fois) :"));
   const row = el("div", "spec-row");
   for (const k of specsOf(cls)) {
@@ -949,12 +955,22 @@ $("#dClose").onclick = () => $("#detail").classList.add("hidden");
 $("#detail").addEventListener("click", e => { if (e.target.id === "detail") $("#detail").classList.add("hidden"); });
 
 // ---------- Pote du jour ----------
+// Cartes déjà inscrites avant une date : le pote du jour / la tour de la semaine ne changent pas
+// quand quelqu'un s'inscrit en cours de route.
+function cardsBefore(since) {
+  const pool = CARDS.filter(c => !c.inscrit || Date.parse(c.inscrit) < since);
+  return pool.length ? pool : CARDS;
+}
+function startOfToday() { const d = new Date(); d.setHours(0, 0, 0, 0); return d.getTime(); }
+function startOfWeek() { return new Date(2026, 0, 5).getTime() + weekId() * 7 * 864e5; }
 function featured() {
   if (!CARDS.length) return null;
-  const sorted = [...CARDS].sort((a, b) => a.id.localeCompare(b.id));
-  let h = 7; for (const ch of today()) h = (h * 131 + ch.charCodeAt(0)) >>> 0;
-  return sorted[h % sorted.length];
+  // tirage "au plus haut score" : stable même si des cartes sont ajoutées ou retirées
+  let best = null, bestH = -1;
+  for (const c of cardsBefore(startOfToday())) { const h = hashStr(today() + "|" + c.id); if (h > bestH) { bestH = h; best = c; } }
+  return best;
 }
+function timeToMidnight() { const ms = startOfToday() + 864e5 - Date.now(); const h = Math.floor(ms / 36e5), m = Math.floor(ms % 36e5 / 6e4); return h ? `${h} h ${String(m).padStart(2, "0")}` : `${m} min`; }
 function renderFeatured() {
   const box = $("#featured"); box.replaceChildren();
   const f = featured(); if (!f) return;
@@ -1152,7 +1168,10 @@ function goldCount() { return countBy(c => !!own(c.id).gold); }
 function shinyCount() { return countBy(c => own(c.id).shinyCopies > 0); }
 function rewText(r) { return [r.frags && `✦ ${r.frags} fragment${r.frags > 1 ? "s" : ""}`, r.tickets && `🎟️ ${r.tickets} ticket${r.tickets > 1 ? "s" : ""} Mythique`, r.coins && `🪙 ${r.coins}`].filter(Boolean).join(" + "); }
 const achDone = a => CARDS.length > 0 && a.val() >= a.goal();
+function canGold(id) { const o = own(id); return !o.gold && (o.copies || 0) >= GOLD_NEED; }
 function checkAch() {
+  const ng = CARDS.filter(c => canGold(c.id)).length;
+  const gb = $("#goldBadge"); gb.replaceChildren(); if (ng) { const x = el("span", "badge gdb", "🏅" + ng); x.title = `${ng} carte(s) peuvent devenir Dorées`; gb.appendChild(x); }
   for (const a of ACH) if (achDone(a) && !state.notified[a.id]) { state.notified[a.id] = true; toast("🏆 Succès débloqué : " + a.nom); }
   const n = ACH.filter(a => achDone(a) && !state.claimed[a.id]).length;
   $("#achBadge").replaceChildren(); if (n) $("#achBadge").appendChild(el("span", "badge", n));
@@ -1677,7 +1696,10 @@ const SPECS = {
 const SPEC_NEED = 5, SPEC_RESPEC = 300;
 function specsOf(cls) { return Object.keys(SPECS).filter(k => SPECS[k].cls === cls); }
 function specUnlocked(id) { const o = own(id); return !!o.gold || (o.copies || 0) >= SPEC_NEED || (o.shinyCopies || 0) >= SPEC_NEED; }
-function mySpec(id) { const sp = own(id).spec; return specUnlocked(id) && sp && SPECS[sp] ? sp : null; }
+function mySpec(id) {
+  const sp = own(id).spec, card = CARDS.find(c => c.id === id);
+  return specUnlocked(id) && sp && SPECS[sp] && card && SPECS[sp].cls === cardClass(card) ? sp : null;
+}
 function roleLabel(card, spec) { const cl = CLASSES[cardClass(card)]; return spec ? `${SPECS[spec].ico} ${SPECS[spec].nom}` : `${cl.ico} ${cl.nom}`; }
 function skillOf(u) { return (u.spec && SPECS[u.spec] && SPECS[u.spec].skill) || CLASSES[u.cls].skill; }
 function unitIco(u) { return u.spec ? SPECS[u.spec].ico : CLASSES[u.cls].ico; }
@@ -1696,7 +1718,7 @@ const SUPPORTS = {
 };
 const SUPPORT_IDS = Object.keys(SUPPORTS);
 const SUPPORT_COPIES_MAX = 20;
-function supportType(card) { return SUPPORT_IDS[hashStr(card.id + ":soutien") % SUPPORT_IDS.length]; }
+function supportType(card) { return SUPPORTS[card.soutien] ? card.soutien : SUPPORT_IDS[hashStr(card.id + ":soutien") % SUPPORT_IDS.length]; }
 function supportCopies(id) { const o = own(id); return Math.min(SUPPORT_COPIES_MAX, (o.copies || 0) + (o.shinyCopies || 0)); }
 function supportValue(card, copies) { const v = SUPPORTS[supportType(card)].calc(RIDX[card.rarete], Math.min(SUPPORT_COPIES_MAX, copies)); return Math.round(v * 10) / 10; }
 function supportLabel(card, copies) { const t = SUPPORTS[supportType(card)]; return `${t.ico} ${t.nom} +${supportValue(card, copies)}${t.unit}`; }
@@ -1709,11 +1731,12 @@ function sumSupports(list) { // list : [{card, copies}]
 function bonusText(b) { return SUPPORT_IDS.filter(k => b[k] > 0).map(k => `${SUPPORTS[k].ico} +${Math.round(b[k] * 10) / 10}${SUPPORTS[k].unit}`).join(" · ") || "Aucun bonus"; }
 
 function hashStr(s) { let h = 2166136261; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h; }
-function cardClass(card) { return CLASS_IDS[hashStr(card.id + ":classe") % CLASS_IDS.length]; }
+// La classe est tirée au hasard (fixe) à partir de l'ID Discord, sauf si un admin l'a choisie avec /personnaliser
+function cardClass(card) { return CLASSES[card.classe] ? card.classe : CLASS_IDS[hashStr(card.id + ":classe") % CLASS_IDS.length]; }
 function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 
 function makeUnit(card, s = 0, st = 1, side = "ally", mult = 1, extra = {}) {
-  const t = RIDX[card.rarete], cls = cardClass(card), c = CLASSES[cls];
+  const t = RIDX[card.rarete], cls = CLASSES[extra.cls] ? extra.cls : cardClass(card), c = CLASSES[cls];
   const m = (1 + .08 * (Math.max(1, st) - 1)) * (s === 1 ? 1.1 : s === 2 ? 1.2 : 1) * mult;
   const bo = extra.bonus || {};
   const hp = Math.round(BASE_HP[t] * c.hp * m * (extra.hpMult || 1) * (1 + (bo.hp || 0) / 100));
@@ -2178,16 +2201,16 @@ function parseEquipe(f) {
 }
 function myEquipeJSON() {
   return JSON.stringify({
-    t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s), sp: mySpec(t.id) || "" })),
-    sup: validSupports().map(id => ({ id, c: supportCopies(id) }))
+    t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s), sp: mySpec(t.id) || "", cl: cardClass(CARDS.find(c => c.id === t.id)) })),
+    sup: validSupports().map(id => ({ id, c: supportCopies(id), ty: supportType(CARDS.find(c => c.id === id)) }))
   });
 }
 async function startArena(p) {
   if (needTeam()) return;
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
   const eq = p.equipe || { t: [], sup: [] };
-  const eBonus = sumSupports((eq.sup || []).filter(x => byId[x.id]).slice(0, 3).map(x => ({ card: byId[x.id], copies: x.c || 1 })));
-  const foesU = (eq.t || []).filter(t => byId[t.id]).slice(0, 3).map(t => makeUnit(byId[t.id], t.s || 0, t.st || 1, "enemy", 1, { bonus: eBonus, spec: t.sp || null }));
+  const eBonus = sumSupports((eq.sup || []).filter(x => byId[x.id]).slice(0, 3).map(x => ({ card: { ...byId[x.id], soutien: x.ty || byId[x.id].soutien }, copies: x.c || 1 })));
+  const foesU = (eq.t || []).filter(t => byId[t.id]).slice(0, 3).map(t => makeUnit(byId[t.id], t.s || 0, t.st || 1, "enemy", 1, { bonus: eBonus, spec: t.sp || null, cls: t.cl || null }));
   if (!foesU.length) return toast("Ce joueur n'a pas d'équipe valide");
   const rewarded = arenaLeft() > 0;
   startBattle(teamUnits(), foesU, {
@@ -2282,7 +2305,7 @@ async function renderCombatTab() {
     bb.appendChild(el("div", null, `${boss.card.pseudo} · ${boss.maxHp} PV`));
   }
   const done = state.bossDate === today();
-  $("#bossBtn").disabled = done; $("#bossBtn").textContent = done ? `Déjà fait (${state.bossBest} dégâts)` : "Affronter";
+  $("#bossBtn").disabled = done; $("#bossBtn").textContent = done ? `Déjà fait (${state.bossBest} dégâts) · nouveau boss dans ${timeToMidnight()}` : "Affronter";
   renderBuilds();
   // Tour
   const tw = towerState();
@@ -2343,7 +2366,7 @@ function towerState() {
 }
 function towerEnemies(floor) {
   const r = rng(weekId() * 1009 + floor * 31 + 7);
-  const sorted = [...CARDS].sort((a, b) => a.id.localeCompare(b.id));
+  const sorted = [...cardsBefore(startOfWeek())].sort((a, b) => a.id.localeCompare(b.id));
   const maxTier = Math.min(4, Math.floor(floor / 5));
   const pool = sorted.filter(c => RIDX[c.rarete] <= maxTier);
   const src = pool.length ? pool : sorted;
@@ -2418,7 +2441,7 @@ async function duelPatch(code, fields, extra = "") {
   return r.json();
 }
 function myDuelTeam() {
-  return JSON.stringify({ t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s), sp: mySpec(t.id) || "" })), b: mySupportBonus() });
+  return JSON.stringify({ t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s), sp: mySpec(t.id) || "", cl: cardClass(CARDS.find(c => c.id === t.id)) })), b: mySupportBonus() });
 }
 async function createDuel(invite = null) {
   if (!AUTH) return toast("Connecte-toi avec /connexion pour jouer en duel");
@@ -2492,7 +2515,7 @@ function startDuelBattle(doc) {
   DUEL.started = true;
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
   const meHost = DUEL.role === "host";
-  const build = (spec, side) => spec.t.filter(x => byId[x.id]).slice(0, 3).map(x => makeUnit(byId[x.id], x.s || 0, x.st || 1, side, 1, { bonus: spec.b, spec: x.sp || null }));
+  const build = (spec, side) => spec.t.filter(x => byId[x.id]).slice(0, 3).map(x => makeUnit(byId[x.id], x.s || 0, x.st || 1, side, 1, { bonus: spec.b, spec: x.sp || null, cls: x.cl || null }));
   const hostU = build(parseDuelTeam(fsStr(f, "hostTeam")), meHost ? "ally" : "enemy");
   const guestU = build(parseDuelTeam(fsStr(f, "guestTeam")), meHost ? "enemy" : "ally");
   const oppName = meHost ? fsStr(f, "guestName") : fsStr(f, "hostName");

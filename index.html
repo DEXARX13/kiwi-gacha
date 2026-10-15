@@ -327,6 +327,17 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 #bResult h2{margin:0 0 10px;font-family:Bungee,sans-serif}
 @media(max-width:640px){.unit{width:31%;min-width:96px;padding:6px}.unit .uav{width:46px;height:46px}.unit.boss{width:60%}.bmid{grid-template-columns:1fr}#bLog{height:90px}}
 
+/* ---------- Tour / Duel / Guide ---------- */
+.duel-code{font-family:Bungee,sans-serif;font-size:34px;letter-spacing:.2em;text-align:center;padding:10px;background:#0006;border:2px dashed var(--gold);border-radius:14px;color:var(--gold);margin:8px 0}
+.duel-join{display:flex;gap:8px;margin-top:12px}
+.duel-join input{flex:1;min-width:0;background:#0006;border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:10px;font-family:Bungee,sans-serif;font-size:18px;letter-spacing:.15em;text-transform:uppercase}
+.help-btn{background:transparent;border:1px solid var(--line);color:var(--mute);border-radius:999px;padding:6px 12px;font-size:13px;margin-left:8px}
+.guide{max-width:640px;max-height:85vh;overflow:auto;text-align:left}
+.guide dl{margin:0}
+.guide dt{font-weight:800;margin-top:12px}
+.guide dd{margin:2px 0 0;color:var(--mute);font-size:14px;line-height:1.5}
+.statline{font-size:10.5px;color:var(--txt);text-align:center;margin-top:2px;opacity:.9}
+
 /* ---------- Confettis ---------- */
 .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
@@ -427,7 +438,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 
   <section id="tab-combat" class="hidden">
     <div class="box" style="margin-bottom:14px">
-      <h3>⚔️ Mon équipe</h3>
+      <h3>⚔️ Mon équipe <button class="help-btn" id="statsHelpBtn">📖 Guide des stats</button></h3>
       <p>3 cartes max. Chaque pote a une classe (⚔️ Guerrier, 🛡️ Tank, 🔮 Mage, 💚 Soigneur, 🗡️ Assassin). Ses stats dépendent de sa rareté, de ses étoiles et de sa version (shiny +10 %, Dorée +20 %). Cette équipe sert aussi de défense dans l'Arène.</p>
       <div class="team-row" id="teamBox"></div>
       <div class="inv"><b id="teamPower"></b><button class="small-btn" id="teamEdit">Changer l'équipe</button></div>
@@ -451,6 +462,18 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <button class="small-btn" id="bossBtn">Affronter</button>
       </div>
       <div class="box">
+        <h3>🗼 Tour infinie</h3>
+        <p>Une nouvelle tour chaque semaine. Monte étage par étage : tes PV <b>ne se remettent pas à zéro</b> entre les étages (seulement +20 %), et une carte K.O. le reste. 3 montées par jour.</p>
+        <p id="towerInfo" style="font-weight:700"></p>
+        <div class="hist" id="towerFoes"></div>
+        <button class="small-btn" id="towerBtn" style="margin-top:10px">Commencer une montée</button>
+      </div>
+      <div class="box">
+        <h3>🤺 Duel en direct</h3>
+        <p>Affronte un pote en temps réel : crée un duel, envoie-lui le code sur Discord, et chacun joue ses cartes à son tour.</p>
+        <div id="duelBox"></div>
+      </div>
+      <div class="box">
         <h3>🏟️ Arène</h3>
         <p>Affronte l'équipe de tes potes (contrôlée par l'ordi) pour gagner des trophées. 5 combats classés par jour.</p>
         <p id="arenaInfo" style="font-weight:700"></p>
@@ -465,6 +488,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <button data-k="shiny">✨ Shiny</button>
       <button data-k="dorees">🏅 Dorées</button>
       <button data-k="trophees">⚔️ Arène</button>
+      <button data-k="tour">🗼 Tour</button>
       <button data-k="tirages">🎰 Tirages</button>
     </div>
     <p class="lb-note" id="lbNote"></p>
@@ -517,7 +541,8 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li>Chaque attaque donne +1⚡. Les cartes Mythiques ont des compétences 30 % plus fortes.</li>
         <li>Classes : ⚔️ Guerrier (gros coup), 🛡️ Tank (bouclier + provocation : les ennemis doivent le viser), 🔮 Mage (attaque de zone), 💚 Soigneur (soin de groupe), 🗡️ Assassin (achève le plus faible, critique garanti).</li>
         <li><b>🔰 Soutiens</b> : 3 cartes en plus qui ne combattent pas mais donnent un bonus à l'équipe (⚔️ ATK, ❤️ PV, 🧱 DEF, 💨 vitesse, 🎯 critique, ⚡ énergie de départ ou 🌿 régénération). Le bonus grandit avec le nombre de copies de la carte (max à 20).</li>
-        <li>Modes : 🗺️ Aventure (étapes infinies, boss toutes les 5), 👹 Boss du jour, 🏟️ Arène (trophées, 5 combats classés par jour, il faut être connecté).</li>
+        <li>Modes : 🗺️ Aventure (étapes infinies, boss toutes les 5), 👹 Boss du jour, 🏟️ Arène (trophées, 5 combats classés par jour), 🗼 Tour infinie (nouvelle chaque semaine, PV conservés entre les étages, 3 montées par jour) et 🤺 Duel en direct (avec un code à partager). L'Arène et le Duel demandent d'être connecté.</li>
+        <li>Le détail de chaque stat est dans le <b>📖 Guide des stats</b> de l'onglet Combat.</li>
         <li>À partir du tour 9, la 🔥 Rage augmente les dégâts de tout le monde à chaque tour (et réduit les soins et boucliers).</li>
         <li>Bouton 🤖 Auto pour laisser l'ordi jouer, ⏩ pour accélérer.</li>
       </ul>
@@ -576,6 +601,29 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
   <div class="filters" id="pickFilters" style="justify-content:center;margin-bottom:10px;max-width:900px"></div>
   <div class="grid" id="teamGrid"></div>
   <div class="ov-btns"><button id="teamOk">Valider</button><button id="teamCancel">Annuler</button></div>
+</div>
+<div class="overlay hidden" id="statsHelp">
+  <div class="help-box guide">
+    <h3>📖 Guide des stats</h3>
+    <dl>
+      <dt>❤️ PV (points de vie)</dt><dd>Quand ils tombent à 0, la carte est K.O. et ne joue plus de ce combat.</dd>
+      <dt>⚔️ ATK (attaque)</dt><dd>La base des dégâts infligés. Une attaque normale fait environ 100 % de l'ATK, les compétences plus (Coup puissant 180 %, Coup fatal 150 %, Tempête 105 % sur tous les ennemis).</dd>
+      <dt>🧱 DEF (défense)</dt><dd>Réduit les dégâts reçus. Avec 15 DEF, tu prends environ 35 % de dégâts en moins ; avec 30 DEF, environ 50 % en moins. Plus tu en as, moins chaque point compte.</dd>
+      <dt>💨 VIT (vitesse)</dt><dd>Décide qui joue en premier : à chaque tour, les cartes jouent de la plus rapide à la plus lente (les deux équipes mélangées). Jouer avant l'ennemi permet de l'achever avant qu'il frappe.</dd>
+      <dt>⚡ Énergie</dt><dd>Sert à lancer les compétences (2 ou 3 ⚡). Tu commences à 1⚡, puis +1 par attaque et +2 quand tu te mets en défense. Maximum 5.</dd>
+      <dt>🎯 Critique</dt><dd>Un coup critique fait ×1,5 dégâts. Chance de base : 10 % (15 % pour les Assassins), plus le bonus de Précision des soutiens. Le Coup fatal de l'Assassin est toujours critique.</dd>
+      <dt>🛡️ Défense (action)</dt><dd>Divise par 2 les dégâts reçus jusqu'au prochain tour de la carte, et donne +2⚡. Utile pour tenir ou recharger une compétence.</dd>
+      <dt>🛡️ Bouclier</dt><dd>Donné par le Rempart du Tank (25 % de ses PV). Il absorbe les dégâts avant les PV, dure 2 tours et ne se cumule pas.</dd>
+      <dt>🎯 Provocation</dt><dd>Pendant 2 tours, les ennemis sont obligés de viser le Tank avec leurs attaques ciblées (les attaques de zone touchent quand même tout le monde).</dd>
+      <dt>🌿 Régénération</dt><dd>Bonus de soutien : au début de chacun de ses tours, la carte récupère ce pourcentage de ses PV max.</dd>
+      <dt>🔥 Rage</dt><dd>À partir du tour 9, tous les dégâts augmentent de 20 % par tour, et les soins / boucliers diminuent d'autant. Ça empêche les combats interminables.</dd>
+      <dt>⭐ Étoiles, ✨ shiny, 🏅 Dorée</dt><dd>Chaque étoile au-dessus de la 1re donne +8 % à toutes les stats (jusqu'à +32 % à 5★). Une version shiny a +10 %, une Dorée +20 % (et compte comme 5★).</dd>
+      <dt>🌈 Mythiques</dt><dd>Leurs compétences sont 30 % plus fortes.</dd>
+      <dt>🔰 Soutiens</dt><dd>3 cartes qui ne combattent pas : leurs bonus (ATK, PV, DEF, VIT, critique, énergie de départ, régénération) s'appliquent à toute l'équipe. Ils grandissent avec le nombre de copies, jusqu'à 20.</dd>
+      <dt>💪 Puissance</dt><dd>Un chiffre indicatif qui résume PV, ATK, DEF et VIT pour comparer les cartes. La classe et la compétence comptent aussi beaucoup !</dd>
+    </dl>
+    <div class="ov-btns"><button id="statsHelpClose">OK</button></div>
+  </div>
 </div>
 <div class="overlay hidden" id="picker">
   <div class="hint-txt">Choisis une carte à envoyer en expédition (4 h)</div>
@@ -653,7 +701,8 @@ function defaultState() {
     tickets: 0, fragments: 0, free1: 0, free10: 0, wheelDate: "", claimed: {}, notified: {},
     history: [], bestTen: 0, owner: null,
     exp: [null, null, null], expDone: 0, vitrine: [],
-    team: [], supports: [], adv: 0, wins: 0, trophies: 0, arenaDate: "", arenaCount: 0, arenaWins: 0, bossDate: "", bossBest: 0, bossKills: 0
+    team: [], supports: [], adv: 0, wins: 0, trophies: 0, arenaDate: "", arenaCount: 0, arenaWins: 0, bossDate: "", bossBest: 0, bossKills: 0,
+    tower: null, duelWins: 0
   };
 }
 function load() {
@@ -1009,6 +1058,9 @@ const ACH = [
   { id: "adv30", nom: "Légende de l'Aventure", desc: "Termine l'étape 30 de l'Aventure", val: () => state.adv || 0, goal: () => 30, rew: { frags: 6 } },
   { id: "arena10", nom: "Gladiateur", desc: "Gagne 10 combats classés dans l'Arène", val: () => state.arenaWins || 0, goal: () => 10, rew: { frags: 3 } },
   { id: "boss1", nom: "Chasseur de boss", desc: "Bats le boss du jour", val: () => state.bossKills || 0, goal: () => 1, rew: { frags: 3 } },
+  { id: "tour10", nom: "Grimpeur", desc: "Atteins l'étage 10 de la Tour", val: () => (state.tower && state.tower.max) || 0, goal: () => 10, rew: { frags: 3 } },
+  { id: "tour25", nom: "Sommet", desc: "Atteins l'étage 25 de la Tour", val: () => (state.tower && state.tower.max) || 0, goal: () => 25, rew: { frags: 6 } },
+  { id: "duel5", nom: "Duelliste", desc: "Gagne 5 duels en direct", val: () => state.duelWins || 0, goal: () => 5, rew: { frags: 3 } },
 ];
 function pct() { return CARDS.length ? Math.floor(countBy(c => own(c.id).copies > 0) / CARDS.length * 100) : 0; }
 function goldCount() { return countBy(c => !!own(c.id).gold); }
@@ -1232,6 +1284,7 @@ async function cloudSave(keepalive = false) {
     dorees: { integerValue: String(s.dorees) }, vitrine: { stringValue: JSON.stringify(state.vitrine.slice(0, 3)) },
     equipe: { stringValue: myEquipeJSON() },
     trophees: { integerValue: String(state.trophies || 0) },
+    tour: { integerValue: String(towerState().best || 0) }, tourSem: { integerValue: String(weekId()) },
     maj: { stringValue: new Date().toISOString() }
   } };
   try {
@@ -1315,14 +1368,14 @@ async function fetchPlayers() {
   if (lbCache && Date.now() - lbCache.t < 30000) return lbCache.list;
   const list = []; let token = "";
   do {
-    let url = `${FS()}/joueurs?pageSize=300&mask.fieldPaths=pseudo&mask.fieldPaths=avatar&mask.fieldPaths=cartes&mask.fieldPaths=shiny&mask.fieldPaths=tirages&mask.fieldPaths=dorees&mask.fieldPaths=vitrine&mask.fieldPaths=equipe&mask.fieldPaths=trophees`;
+    let url = `${FS()}/joueurs?pageSize=300&mask.fieldPaths=pseudo&mask.fieldPaths=avatar&mask.fieldPaths=cartes&mask.fieldPaths=shiny&mask.fieldPaths=tirages&mask.fieldPaths=dorees&mask.fieldPaths=vitrine&mask.fieldPaths=equipe&mask.fieldPaths=trophees&mask.fieldPaths=tour&mask.fieldPaths=tourSem`;
     if (token) url += "&pageToken=" + encodeURIComponent(token);
     const r = await fetch(url);
     if (!r.ok) throw new Error("Firebase a répondu " + r.status);
     const d = await r.json();
     for (const doc of d.documents || []) {
       const f = doc.fields || {}; const n = k => Number((f[k] && f[k].integerValue) || 0);
-      list.push({ uid: doc.name.split("/").pop(), pseudo: (f.pseudo && f.pseudo.stringValue) || "?", avatar: (f.avatar && f.avatar.stringValue) || "", cartes: n("cartes"), shiny: n("shiny"), tirages: n("tirages"), dorees: n("dorees"), vitrine: parseVitrine(f.vitrine), equipe: parseEquipe(f.equipe), trophees: n("trophees") });
+      list.push({ uid: doc.name.split("/").pop(), pseudo: (f.pseudo && f.pseudo.stringValue) || "?", avatar: (f.avatar && f.avatar.stringValue) || "", cartes: n("cartes"), shiny: n("shiny"), tirages: n("tirages"), dorees: n("dorees"), vitrine: parseVitrine(f.vitrine), equipe: parseEquipe(f.equipe), trophees: n("trophees"), tour: n("tourSem") === weekId() ? n("tour") : 0 });
     }
     token = d.nextPageToken || "";
   } while (token);
@@ -1337,11 +1390,11 @@ async function renderLeaderboard() {
   box.replaceChildren(el("p", "lb-note", "Chargement…"));
   let list;
   try { list = await fetchPlayers(); } catch (e) { box.replaceChildren(el("p", "lb-note", "Impossible de charger le classement (" + e.message + ").")); return; }
-  const other = { cartes: ["shiny", "tirages"], shiny: ["cartes", "tirages"], dorees: ["cartes", "shiny"], trophees: ["cartes", "shiny"], tirages: ["cartes", "shiny"] }[lbKey];
+  const other = { cartes: ["shiny", "tirages"], shiny: ["cartes", "tirages"], dorees: ["cartes", "shiny"], trophees: ["cartes", "shiny"], tour: ["trophees", "cartes"], tirages: ["cartes", "shiny"] }[lbKey];
   list = [...list].sort((a, b) => b[lbKey] - a[lbKey] || b[other[0]] - a[other[0]] || a.pseudo.localeCompare(b.pseudo)).slice(0, 100);
   box.replaceChildren();
   if (!list.length) { box.appendChild(el("p", "lb-note", "Personne pour l'instant. Sois le premier !")); return; }
-  const unit = { cartes: "cartes", shiny: "shiny", dorees: "dorées", trophees: "trophées", tirages: "tirages" };
+  const unit = { cartes: "cartes", shiny: "shiny", dorees: "dorées", trophees: "trophées", tour: "étage (semaine)", tirages: "tirages" };
   list.forEach((p, i) => {
     const row = el("div", "lb-row" + (AUTH && p.uid === AUTH.uid ? " me" : ""));
     row.appendChild(el("div", "rk", i < 3 ? ["🥇", "🥈", "🥉"][i] : String(i + 1)));
@@ -1570,9 +1623,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 function bDelay(ms) { return sleep(B && B.fast ? ms / 2.5 : ms); }
 
 function startBattle(allies, enemies, opts) {
-  B = { allies, enemies, all: [...allies, ...enemies], order: [], round: 0, maxRounds: opts.maxRounds || 30,
-    title: opts.title, onEnd: opts.onEnd, auto: !!opts.autoDefault, fast: false, waiting: null, over: false, log: [] };
+  const all = opts.canon || [...allies, ...enemies];
+  all.forEach((u, i) => { u.ci = i; u.shield = 0; u.shieldT = 0; u.taunt = 0; u.guard = false; });
+  B = { allies, enemies, all, order: [], round: 0, maxRounds: opts.maxRounds || 30,
+    title: opts.title, onEnd: opts.onEnd, auto: !!opts.autoDefault, fast: false, waiting: null, over: false, log: [],
+    rand: opts.seed != null ? rng(opts.seed) : Math.random, duel: opts.duel || null };
   try { const pref = JSON.parse(localStorage.getItem("kiwi-gacha-combat") || "{}"); B.auto = pref.auto ?? B.auto; B.fast = !!pref.fast; } catch {}
+  if (B.duel) B.auto = false;
   $("#bLog").replaceChildren(); $("#bResult").classList.add("hidden"); $("#bActions").replaceChildren();
   $("#battle").classList.remove("hidden");
   renderBattle(); blog(`⚔️ ${opts.title}`);
@@ -1595,7 +1652,7 @@ async function nextTurn() {
       if (u.taunt > 0) u.taunt--;
       if (u.shieldT > 0 && --u.shieldT === 0 && u.shield > 0) { u.shield = 0; blog(`🛡️ Le bouclier de ${u.card.pseudo} disparaît`); }
     }
-    B.order = B.all.filter(u => u.alive).sort((a, b) => b.spd - a.spd || Math.random() - .5);
+    B.order = B.all.filter(u => u.alive).sort((a, b) => b.spd - a.spd || a.ci - b.ci);
     blog(`— Tour ${B.round} —`, "round");
     if (B.round === RAGE_FROM + 1) blog("🔥 Rage : les dégâts augmentent à chaque tour !", "skill");
   }
@@ -1604,11 +1661,17 @@ async function nextTurn() {
   u.guard = false; B.active = u;
   if (u.regen > 0 && u.hp < u.maxHp) { const h = Math.min(u.maxHp - u.hp, Math.round(u.maxHp * u.regen / 100 / rageF())); if (h > 0) { u.hp += h; renderBattle(); floatNum(u, `+${h}`, "heal"); } }
   renderBattle();
+  if (B.duel && u.side === "enemy") { B.waiting = null; B.duel.waitSince = Date.now(); renderActions(); duelTryApply(); return; }
   if (u.side === "ally" && !B.auto) { B.waiting = { unit: u, step: "action" }; renderActions(); return; }
   await bDelay(650);
   if (!B || B.over) return;
   const [kind, target] = aiChoose(u);
-  await act(u, kind, target);
+  await decide(u, kind, target);
+}
+// Une décision du joueur (ou de l'IA côté joueur) : en duel, elle est envoyée à l'adversaire avant d'être jouée.
+function decide(u, kind, target) {
+  if (B && B.duel && u.side === "ally") duelPush({ u: u.ci, k: kind, t: target ? target.ci : -1 });
+  return act(u, kind, target);
 }
 function tauntersOf(u) { return foes(u).filter(f => f.taunt > 0); }
 function validTargets(u) { const t = tauntersOf(u); return t.length ? t : foes(u); }
@@ -1632,9 +1695,9 @@ function pickTarget(u) {
 
 function hitDamage(a, t, mult, forceCrit = false) {
   const rage = rageF();
-  let d = a.atk * mult * (.9 + Math.random() * .2) * (100 / (100 + t.def * 3.5)) * rage;
+  let d = a.atk * mult * (.9 + B.rand() * .2) * (100 / (100 + t.def * 3.5)) * rage;
   d = Math.max(1, d);
-  const crit = forceCrit || Math.random() < (a.cls === "assassin" ? .15 : .1) + (a.crit || 0) / 100;
+  const crit = forceCrit || B.rand() < (a.cls === "assassin" ? .15 : .1) + (a.crit || 0) / 100;
   if (crit) d *= 1.5;
   if (t.guard) d *= .5;
   d = Math.round(d);
@@ -1654,7 +1717,7 @@ async function act(u, kind, target) {
   const power = u.tier === 4 ? 1.3 : 1; // les Mythiques ont des compétences boostées
   animUnit(u, "act");
   if (kind === "attack") {
-    if (!target || !target.alive) target = pickTarget(u);
+    if (!target || !target.alive || !validTargets(u).includes(target)) target = validTargets(u)[0];
     const r = hitDamage(u, target, 1);
     blog(`${who} attaque ${target.card.pseudo} : ${r.d}${r.crit ? " (critique !)" : ""}`);
     sfx("flip");
@@ -1666,11 +1729,11 @@ async function act(u, kind, target) {
     u.energy -= c.skill.cost;
     sfx("r3");
     if (u.cls === "guerrier") {
-      if (!target || !target.alive) target = pickTarget(u);
+      if (!target || !target.alive || !validTargets(u).includes(target)) target = validTargets(u)[0];
       const r = hitDamage(u, target, 1.8 * power);
       blog(`${who} utilise ${c.skill.nom} sur ${target.card.pseudo} : ${r.d} 💥`, "skill");
     } else if (u.cls === "assassin") {
-      const t = [...validTargets(u)].sort((a, b) => a.hp - b.hp)[0];
+      const t = [...validTargets(u)].sort((a, b) => a.hp - b.hp || a.ci - b.ci)[0];
       const r = hitDamage(u, t, 1.5 * power, true);
       blog(`${who} utilise ${c.skill.nom} sur ${t.card.pseudo} : ${r.d} 🗡️`, "skill");
     } else if (u.cls === "mage") {
@@ -1705,10 +1768,17 @@ function endBattle(win, timeout = false) {
   const res = B.onEnd ? B.onEnd(win, { dealt, timeout }) : null;
   afterAction();
   const box = $("#bResult"); box.replaceChildren();
-  box.appendChild(el("h2", null, win ? "🏆 Victoire !" : timeout ? "⏱️ Temps écoulé" : "☠️ Défaite"));
+  box.appendChild(el("h2", null, res && res.title ? res.title : win ? "🏆 Victoire !" : timeout ? "⏱️ Temps écoulé" : "☠️ Défaite"));
   if (res && res.lines) for (const l of res.lines) box.appendChild(el("p", null, l));
-  const btn = el("button", "small-btn", "Continuer");
-  btn.onclick = closeBattle; box.appendChild(btn);
+  const btns = el("div", "ov-btns");
+  for (const b of (res && res.buttons) || []) {
+    const x = el("button", "small-btn", b.label);
+    x.onclick = () => { $("#bResult").classList.add("hidden"); B = null; b.fn(); };
+    btns.appendChild(x);
+  }
+  const btn = el("button", "small-btn", (res && res.buttons) ? "Arrêter" : "Continuer");
+  btn.onclick = () => { if (res && res.onClose) res.onClose(); closeBattle(); }; btns.appendChild(btn);
+  box.appendChild(btns);
   box.classList.remove("hidden");
 }
 function closeBattle() { $("#battle").classList.add("hidden"); $("#bResult").classList.add("hidden"); B = null; renderCombatTab(); }
@@ -1728,7 +1798,7 @@ function unitEl(u) {
   const en = el("div", "pips"); for (let i = 0; i < MAX_ENERGY; i++) en.appendChild(el("span", i < u.energy ? "on" : "")); d.appendChild(en);
   const st = el("div", "ust", (u.taunt > 0 ? "🎯" : "") + (u.guard ? "🛡️" : "")); d.appendChild(st);
   if (B && B.waiting && B.waiting.step === "target" && B.waiting.targets.includes(u)) {
-    d.classList.add("targetable"); d.onclick = () => act(B.waiting.unit, B.waiting.kind, u);
+    d.classList.add("targetable"); d.onclick = () => decide(B.waiting.unit, B.waiting.kind, u);
   }
   return d;
 }
@@ -1743,6 +1813,7 @@ function renderBattle() {
 }
 function renderActions() {
   const box = $("#bActions"); box.replaceChildren();
+  if (B && B.duel && !B.over && B.active && B.active.side === "enemy") { duelWaitPanel(box); return; }
   if (!B || !B.waiting) { box.appendChild(el("div", "bwait", B && !B.over ? (B.active ? `Au tour de ${B.active.card.pseudo}…` : "") : "")); return; }
   const w = B.waiting, u = w.unit, c = CLASSES[u.cls];
   if (w.step === "target") {
@@ -1754,14 +1825,14 @@ function renderActions() {
   const atk = el("button", "bbtn", "⚔️ Attaque"); atk.onclick = () => askTarget(u, "attack"); box.appendChild(atk);
   const sk = el("button", "bbtn sk", `✨ ${c.skill.nom} (${c.skill.cost}⚡)`); sk.title = c.skill.desc;
   sk.disabled = u.energy < c.skill.cost;
-  sk.onclick = () => c.skill.target === "enemy" ? askTarget(u, "skill") : act(u, "skill");
+  sk.onclick = () => c.skill.target === "enemy" ? askTarget(u, "skill") : decide(u, "skill");
   box.appendChild(sk);
-  const df = el("button", "bbtn", "🛡️ Défense (+2⚡)"); df.title = "Divise les dégâts reçus par 2 jusqu'à ton prochain tour"; df.onclick = () => act(u, "defend"); box.appendChild(df);
+  const df = el("button", "bbtn", "🛡️ Défense (+2⚡)"); df.title = "Divise les dégâts reçus par 2 jusqu'à ton prochain tour"; df.onclick = () => decide(u, "defend"); box.appendChild(df);
   box.appendChild(el("div", "bhint", c.skill.desc));
 }
 function askTarget(u, kind) {
   const targets = validTargets(u);
-  if (targets.length === 1) return act(u, kind, targets[0]);
+  if (targets.length === 1) return decide(u, kind, targets[0]);
   B.waiting = { unit: u, step: "target", kind, targets }; renderBattle(); renderActions();
 }
 function floatNum(u, txt, cls) {
@@ -1772,9 +1843,14 @@ function animUnit(u, cls) {
   const host = document.querySelector(`.unit[data-key="${u.key}"]`); if (!host) return;
   host.classList.remove(cls); void host.offsetWidth; host.classList.add(cls);
 }
-$("#bAuto").onclick = () => { if (!B) return; B.auto = !B.auto; saveCombatPref(); renderBattle(); if (B.auto && B.waiting) { const u = B.waiting.unit; B.waiting = null; const [k, t] = aiChoose(u); act(u, k, t); } };
+$("#bAuto").onclick = () => { if (!B) return; B.auto = !B.auto; if (!B.duel) saveCombatPref(); renderBattle(); if (B.auto && B.waiting) { const u = B.waiting.unit; B.waiting = null; const [k, t] = aiChoose(u); decide(u, k, t); } };
 $("#bFast").onclick = () => { if (!B) return; B.fast = !B.fast; saveCombatPref(); renderBattle(); };
-$("#bQuit").onclick = () => { if (!B) return; if (B.over) return closeBattle(); if (confirm("Abandonner le combat ? Ça compte comme une défaite.")) endBattle(false); };
+$("#bQuit").onclick = () => {
+  if (!B) return; if (B.over) return closeBattle();
+  if (!confirm("Abandonner le combat ? Ça compte comme une défaite.")) return;
+  if (B.duel) duelPush({ k: "forfeit", by: AUTH.uid });
+  endBattle(false);
+};
 
 // =====================================================================
 // ---------- COMBAT : équipe et modes ----------
@@ -1994,6 +2070,9 @@ async function renderCombatTab() {
     const c = byId[t.id], u = makeUnit(c, t.s, starsOf(t.id, t.s)); totalPw += unitPower(u);
     const w = el("div", "tslot"); w.appendChild(cardEl(c, { shiny: t.s === 1, gold: t.s === 2 }));
     const cl = CLASSES[u.cls]; w.appendChild(el("div", "rw", `${cl.ico} ${cl.nom} · 💪 ${unitPower(u)}`)); w.title = `${cl.skill.nom} : ${cl.skill.desc}`;
+    const ub = makeUnit(c, t.s, starsOf(t.id, t.s), "ally", 1, { bonus: mySupportBonus() });
+    w.appendChild(el("div", "statline", `❤️${ub.maxHp} ⚔️${ub.atk} 🧱${ub.def} 💨${ub.spd}`));
+    w.appendChild(el("div", "rw2", `✨ ${cl.skill.nom} (${cl.skill.cost}⚡)`));
     tb.appendChild(w);
   }
   for (let i = team.length; i < 3; i++) tb.appendChild(el("div", "vslot", "Emplacement libre"));
@@ -2024,6 +2103,15 @@ async function renderCombatTab() {
   }
   const done = state.bossDate === today();
   $("#bossBtn").disabled = done; $("#bossBtn").textContent = done ? `Déjà fait (${state.bossBest} dégâts)` : "Affronter";
+  // Tour
+  const tw = towerState();
+  $("#towerInfo").textContent = `Semaine ${weekId()} · Ton record : étage ${tw.best} · Montées : ${TOWER_RUNS - tw.runs}/${TOWER_RUNS}`;
+  $("#towerBtn").disabled = tw.runs >= TOWER_RUNS;
+  $("#towerBtn").textContent = tw.runs >= TOWER_RUNS ? "Reviens demain ⏳" : "Commencer une montée";
+  const tf = $("#towerFoes"); tf.replaceChildren();
+  if (CARDS.length) for (const u of towerEnemies(1)) { const m = el("div", "mini " + u.card.rarete); m.title = "Étage 1 : " + u.card.pseudo; m.appendChild(avatarImg(u.card)); tf.appendChild(m); }
+  // Duel
+  renderDuelBox();
   // Arène
   $("#arenaInfo").textContent = `🏆 ${state.trophies || 0} trophées · Combats classés : ${arenaLeft()}/${ARENA_MAX}`;
   const list = $("#arenaList"); list.replaceChildren();
@@ -2048,9 +2136,268 @@ async function renderCombatTab() {
   }
 }
 $("#teamEdit").onclick = openTeamPicker;
+$("#towerBtn").onclick = startTower;
+$("#statsHelpBtn").onclick = () => $("#statsHelp").classList.remove("hidden");
+$("#statsHelpClose").onclick = () => $("#statsHelp").classList.add("hidden");
+$("#statsHelp").addEventListener("click", e => { if (e.target.id === "statsHelp") $("#statsHelp").classList.add("hidden"); });
 $("#supEdit").onclick = openSupportPicker;
 $("#advBtn").onclick = startAdventure;
 $("#bossBtn").onclick = startBoss;
+
+
+// =====================================================================
+// ---------- TOUR INFINIE (change chaque semaine) ----------
+// =====================================================================
+const TOWER_RUNS = 3;
+function weekId() { const d = new Date(); d.setHours(0, 0, 0, 0); return Math.floor((d - new Date(2026, 0, 5)) / (7 * 864e5)); }
+function towerState() {
+  const t = state.tower || (state.tower = { week: -1, best: 0, runsDate: "", runs: 0, max: 0 });
+  if (t.week !== weekId()) { t.week = weekId(); t.best = 0; t.paid = 0; }
+  if (t.runsDate !== today()) { t.runsDate = today(); t.runs = 0; }
+  return t;
+}
+function towerEnemies(floor) {
+  const r = rng(weekId() * 1009 + floor * 31 + 7);
+  const sorted = [...CARDS].sort((a, b) => a.id.localeCompare(b.id));
+  const maxTier = Math.min(4, Math.floor(floor / 5));
+  const pool = sorted.filter(c => RIDX[c.rarete] <= maxTier);
+  const src = pool.length ? pool : sorted;
+  const mult = .5 + floor * .045, st = 1 + Math.floor(floor / 10);
+  const out = [0, 1, 2].slice(0, floor < 3 ? 2 : 3).map(() => makeUnit(src[Math.floor(r() * src.length)], 0, st, "enemy", mult));
+  if (floor % 5 === 0) {
+    const big = [...src].sort((a, b) => RIDX[b.rarete] - RIDX[a.rarete] || a.id.localeCompare(b.id))[0];
+    out[Math.min(1, out.length - 1)] = makeUnit(big, floor % 10 === 0 ? 1 : 0, st, "enemy", mult, { hpMult: 1.8, atkMult: 1.05, boss: true });
+  }
+  return out;
+}
+let RUN = null;
+function startTower() {
+  if (needTeam()) return;
+  const t = towerState();
+  if (t.runs >= TOWER_RUNS) return toast("Plus de montées aujourd'hui. Reviens demain 🗼");
+  t.runs++; afterAction();
+  RUN = { floor: 1, allies: teamUnits(), coins: 0 };
+  fightFloor();
+}
+function fightFloor() {
+  const floor = RUN.floor;
+  for (const u of RUN.allies) if (u.alive) u.energy = Math.max(1, u.energy);
+  startBattle(RUN.allies, towerEnemies(floor), {
+    title: `🗼 Tour · Étage ${floor}${floor % 5 === 0 ? " · BOSS" : ""}`,
+    onEnd: win => {
+      const t = towerState();
+      if (!win) {
+        return { title: "☠️ Montée terminée", lines: [`Tu t'arrêtes à l'étage ${floor}.`, `Meilleur étage cette semaine : ${t.best}`, `Gains de la montée : ${RUN.coins} 🪙`] };
+      }
+      const coins = 40 + floor * 12;
+      RUN.coins += coins; state.coins += coins;
+      const lines = [`Étage ${floor} réussi ! +${coins} 🪙`];
+      if (floor > t.best) {
+        t.best = floor;
+        if (floor % 10 === 0) { state.fragments += 2; lines.push("Nouveau palier de la semaine : +2 fragments ✦"); }
+      }
+      t.max = Math.max(t.max || 0, floor);
+      for (const u of RUN.allies) if (u.alive) { const h = Math.round(u.maxHp * .2); u.hp = Math.min(u.maxHp, u.hp + h); }
+      const alive = RUN.allies.filter(u => u.alive).length;
+      lines.push(`Ton équipe récupère 20 % de PV (${alive}/${RUN.allies.length} debout).`);
+      return {
+        lines,
+        buttons: [{ label: `⬆️ Étage ${floor + 1}`, fn: () => { RUN.floor++; fightFloor(); } }],
+        onClose: () => { toast(`🗼 Montée terminée à l'étage ${floor} · ${RUN.coins} 🪙`); }
+      };
+    }
+  });
+}
+
+// =====================================================================
+// ---------- DUEL EN DIRECT (synchronisé via Firestore) ----------
+// =====================================================================
+let DUEL = null; // { code, role, poll, doc }
+const DUEL_CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const DUEL_TIMEOUT = 90000;
+function duelUrl(code) { return `${FS()}/duels/${encodeURIComponent(code)}`; }
+function fsStr(f, k) { return (f[k] && f[k].stringValue) || ""; }
+async function duelGet(code) {
+  const r = await fetch(duelUrl(code), { headers: { Authorization: "Bearer " + await getIdToken() } });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error("duel " + r.status);
+  return r.json();
+}
+async function duelPatch(code, fields, extra = "") {
+  const mask = Object.keys(fields).map(k => "updateMask.fieldPaths=" + k).join("&");
+  const r = await fetch(`${duelUrl(code)}?${mask}${extra}`, {
+    method: "PATCH", headers: { "Content-Type": "application/json", Authorization: "Bearer " + await getIdToken() },
+    body: JSON.stringify({ fields })
+  });
+  if (!r.ok) throw new Error("duel " + r.status);
+  return r.json();
+}
+function myDuelTeam() {
+  return JSON.stringify({ t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s) })), b: mySupportBonus() });
+}
+async function createDuel() {
+  if (!AUTH) return toast("Connecte-toi avec /connexion pour jouer en duel");
+  if (needTeam()) return;
+  if (DUEL) return;
+  let code = "";
+  for (let i = 0; i < 6; i++) code += DUEL_CODE_CHARS[Math.floor(Math.random() * DUEL_CODE_CHARS.length)];
+  try {
+    await duelPatch(code, {
+      host: { stringValue: AUTH.uid }, hostName: { stringValue: AUTH.pseudo }, hostTeam: { stringValue: myDuelTeam() },
+      guest: { stringValue: "" }, guestName: { stringValue: "" }, guestTeam: { stringValue: "" },
+      seed: { integerValue: String(Math.floor(Math.random() * 2e9)) }, status: { stringValue: "wait" },
+      actions: { stringValue: "[]" }, maj: { stringValue: new Date().toISOString() }
+    }, "&currentDocument.exists=false");
+  } catch (e) { return toast("Impossible de créer le duel (" + e.message + ")"); }
+  DUEL = { code, role: "host" };
+  renderDuelBox();
+  DUEL.poll = setInterval(duelLobbyPoll, 1500);
+}
+async function duelLobbyPoll() {
+  if (!DUEL || DUEL.started) return;
+  try {
+    const d = await duelGet(DUEL.code);
+    if (!d) { cancelDuel(); return toast("Le duel a été annulé"); }
+    const f = d.fields || {};
+    if (fsStr(f, "status") === "play" && fsStr(f, "guest")) startDuelBattle(d);
+  } catch (e) { console.warn(e); }
+}
+async function joinDuel(code) {
+  if (!AUTH) return toast("Connecte-toi avec /connexion pour jouer en duel");
+  if (needTeam()) return;
+  code = (code || "").trim().toUpperCase();
+  if (code.length !== 6) return toast("Le code fait 6 caractères");
+  let d;
+  try { d = await duelGet(code); } catch (e) { return toast("Erreur : " + e.message); }
+  if (!d) return toast("Aucun duel avec ce code");
+  const f = d.fields || {};
+  if (fsStr(f, "host") === AUTH.uid) return toast("C'est ton propre duel 😄");
+  if (fsStr(f, "guest")) return toast("Ce duel a déjà commencé");
+  try {
+    d = await duelPatch(code, {
+      guest: { stringValue: AUTH.uid }, guestName: { stringValue: AUTH.pseudo }, guestTeam: { stringValue: myDuelTeam() },
+      status: { stringValue: "play" }, maj: { stringValue: new Date().toISOString() }
+    }, "&currentDocument.updateTime=" + encodeURIComponent(d.updateTime));
+  } catch (e) { return toast("Impossible de rejoindre (quelqu'un a été plus rapide ?)"); }
+  DUEL = { code, role: "guest" };
+  startDuelBattle(d);
+}
+async function cancelDuel() {
+  if (!DUEL) return;
+  clearInterval(DUEL.poll);
+  const { code, role, started } = DUEL; DUEL = null;
+  if (role === "host" && !started) {
+    try { await fetch(duelUrl(code), { method: "DELETE", headers: { Authorization: "Bearer " + await getIdToken() } }); } catch {}
+  }
+  renderDuelBox();
+}
+function parseDuelTeam(str) {
+  try { const v = JSON.parse(str); return { t: Array.isArray(v.t) ? v.t : [], b: v.b || {} }; } catch { return { t: [], b: {} }; }
+}
+function startDuelBattle(doc) {
+  const f = doc.fields || {};
+  clearInterval(DUEL.poll);
+  DUEL.started = true;
+  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+  const meHost = DUEL.role === "host";
+  const build = (spec, side) => spec.t.filter(x => byId[x.id]).slice(0, 3).map(x => makeUnit(byId[x.id], x.s || 0, x.st || 1, side, 1, { bonus: spec.b }));
+  const hostU = build(parseDuelTeam(fsStr(f, "hostTeam")), meHost ? "ally" : "enemy");
+  const guestU = build(parseDuelTeam(fsStr(f, "guestTeam")), meHost ? "enemy" : "ally");
+  const oppName = meHost ? fsStr(f, "guestName") : fsStr(f, "hostName");
+  const code = DUEL.code;
+  startBattle(meHost ? hostU : guestU, meHost ? guestU : hostU, {
+    title: `🤺 Duel · toi vs ${oppName}`, canon: [...hostU, ...guestU],
+    seed: Number((f.seed && f.seed.integerValue) || 1), maxRounds: 30,
+    duel: { code, log: [], specials: [], remote: [], oppName, writing: Promise.resolve(), waitSince: Date.now() },
+    onEnd: (win, { timeout }) => {
+      const dd = B.duel; clearInterval(dd.poll); clearInterval(dd.tick); DUEL = null;
+      if (timeout) return { title: "🤝 Égalité", lines: ["30 tours écoulés, personne n'a gagné."] };
+      if (win) { state.coins += 150; state.duelWins = (state.duelWins || 0) + 1; return { lines: [dd.endMsg || `Tu as battu ${oppName} !`, "+150 🪙"] }; }
+      return { lines: [dd.endMsg || `${oppName} a gagné cette fois.`] };
+    }
+  });
+  B.duel.poll = setInterval(duelBattlePoll, 800);
+  B.duel.tick = setInterval(() => { if (B && B.duel && !B.over) renderActions(); }, 1000);
+  blog(`Code du duel : ${code}`);
+}
+async function duelBattlePoll() {
+  if (!B || !B.duel || B.over) return;
+  try {
+    const d = await duelGet(B.duel.code);
+    if (!B || !B.duel) return;
+    if (!d) { B.duel.endMsg = "Le duel a disparu."; return endBattle(false); }
+    const acts = JSON.parse(fsStr(d.fields || {}, "actions") || "[]");
+    B.duel.remote = acts;
+    duelTryApply();
+  } catch (e) { console.warn(e); }
+}
+function duelTryApply() {
+  if (!B || !B.duel || B.over) return;
+  const acts = B.duel.remote;
+  // abandon / réclamation de l'adversaire : peu importe le moment
+  const special = acts.find(a => (a.k === "forfeit" || a.k === "claim") && a.by !== AUTH.uid);
+  if (special) {
+    B.duel.endMsg = special.k === "forfeit" ? `${B.duel.oppName} a abandonné.` : `${B.duel.oppName} a réclamé la victoire (tu ne répondais plus).`;
+    return endBattle(special.k === "forfeit");
+  }
+  const u = B.active;
+  if (!u || u.side !== "enemy" || B.waiting) return;
+  const regular = acts.filter(x => x.k !== "forfeit" && x.k !== "claim");
+  const a = regular[B.duel.log.length];
+  if (!a) return;
+  if (a.u !== u.ci) console.warn("Désynchronisation du duel", a, u.ci);
+  B.duel.log.push(a);
+  B.duel.waitSince = Date.now();
+  act(B.all[a.u] || u, a.k, a.t >= 0 ? B.all[a.t] : null);
+}
+function duelPush(a) {
+  const dd = B.duel;
+  if (a.k === "forfeit" || a.k === "claim") dd.specials.push(a); else dd.log.push(a);
+  // on réécrit la liste complète à partir du journal local (actions des deux joueurs, dans l'ordre)
+  const full = [...dd.log, ...dd.specials];
+  const code = dd.code;
+  dd.writing = dd.writing.then(async () => {
+    for (let i = 0; i < 3; i++) {
+      try { await duelPatch(code, { actions: { stringValue: JSON.stringify(full) }, maj: { stringValue: new Date().toISOString() } }); return; }
+      catch (e) { console.warn(e); await sleep(800); }
+    }
+    toast("⚠️ Connexion instable avec le duel");
+  });
+}
+function duelWaitPanel(box) {
+  const left = Math.max(0, Math.ceil((DUEL_TIMEOUT - (Date.now() - B.duel.waitSince)) / 1000));
+  box.appendChild(el("div", "bwait", `⏳ Au tour de ${B.duel.oppName} (${B.active ? B.active.card.pseudo : ""})…`));
+  if (left > 0) box.appendChild(el("div", "bhint", `S'il ne joue pas dans ${left} s, tu pourras réclamer la victoire.`));
+  else {
+    const c = el("button", "bbtn sk", "🏆 Réclamer la victoire");
+    c.onclick = () => { duelPush({ k: "claim", by: AUTH.uid }); B.duel.endMsg = `${B.duel.oppName} ne répondait plus.`; endBattle(true); };
+    box.appendChild(c);
+  }
+}
+function renderDuelBox() {
+  const box = $("#duelBox"); if (!box) return; box.replaceChildren();
+  if (!CONFIG.projectId) return box.appendChild(el("p", "lb-note", "Pas disponible en mode démo."));
+  if (!AUTH) return box.appendChild(el("p", "lb-note", "Connecte-toi avec /connexion sur Discord pour jouer en duel."));
+  if (DUEL && !DUEL.started) {
+    box.appendChild(el("p", null, "Envoie ce code à ton adversaire :"));
+    const c = el("div", "duel-code", DUEL.code); box.appendChild(c);
+    const row = el("div", "ov-btns");
+    const cp = el("button", "small-btn", "📋 Copier");
+    cp.onclick = () => { try { navigator.clipboard.writeText(DUEL.code); toast("Code copié !"); } catch { toast(DUEL.code); } };
+    const cancel = el("button", "small-btn", "Annuler"); cancel.onclick = cancelDuel;
+    row.append(cp, cancel); box.appendChild(row);
+    box.appendChild(el("p", "lb-note", "⏳ En attente d'un adversaire… Le combat démarre tout seul dès qu'il rejoint."));
+    return;
+  }
+  const b = el("button", "small-btn", "⚔️ Créer un duel"); b.onclick = createDuel; box.appendChild(b);
+  const row = el("div", "duel-join");
+  const inp = el("input"); inp.placeholder = "CODE"; inp.maxLength = 6; inp.id = "duelCode";
+  inp.oninput = () => { inp.value = inp.value.toUpperCase(); };
+  const j = el("button", "small-btn", "Rejoindre"); j.onclick = () => joinDuel(inp.value);
+  inp.onkeydown = e => { if (e.key === "Enter") joinDuel(inp.value); };
+  row.append(inp, j); box.appendChild(row);
+  box.appendChild(el("p", "lb-note", `Victoires en duel : ${state.duelWins || 0}`));
+}
 
 // ---------- Navigation & boutons ----------
 const TABS = ["tirage", "collection", "succes", "combat", "classement", "quiz", "regles"];

@@ -783,7 +783,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <script>
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
-const APP_VERSION = "2026.10.16-2"; // à changer à chaque mise en ligne : les duels exigent la même version
+const APP_VERSION = "2026.10.16-3"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -2450,9 +2450,10 @@ function hwLeft() { const ms = HW_END - Date.now(), d = Math.floor(ms / 864e5), 
 function hwCount() { return countBy(c => !!own(c.id).hw); }
 function addCandy(n) { if (!hwActive() || !n) return 0; state.candy = (state.candy || 0) + n; state.candyTotal = (state.candyTotal || 0) + n; return n; }
 function candyTxt(n) { return n ? ` · +${n} 🍬` : ""; }
-function hwCostumeCost(card) { return 60 + RIDX[card.rarete] * 30; }
+const HW_COSTUME_COST = [150, 200, 300, 450, 700]; // commun → mythique
+function hwCostumeCost(card) { return HW_COSTUME_COST[RIDX[card.rarete]]; }
 const HW_SHOP = [
-  { id: "costume", ico: "🎃", nom: "Costume au choix", desc: "Habille une de tes cartes en Halloween (60 à 180 🍬 selon la rareté)", price: null, buy: () => openCostumePicker() },
+  { id: "costume", ico: "🎃", nom: "Costume au choix", desc: "Habille une de tes cartes en Halloween (150 à 700 🍬 selon la rareté)", price: null, buy: () => openCostumePicker() },
   { id: "free10", ico: "🎰", nom: "Tirage ×10 gratuit", desc: "Ajouté à tes tirages gratuits", price: 250, buy: () => { state.free10++; return "Tirage ×10 gratuit ajouté !"; } },
   { id: "frag", ico: "✦", nom: "Fragment Mythique", desc: "Un fragment pour les tickets Mythiques", price: 120, buy: () => { state.fragments++; return "+1 fragment ✦"; } },
   { id: "potion", ico: "🧪", nom: "Potion de shiny", desc: "Chances de shiny ×3 sur tes 10 prochains tirages (cumulable)", price: 150, buy: () => { state.shinyBoost = (state.shinyBoost || 0) + 10; return "🧪 Potion bue : shiny ×3 pour 10 tirages !"; } },

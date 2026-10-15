@@ -150,6 +150,29 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 /* ---------- Collection : onglets normal / shiny ---------- */
 .mode{display:flex;gap:6px;margin-bottom:14px}
 .mirbox{grid-column:1/-1}
+/* ----- Halloween ----- */
+.hwbanner{background:linear-gradient(90deg,#3a1450,#5a2408);border:1px solid #ff8a1c;color:#ffd9a8;padding:10px 14px;border-radius:12px;margin-bottom:16px;font-size:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.hwbanner b{color:#ffb347}
+.hwbox{border-color:#ff8a1c;background:linear-gradient(160deg,#2b1235,#241015 70%)}
+.hwbox h3{color:#ffb347}
+.candy{font-weight:800;color:#ffb347}
+.hwitems{display:grid;gap:8px;margin-top:10px}
+.hwitem{display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.hwitem div{flex:1;font-size:13px}.hwitem div b{display:block;font-size:14px}
+.hwitem button{white-space:nowrap}
+.card.hw{border-image:none!important;animation:none!important;--c:#ff8a1c;background:linear-gradient(160deg,#5a2408 0%,#2b1235 60%,#140818 100%);border-color:#ff8a1c;box-shadow:0 0 22px #ff8a1c88,inset 0 0 18px #b46bff33}
+.card.hw::before{content:"🎃";position:absolute;right:6px;top:4px;font-size:18px;z-index:2;filter:drop-shadow(0 0 4px #ff8a1c)}
+.card.hw::after{content:"🦇";position:absolute;left:8px;bottom:6px;font-size:13px;opacity:.8;pointer-events:none}
+.card.hw .art img{filter:sepia(.35) hue-rotate(-15deg) saturate(1.5) contrast(1.05)}
+.card.hw .name{color:#ffd0a0}.card.hw .rar{color:#ffb347}.card.hw .quote{color:#c9a3d9}
+.card.locked.hw-slot .name::before{content:"🎃 "}
+.tag.hwt{left:auto;right:6px;background:linear-gradient(90deg,#ff8a1c,#b46bff)}
+.mode button.on.hwm{background:linear-gradient(90deg,#ff8a1c,#b46bff);border-color:transparent;color:#fff}
+.unit.ghost .uav img{filter:grayscale(1) brightness(1.3) sepia(.3) hue-rotate(200deg);opacity:.8}
+.unit.ghost{box-shadow:0 0 14px #b46bff66}
+.bat{position:fixed;top:0;left:-40px;font-size:22px;pointer-events:none;z-index:1;opacity:.55;animation:batfly linear infinite}
+@keyframes batfly{0%{transform:translate(0,var(--y)) scaleX(-1)}25%{transform:translate(30vw,calc(var(--y) - 40px)) scaleX(-1)}50%{transform:translate(55vw,calc(var(--y) + 30px)) scaleX(-1)}100%{transform:translate(110vw,var(--y)) scaleX(-1)}}
+@media (prefers-reduced-motion:reduce){.bat{display:none}}
 .mtabs{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
 .mtabs button{flex:1;min-width:110px;background:var(--bg2);border:1px solid var(--line);color:var(--txt);padding:8px 6px;border-radius:12px;font-weight:700;font-size:13px;line-height:1.3}
 .mtabs button small{display:block;font-weight:600;color:var(--mute);font-size:11px}
@@ -414,6 +437,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <main>
   <div id="demoBanner" class="banner hidden">Mode démo : cartes d'exemple. Remplis <b>CONFIG</b> en haut du script pour charger les vraies cartes du bot.</div>
   <div id="errBanner" class="banner err hidden"></div>
+  <div id="hwBanner" class="hwbanner hidden"></div>
 
   <section id="tab-tirage">
     <div class="altar">
@@ -430,6 +454,11 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       </div>
     </div>
     <div class="side">
+      <div class="box hwbox hidden" id="hwShop">
+        <h3>🎃 Boutique d'Halloween</h3>
+        <p id="hwInfo"></p>
+        <div class="hwitems" id="hwItems"></div>
+      </div>
       <div class="box">
         <h3>🎁 Récompense du jour</h3>
         <p>500 pièces gratuites chaque jour.</p>
@@ -473,6 +502,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <button id="modeN" class="on">📚 Normales</button>
       <button id="modeS" class="sh">✨ Shiny</button>
       <button id="modeG" class="go">🏅 Dorées</button>
+      <button id="modeH" class="hwm hidden">🎃 Halloween</button>
     </div>
     <div class="vitrine" id="myVitrine"></div>
     <div class="col-head">
@@ -489,7 +519,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
   <section id="tab-combat" class="hidden">
     <div class="box" style="margin-bottom:14px">
       <h3>⚔️ Mon équipe <button class="help-btn" id="statsHelpBtn">📖 Guide des stats</button></h3>
-      <p>3 cartes max. Chaque pote a une classe (⚔️ Guerrier, 🛡️ Tank, 🔮 Mage, 💚 Soigneur, 🗡️ Assassin). Ses stats dépendent de sa rareté, de ses étoiles et de sa version (shiny +10 %, Dorée +20 %). Cette équipe sert aussi de défense dans l'Arène.</p>
+      <p>3 cartes max. Chaque pote a une classe (⚔️ Guerrier, 🛡️ Tank, 🔮 Mage, 💚 Soigneur, 🗡️ Assassin). Ses stats dépendent de sa rareté, de ses étoiles et de sa version (shiny +10 %, Dorée +20 % ; Mythique : shiny +25 % et +1⚡, Dorée +30 %). Cette équipe sert aussi de défense dans l'Arène.</p>
       <div class="team-row" id="teamBox"></div>
       <div class="inv"><b id="teamPower"></b><button class="small-btn" id="teamEdit">Changer l'équipe</button></div>
       <h3 style="margin-top:20px">🔰 Soutiens</h3>
@@ -522,6 +552,11 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <p id="towerInfo" style="font-weight:700"></p>
         <div class="hist" id="towerFoes"></div>
         <button class="small-btn" id="towerBtn" style="margin-top:10px">Commencer une montée</button>
+      </div>
+      <div class="box hwbox hidden" id="hauntBox">
+        <h3>🏚️ Maison hantée</h3>
+        <p>Les fantômes de tes potes rôdent… 3 salles de plus en plus effrayantes, avec ton équipe normale. Chaque salle rapporte des 🍬 <b>une fois par jour</b> (essais illimités). Les ennemis changent chaque jour.</p>
+        <div id="hauntList"></div>
       </div>
       <div class="box mirbox">
         <h3>🪞 Mode Miroir</h3>
@@ -608,6 +643,13 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li>À partir du tour 9, la 🔥 Rage augmente les dégâts de tout le monde à chaque tour (et réduit les soins et boucliers).</li>
         <li>Bouton 🤖 Auto pour laisser l'ordi jouer, ⏩ pour accélérer.</li>
       </ul>
+      <h3>🎃 Halloween (jusqu'au 1er novembre)</h3>
+      <ul>
+        <li>Gagne des 🍬 bonbons : +1 par tirage, +25 avec la récompense du jour, et à chaque victoire qui rapporte des pièces (Aventure, Tour, Miroir, Arène classée, Boss, Duel) et dans la 🏚️ Maison hantée.</li>
+        <li>Chaque tirage a 4 % de chances de donner aussi le <b>costume 🎃</b> du pote (un cadre Halloween à collectionner dans 📚 Collection → 🎃 Halloween).</li>
+        <li>La 🎃 Boutique d'Halloween (onglet Tirage) échange tes bonbons contre des costumes, des tirages ×10, des fragments, des potions de shiny et un ticket Mythique.</li>
+        <li>Les bonbons et la boutique disparaissent après l'événement, mais les costumes restent à vie !</li>
+      </ul>
       <h3>📌 Vitrine et annonces</h3>
       <ul>
         <li>Épingle jusqu'à 3 cartes dans ta vitrine : les autres la voient en cliquant sur toi dans le classement.</li>
@@ -680,7 +722,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <dt>🎯 Provocation</dt><dd>Pendant 2 tours, les ennemis sont obligés de viser le Tank avec leurs attaques ciblées (les attaques de zone touchent quand même tout le monde).</dd>
       <dt>🌿 Régénération</dt><dd>Bonus de soutien : au début de chacun de ses tours, la carte récupère ce pourcentage de ses PV max.</dd>
       <dt>🔥 Rage</dt><dd>À partir du tour 9, tous les dégâts augmentent de 20 % par tour, et les soins / boucliers diminuent d'autant. Ça empêche les combats interminables.</dd>
-      <dt>⭐ Étoiles, ✨ shiny, 🏅 Dorée</dt><dd>Chaque étoile au-dessus de la 1re donne +8 % à toutes les stats (jusqu'à +32 % à 5★). Une version shiny a +10 %, une Dorée +20 % (et compte comme 5★).</dd>
+      <dt>⭐ Étoiles, ✨ shiny, 🏅 Dorée</dt><dd>Chaque étoile au-dessus de la 1re donne +8 % à toutes les stats (jusqu'à +32 % à 5★). Une version shiny a +10 %, une Dorée +20 % (et compte comme 5★). Les Mythiques sont plus fortes encore : shiny Mythique +25 % et +1⚡ au départ (✨ Aura scintillante), Dorée Mythique +30 %.</dd>
       <dt>🌈 Mythiques</dt><dd>Leurs compétences sont 30 % plus fortes.</dd>
       <dt>🔰 Soutiens</dt><dd>3 cartes qui ne combattent pas : leurs bonus (ATK, PV, DEF, VIT, critique, énergie de départ, régénération) s'appliquent à toute l'équipe. Ils grandissent avec le nombre de copies, jusqu'à 20.</dd>
       <dt>⭐ Spécialisations</dt><dd>À 3★ (5 copies), chaque carte débloque 2 spécialisations au choix (dans sa vue détaillée). C'est ton choix à toi : un autre joueur peut spécialiser la même carte autrement. Le premier choix est gratuit, en changer coûte 300 🪙.<br>
@@ -696,7 +738,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
   </div>
 </div>
 <div class="overlay hidden" id="picker">
-  <div class="hint-txt">Choisis une carte à envoyer en expédition (4 h)</div>
+  <div class="hint-txt" id="pickHint">Choisis une carte à envoyer en expédition (4 h)</div>
   <div class="grid" id="pickGrid"></div>
   <div class="ov-btns"><button id="pickClose">Annuler</button></div>
 </div>
@@ -741,7 +783,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <script>
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
-const APP_VERSION = "2026.10.16-1"; // à changer à chaque mise en ligne : les duels exigent la même version
+const APP_VERSION = "2026.10.16-2"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -776,7 +818,8 @@ function defaultState() {
     history: [], bestTen: 0, owner: null,
     exp: [null, null, null], expDone: 0, vitrine: [],
     team: [], supports: [], adv: 0, wins: 0, trophies: 0, arenaDate: "", arenaCount: 0, arenaWins: 0, bossDate: "", bossBest: 0, bossKills: 0,
-    tower: null, duelWins: 0, builds: [], mir: null
+    tower: null, duelWins: 0, builds: [], mir: null,
+    candy: 0, candyTotal: 0, shinyBoost: 0, hwTicket: 0, haunt: null
   };
 }
 function load() {
@@ -852,12 +895,14 @@ function cardEl(card, opts = {}) {
   const o = own(card.id);
   const copies = opts.shiny ? o.shinyCopies : o.copies;
   const c = el("div", "card " + card.rarete);
-  if (opts.locked) { c.classList.add("locked"); if (opts.shiny) c.classList.add("shiny-slot"); if (opts.gold) c.classList.add("gold-slot"); }
+  if (opts.locked) { c.classList.add("locked"); if (opts.shiny) c.classList.add("shiny-slot"); if (opts.gold) c.classList.add("gold-slot"); if (opts.hw) c.classList.add("hw-slot"); }
+  else if (opts.hw) c.classList.add("hw");
   else if (opts.gold) c.classList.add("gold");
   else if (opts.shiny) c.classList.add("shiny");
   if (opts.isNew) c.appendChild(el("span", "tag", "NEW"));
-  if (!opts.locked && !opts.gold && !opts.shiny && !opts.noDetail && canGold(card.id)) { const g = el("span", "tag gd", "🏅"); g.title = "Fusion Dorée disponible !"; c.appendChild(g); }
+  if (!opts.locked && !opts.gold && !opts.shiny && !opts.hw && !opts.noDetail && canGold(card.id)) { const g = el("span", "tag gd", "🏅"); g.title = "Fusion Dorée disponible !"; c.appendChild(g); }
   if (opts.tagShiny) c.appendChild(el("span", "tag sh", "SHINY"));
+  if (opts.tagHw) c.appendChild(el("span", "tag hwt", "🎃 COSTUME"));
   const art = el("div", "art"); art.appendChild(avatarImg(card)); c.appendChild(art);
   c.appendChild(el("div", "name", opts.locked ? "???" : card.pseudo));
   c.appendChild(el("div", "rar", RARITIES[RIDX[card.rarete]].nom));
@@ -866,7 +911,7 @@ function cardEl(card, opts = {}) {
   c.appendChild(el("div", "glare"));
   if (!opts.locked) {
     attachTilt(c, opts.big ? 18 : 14);
-    if (!opts.noDetail) { c.classList.add("clickable"); c.onclick = () => openDetail(card, opts.gold ? 2 : opts.shiny ? 1 : 0); }
+    if (!opts.noDetail) { c.classList.add("clickable"); c.onclick = () => openDetail(card, opts.gold ? 2 : opts.shiny ? 1 : 0, !!opts.hw); }
   }
   return c;
 }
@@ -894,12 +939,13 @@ function attachTilt(c, strength) {
 let detailState = null;
 const VARIANT_NAMES = ["", " · Shiny", " · Dorée"];
 function ownedVariants(id) { const o = own(id); return [o.copies > 0, o.shinyCopies > 0, !!o.gold].map((v, i) => v ? i : -1).filter(i => i >= 0); }
-function openDetail(card, variant) {
+function openDetail(card, variant, hw = false) {
   if (typeof variant === "boolean") variant = variant ? 1 : 0;
   detailState = { card, variant };
   const o = own(card.id);
-  const box = $("#detailCard"); box.replaceChildren(cardEl(card, { shiny: variant === 1, gold: variant === 2, big: true, noDetail: true }));
-  $("#dName").textContent = card.pseudo + ["", " ✨", " 🏅"][variant];
+  if (hw && !o.hw) hw = false;
+  const box = $("#detailCard"); box.replaceChildren(cardEl(card, { shiny: variant === 1, gold: variant === 2, hw, big: true, noDetail: true }));
+  $("#dName").textContent = card.pseudo + (hw ? " 🎃" : ["", " ✨", " 🏅"][variant]);
   const r = $("#dRar"); r.textContent = RARITIES[RIDX[card.rarete]].nom + VARIANT_NAMES[variant]; r.style.color = variant === 2 ? "#ffd76a" : `var(--${card.rarete})`;
   const q = $("#dQuote"); q.textContent = card.phrase || "Pas de phrase.";
   $("#dMeta").textContent = `Copies : ${o.copies} normale${o.copies > 1 ? "s" : ""} · ${o.shinyCopies} shiny${o.gold ? " · 🏅 Dorée" : ""}`;
@@ -907,6 +953,7 @@ function openDetail(card, variant) {
   const sw = $("#dSwap");
   sw.classList.toggle("hidden", !vars.length);
   if (vars.length) { const nx = vars[0]; sw.textContent = ["Voir la normale", "Voir le shiny ✨", "Voir la Dorée 🏅"][nx]; sw.onclick = () => openDetail(card, nx); }
+  if (o.hw && variant === 0) { sw.classList.remove("hidden"); sw.textContent = hw ? "Enlever le costume" : "Voir le costume 🎃"; sw.onclick = () => openDetail(card, 0, !hw); }
   const g = $("#dGold");
   const canGold = variant === 0 && !o.gold && o.copies > 0;
   g.classList.toggle("hidden", !canGold);
@@ -1030,9 +1077,12 @@ function pullOnce(minTier = 0, forceTier = null) {
   const f = featured();
   if (forceTier == null && f && f.rarete === card.rarete && Math.random() < FEATURED_CHANCE) card = f;
   state.shinyPity++;
-  const shiny = Math.random() < SHINY || state.shinyPity >= SHINY_PITY;
+  const boosted = state.shinyBoost > 0; if (boosted) state.shinyBoost--;
+  const shiny = Math.random() < SHINY * (boosted ? 3 : 1) || state.shinyPity >= SHINY_PITY;
   if (shiny) state.shinyPity = 0;
   const o = state.owned[card.id] || (state.owned[card.id] = { copies: 0, shinyCopies: 0 });
+  let hw = false;
+  if (hwActive()) { addCandy(1); if (!o.hw && Math.random() < HW_DROP) { o.hw = true; hw = true; } }
   const base = RARITIES[RIDX[card.rarete]].refund;
   let isNew = false, refund = 0;
   if (shiny) { if (o.shinyCopies > 0) refund = base * 3; else isNew = true; o.shinyCopies++; }
@@ -1041,7 +1091,7 @@ function pullOnce(minTier = 0, forceTier = null) {
   state.pulls++;
   state.history.unshift({ id: card.id, s: shiny ? 1 : 0 });
   if (state.history.length > 30) state.history.length = 30;
-  return { card, shiny, isNew, refund, tier: RIDX[card.rarete] };
+  return { card, shiny, isNew, refund, tier: RIDX[card.rarete], hw };
 }
 function doPull(n) {
   if (!CARDS.length) return toast("Aucune carte : personne ne s'est encore inscrit !");
@@ -1091,7 +1141,7 @@ function showReveal(results) {
     const inner = el("div", "inner");
     const back = el("div", "face back", r.shiny ? "✨" : "?");
     const front = el("div", "face front");
-    front.appendChild(cardEl(r.card, { shiny: r.shiny, isNew: r.isNew, tagShiny: r.shiny, noDetail: true }));
+    front.appendChild(cardEl(r.card, { shiny: r.shiny, hw: r.hw && !r.shiny, isNew: r.isNew, tagShiny: r.shiny, tagHw: r.hw, noDetail: true }));
     inner.append(back, front); f.appendChild(inner);
     f.onclick = () => {
       if (f.classList.contains("open")) return openDetail(r.card, r.shiny ? 1 : 0);
@@ -1099,6 +1149,7 @@ function showReveal(results) {
       sfx("r" + r.tier);
       if (r.shiny) { confetti(["#9ee8ff", "#ff9ff0", "#ffffff", "#fff3a0"]); flash("shy", "✨ SHINY ✨"); sfx("shiny"); }
       else if (r.tier === 4) { confetti(["#ff5fa2", "#ffc23d", "#4da3ff", "#b46bff"]); flash("myth", "✦ MYTHIQUE ✦"); sfx("myth"); }
+      if (r.hw) { confetti(["#ff8a1c", "#b46bff", "#2b1235", "#ffb347"]); if (!r.shiny && r.tier < 4) { flash("myth", "🎃 COSTUME 🎃"); sfx("gold"); } }
       else if (r.tier === 3) confetti(["#ffc23d", "#fff3b0", "#ff8a3d"]);
     };
     box.appendChild(f);
@@ -1107,7 +1158,7 @@ function showReveal(results) {
   const best = Math.max(...results.map(r => r.tier));
   const anyShiny = results.some(r => r.shiny);
   const refund = results.reduce((s, r) => s + r.refund, 0);
-  $(".hint-txt").textContent = (anyShiny ? "✨ Quelque chose scintille étrangement... " : best >= 3 ? "🔥 Quelque chose de rare brille... " : "Clique sur les cartes pour les retourner") + (refund ? ` · Doublons : +${refund} 🪙` : "");
+  $(".hint-txt").textContent = (results.some(r => r.hw) ? "🎃 Une odeur de citrouille flotte dans l'air... " : "") + (anyShiny ? "✨ Quelque chose scintille étrangement... " : best >= 3 ? "🔥 Quelque chose de rare brille... " : "Clique sur les cartes pour les retourner") + (refund ? ` · Doublons : +${refund} 🪙` : "");
 }
 $("#revealAll").onclick = () => document.querySelectorAll(".flip:not(.open)").forEach((f, i) => setTimeout(() => { if (!f.classList.contains("open")) f.click(); }, i * 120));
 $("#closeOv").onclick = () => { $("#overlay").classList.add("hidden"); renderCollection(); };
@@ -1182,6 +1233,8 @@ const ACH = [
   { id: "tour25", nom: "Sommet", desc: "Atteins l'étage 25 de la Tour", val: () => (state.tower && state.tower.max) || 0, goal: () => 25, rew: { frags: 6 } },
   { id: "duel5", nom: "Duelliste", desc: "Gagne 5 duels en direct", val: () => state.duelWins || 0, goal: () => 5, rew: { frags: 3 } },
   { id: "mir1", nom: "Reflet parfait", desc: "Termine une catégorie du Mode Miroir (étage 20)", val: () => mirDoneCount(), goal: () => 1, rew: { frags: 4 } },
+  { id: "hw500", nom: "Bonbon ou sort ?", desc: "Gagne 500 🍬 pendant Halloween", val: () => state.candyTotal || 0, goal: () => 500, rew: { frags: 3 } },
+  { id: "hw10", nom: "Collection hantée", desc: "Obtiens 10 costumes 🎃", val: () => hwCount(), goal: () => Math.max(1, Math.min(10, CARDS.length)), rew: { tickets: 1 } },
   { id: "mir5", nom: "Maître des miroirs", desc: "Termine les 5 catégories du Mode Miroir", val: () => mirDoneCount(), goal: () => 5, rew: { tickets: 1, coins: 3000 } },
 ];
 function pct() { return CARDS.length ? Math.floor(countBy(c => own(c.id).copies > 0) / CARDS.length * 100) : 0; }
@@ -1252,7 +1305,7 @@ function refresh() {
   $("#fuse").disabled = state.fragments < FRAG_PER_TICKET;
   const owned = countBy(c => own(c.id).copies > 0);
   $("#stats").textContent = `${state.pulls} tirages · ${owned}/${CARDS.length} potes trouvés · ${shinyCount()}/${CARDS.length} shiny`;
-  renderHistory(); renderExp();
+  renderHistory(); renderExp(); renderHalloween();
 }
 function renderHistory() {
   const h = $("#hist"); h.replaceChildren();
@@ -1284,23 +1337,26 @@ function renderFilters() {
   }
 }
 function renderCollection() {
-  const has = c => colMode === 1 ? own(c.id).shinyCopies > 0 : colMode === 2 ? !!own(c.id).gold : own(c.id).copies > 0;
+  $("#modeH").classList.toggle("hidden", !hwActive() && !hwCount());
+  if (colMode === 3 && $("#modeH").classList.contains("hidden")) colMode = 0;
+  const has = c => colMode === 1 ? own(c.id).shinyCopies > 0 : colMode === 2 ? !!own(c.id).gold : colMode === 3 ? !!own(c.id).hw : own(c.id).copies > 0;
   const owned = countBy(has);
   const p = CARDS.length ? Math.round(owned / CARDS.length * 100) : 0;
-  $("#colTxt").textContent = `${["Collection", "Collection shiny", "Collection Dorée"][colMode]} : ${owned}/${CARDS.length} (${p} %)`;
+  $("#colTxt").textContent = `${["Collection", "Collection shiny", "Collection Dorée", "Costumes d'Halloween"][colMode]} : ${owned}/${CARDS.length} (${p} %)`;
   $("#colBar").style.width = p + "%";
-  $("#colBar").style.background = ["", "linear-gradient(90deg,#9ee8ff,#ff9ff0)", "linear-gradient(90deg,#ffd76a,#ff9f1c)"][colMode];
-  ["#modeN", "#modeS", "#modeG"].forEach((sel, i) => $(sel).classList.toggle("on", colMode === i));
+  $("#colBar").style.background = ["", "linear-gradient(90deg,#9ee8ff,#ff9ff0)", "linear-gradient(90deg,#ffd76a,#ff9f1c)", "linear-gradient(90deg,#ff8a1c,#b46bff)"][colMode];
+  ["#modeN", "#modeS", "#modeG", "#modeH"].forEach((sel, i) => $(sel).classList.toggle("on", colMode === i));
   renderVitrine();
   const g = $("#grid"); g.replaceChildren();
   const list = CARDS.filter(c => filter === "all" || (filter === "owned" ? has(c) : c.rarete === filter))
     .sort((a, b) => RIDX[b.rarete] - RIDX[a.rarete] || a.pseudo.localeCompare(b.pseudo));
-  for (const c of list) g.appendChild(cardEl(c, { locked: !has(c), shiny: colMode === 1, gold: colMode === 2 }));
+  for (const c of list) g.appendChild(cardEl(c, { locked: !has(c), shiny: colMode === 1, gold: colMode === 2, hw: colMode === 3 }));
   if (!list.length) g.appendChild(el("p", null, "Rien ici pour l'instant."));
 }
 $("#modeN").onclick = () => { colMode = 0; renderCollection(); };
 $("#modeS").onclick = () => { colMode = 1; renderCollection(); };
 $("#modeG").onclick = () => { colMode = 2; renderCollection(); };
+$("#modeH").onclick = () => { colMode = 3; renderCollection(); };
 
 function vitrineCards(list) {
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
@@ -1646,6 +1702,7 @@ function renderExp() {
   });
 }
 function openPicker(slot) {
+  $("#pickHint").textContent = "Choisis une carte à envoyer en expédition (4 h)";
   const busy = new Set(state.exp.filter(Boolean).map(e => e.id + ":" + e.s));
   const g = $("#pickGrid"); g.replaceChildren();
   const opts = [];
@@ -1758,18 +1815,19 @@ function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let
 
 function makeUnit(card, s = 0, st = 1, side = "ally", mult = 1, extra = {}) {
   const t = RIDX[card.rarete], cls = CLASSES[extra.cls] ? extra.cls : cardClass(card), c = CLASSES[cls];
-  const m = (1 + .08 * (Math.max(1, st) - 1)) * (s === 1 ? 1.1 : s === 2 ? 1.2 : 1) * mult;
+  const myth = t === 4; // shiny/Dorée Mythique : bonus renforcé
+  const m = (1 + .08 * (Math.max(1, st) - 1)) * (s === 1 ? (myth ? 1.25 : 1.1) : s === 2 ? (myth ? 1.3 : 1.2) : 1) * mult;
   const bo = extra.bonus || {};
   const hp = Math.round(BASE_HP[t] * c.hp * m * (extra.hpMult || 1) * (1 + (bo.hp || 0) / 100));
   return {
     key: Math.random().toString(36).slice(2), card, s, side, cls, tier: t,
     hp, maxHp: hp, baseHp: Math.round(hp / (extra.hpMult || 1)), atk: Math.round(BASE_ATK[t] * c.atk * m * (extra.atkMult || 1) * (1 + (bo.atk || 0) / 100)),
     def: Math.round(BASE_DEF[t] * c.def * m * (1 + (bo.def || 0) / 100)),
-    spd: BASE_SPD[t] + c.spd + hashStr(card.id) % 4 + Math.round(bo.spd || 0), energy: Math.min(MAX_ENERGY, 1 + (bo.energy || 0)),
+    spd: BASE_SPD[t] + c.spd + hashStr(card.id) % 4 + Math.round(bo.spd || 0), energy: Math.min(MAX_ENERGY, 1 + (bo.energy || 0) + (myth && s === 1 ? 1 : 0)),
     crit: bo.crit || 0, regen: bo.regen || 0, shield: 0, shieldT: 0, taunt: 0, guard: false, alive: true,
     spec: extra.spec && SPECS[extra.spec] && SPECS[extra.spec].cls === cls ? extra.spec : null,
     burn: 0, burnDmg: 0, healCut: 0, frozen: 0, buffT: 0,
-    boss: !!extra.boss, dealt: 0
+    boss: !!extra.boss, ghost: !!extra.ghost, dealt: 0
   };
 }
 function rageF() { return B && B.round > RAGE_FROM ? 1 + .2 * (B.round - RAGE_FROM) : 1; }
@@ -2007,7 +2065,7 @@ function closeBattle() { $("#battle").classList.add("hidden"); $("#bResult").cla
 // ---------- Affichage du combat ----------
 function blog(txt, cls = "") { if (!B) return; B.log.push([txt, cls]); if (B.log.length > 60) B.log.shift(); const l = $("#bLog"); const p = el("div", "bl " + cls, txt); l.appendChild(p); while (l.children.length > 60) l.firstChild.remove(); l.scrollTop = l.scrollHeight; }
 function unitEl(u) {
-  const d = el("div", "unit " + u.card.rarete + (u.alive ? "" : " dead") + (B && B.active === u ? " active" : "") + (u.boss ? " boss" : ""));
+  const d = el("div", "unit " + u.card.rarete + (u.alive ? "" : " dead") + (B && B.active === u ? " active" : "") + (u.boss ? " boss" : "") + (u.ghost ? " ghost" : ""));
   d.dataset.key = u.key;
   const av = el("div", "uav" + (u.s === 1 ? " shiny" : u.s === 2 ? " gold" : "")); av.appendChild(avatarImg(u.card)); d.appendChild(av);
   const nm = el("div", "un", `${unitIco(u)} ${u.card.pseudo}`); nm.title = u.spec ? `${SPECS[u.spec].nom} (${CLASSES[u.cls].nom}) : ${SPECS[u.spec].desc}` : CLASSES[u.cls].nom; d.appendChild(nm);
@@ -2209,7 +2267,7 @@ function startAdventure() {
     onEnd: win => {
       if (!win) return { lines: ["Renforce ton équipe (étoiles, shiny, Dorées) et réessaie !"] };
       state.adv = stage; state.coins += rw.coins; state.fragments += rw.frags;
-      return { lines: [`Étape ${stage} terminée !`, `+${rw.coins} 🪙` + (rw.frags ? ` · +${rw.frags} fragment${rw.frags > 1 ? "s" : ""} ✦` : "")] };
+      return { lines: [`Étape ${stage} terminée !`, `+${rw.coins} 🪙` + (rw.frags ? ` · +${rw.frags} fragment${rw.frags > 1 ? "s" : ""} ✦` : "") + candyTxt(addCandy(8))] };
     }
   });
 }
@@ -2248,7 +2306,7 @@ async function startArena(p) {
         if (win) {
           const gain = Math.max(10, Math.min(40, 20 + Math.round(diff / 20)));
           state.trophies = (state.trophies || 0) + gain; state.arenaWins = (state.arenaWins || 0) + 1; state.coins += 150;
-          lines.push(`+${gain} 🏆 trophées · +150 🪙`);
+          lines.push(`+${gain} 🏆 trophées · +150 🪙` + candyTxt(addCandy(10)));
         } else {
           const loss = Math.max(5, Math.min(20, 10 - Math.round(diff / 40)));
           state.trophies = Math.max(0, (state.trophies || 0) - loss);
@@ -2276,7 +2334,7 @@ function startBoss() {
     onEnd: (win, { dealt }) => {
       const coins = Math.min(3000, 100 + Math.round(dealt / 2));
       state.coins += coins; state.bossBest = dealt;
-      const lines = [`Dégâts infligés : ${dealt}`, `+${coins} 🪙`];
+      const lines = [`Dégâts infligés : ${dealt}`, `+${coins} 🪙` + candyTxt(addCandy(win ? 15 : 5))];
       if (win) { state.bossKills = (state.bossKills || 0) + 1; state.fragments += 2; lines.push("Boss vaincu ! +2 fragments ✦"); }
       return { lines };
     }
@@ -2339,6 +2397,8 @@ async function renderCombatTab() {
   $("#towerBtn").textContent = tw.runs >= TOWER_RUNS ? "Reviens demain ⏳" : "Commencer une montée";
   const tf = $("#towerFoes"); tf.replaceChildren();
   if (CARDS.length) for (const u of towerEnemies(1)) { const m = el("div", "mini " + u.card.rarete); m.title = "Étage 1 : " + u.card.pseudo; m.appendChild(avatarImg(u.card)); tf.appendChild(m); }
+  // Halloween
+  renderHaunt();
   // Miroir
   renderMirror();
   // Duel
@@ -2379,6 +2439,131 @@ $("#supEdit").onclick = openSupportPicker;
 $("#advBtn").onclick = startAdventure;
 $("#bossBtn").onclick = startBoss;
 
+
+// =====================================================================
+// ---------- 🎃 HALLOWEEN (événement temporaire) ----------
+// =====================================================================
+const HW_START = new Date(2026, 9, 16).getTime(), HW_END = new Date(2026, 10, 2).getTime(); // jusqu'au 1er novembre inclus
+const HW_DROP = 0.04;
+function hwActive() { const n = Date.now(); return n >= HW_START && n < HW_END; }
+function hwLeft() { const ms = HW_END - Date.now(), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5); return d ? `${d} j ${h} h` : `${h} h ${Math.floor(ms % 36e5 / 6e4)} min`; }
+function hwCount() { return countBy(c => !!own(c.id).hw); }
+function addCandy(n) { if (!hwActive() || !n) return 0; state.candy = (state.candy || 0) + n; state.candyTotal = (state.candyTotal || 0) + n; return n; }
+function candyTxt(n) { return n ? ` · +${n} 🍬` : ""; }
+function hwCostumeCost(card) { return 60 + RIDX[card.rarete] * 30; }
+const HW_SHOP = [
+  { id: "costume", ico: "🎃", nom: "Costume au choix", desc: "Habille une de tes cartes en Halloween (60 à 180 🍬 selon la rareté)", price: null, buy: () => openCostumePicker() },
+  { id: "free10", ico: "🎰", nom: "Tirage ×10 gratuit", desc: "Ajouté à tes tirages gratuits", price: 250, buy: () => { state.free10++; return "Tirage ×10 gratuit ajouté !"; } },
+  { id: "frag", ico: "✦", nom: "Fragment Mythique", desc: "Un fragment pour les tickets Mythiques", price: 120, buy: () => { state.fragments++; return "+1 fragment ✦"; } },
+  { id: "potion", ico: "🧪", nom: "Potion de shiny", desc: "Chances de shiny ×3 sur tes 10 prochains tirages (cumulable)", price: 150, buy: () => { state.shinyBoost = (state.shinyBoost || 0) + 10; return "🧪 Potion bue : shiny ×3 pour 10 tirages !"; } },
+  { id: "ticket", ico: "🎟️", nom: "Ticket Mythique", desc: "Un seul par joueur pendant l'événement", price: 900, limit: () => (state.hwTicket || 0) >= 1, buy: () => { state.tickets++; state.hwTicket = 1; return "🎟️ Ticket Mythique obtenu !"; } },
+];
+let batsOn = false;
+function renderHalloween() {
+  const on = hwActive();
+  document.body.classList.toggle("hw", on);
+  const bn = $("#hwBanner"); bn.classList.toggle("hidden", !on);
+  $("#hwShop").classList.toggle("hidden", !on);
+  if (!on) return;
+  bn.replaceChildren();
+  bn.append(el("span", null, "🎃"), el("span", null, ""));
+  bn.lastChild.innerHTML = `<b>Halloween</b> encore ${hwLeft()} : gagne des 🍬 en tirant et en combattant, trouve des costumes 🎃 et visite la 🏚️ Maison hantée (onglet Combat) !`;
+  const cb = el("span", "candy", `🍬 ${state.candy || 0}`); cb.style.marginLeft = "auto"; bn.appendChild(cb);
+  if (!batsOn) {
+    batsOn = true;
+    for (let i = 0; i < 3; i++) { const b = el("div", "bat", "🦇"); b.style.setProperty("--y", (12 + i * 28) + "vh"); b.style.animationDuration = (22 + i * 9) + "s"; b.style.animationDelay = (-i * 7) + "s"; document.body.appendChild(b); }
+  }
+  $("#hwInfo").innerHTML = `Tu as <span class="candy">🍬 ${state.candy || 0}</span> · costumes : ${hwCount()}/${CARDS.length}` + (state.shinyBoost > 0 ? ` · 🧪 shiny ×3 encore ${state.shinyBoost} tirages` : "");
+  const box = $("#hwItems"); box.replaceChildren();
+  for (const it of HW_SHOP) {
+    const row = el("div", "hwitem");
+    row.appendChild(el("span", null, it.ico)); row.firstChild.style.fontSize = "22px";
+    const d = el("div"); d.appendChild(el("b", null, it.nom)); d.append(it.desc); row.appendChild(d);
+    const lim = it.limit && it.limit();
+    const b = el("button", "small-btn", lim ? "Déjà pris" : it.price ? `🍬 ${it.price}` : "Choisir");
+    b.disabled = lim || (it.price && (state.candy || 0) < it.price);
+    b.onclick = () => {
+      if (!hwActive()) return toast("L'événement est terminé 🎃");
+      if (it.price) {
+        if ((state.candy || 0) < it.price) return toast("Pas assez de bonbons 🍬");
+        state.candy -= it.price;
+        toast(it.buy()); sfx("coin"); afterAction();
+      } else it.buy();
+    };
+    row.appendChild(b); box.appendChild(row);
+  }
+}
+function openCostumePicker() {
+  $("#pickHint").textContent = "🎃 Choisis la carte à habiller pour Halloween";
+  const g = $("#pickGrid"); g.replaceChildren();
+  const opts = CARDS.filter(c => ownedVariants(c.id).length && !own(c.id).hw).sort((a, b) => RIDX[b.rarete] - RIDX[a.rarete] || a.pseudo.localeCompare(b.pseudo));
+  for (const c of opts) {
+    const w = el("div", "pick"); w.appendChild(cardEl(c, { noDetail: true }));
+    const cost = hwCostumeCost(c);
+    w.appendChild(el("div", "rw", `🍬 ${cost}`));
+    w.onclick = () => {
+      if ((state.candy || 0) < cost) return toast(`Il faut ${cost} 🍬`);
+      state.candy -= cost; state.owned[c.id].hw = true;
+      $("#picker").classList.add("hidden");
+      flash("myth", "🎃 COSTUME 🎃"); sfx("gold"); confetti(["#ff8a1c", "#b46bff", "#ffb347"]);
+      afterAction(); renderCollection(); openDetail(c, 0, true);
+    };
+    g.appendChild(w);
+  }
+  if (!opts.length) g.appendChild(el("p", "lb-note", "Toutes tes cartes ont déjà leur costume 🎃"));
+  $("#picker").classList.remove("hidden");
+}
+// ----- 🏚️ Maison hantée -----
+const HAUNT = [
+  { nom: "😱 Salle du frisson", mult: .85, tier: 2, st: 2, candy: 20, coins: 200 },
+  { nom: "👻 Salle de l'effroi", mult: 1, tier: 3, st: 3, candy: 40, coins: 400 },
+  { nom: "💀 Salle du cauchemar", mult: 1.45, tier: 3, st: 5, candy: 80, coins: 800, boss: true },
+];
+function hauntState() { const h = state.haunt || (state.haunt = { date: "", done: [] }); if (h.date !== today()) { h.date = today(); h.done = []; } return h; }
+function hauntEnemies(i) {
+  const L = HAUNT[i], r = rng(hashStr("hante:" + today() + ":" + i));
+  const sorted = [...cardsBefore(startOfToday())].sort((a, b) => a.id.localeCompare(b.id));
+  if (!sorted.length) return [];
+  const pool0 = sorted.filter(c => RIDX[c.rarete] <= L.tier), pool = pool0.length ? pool0 : sorted;
+  const ghost = c => ({ ...c, pseudo: "👻 " + c.pseudo });
+  const out = [0, 1, 2].map(() => { const c = pool[Math.floor(r() * pool.length)], sp = specsOf(cardClass(c)); return makeUnit(ghost(c), 0, L.st, "enemy", L.mult, { ghost: true, spec: sp[Math.floor(r() * sp.length)] }); });
+  if (L.boss) {
+    const f = featured() || sorted[0], sp = specsOf(cardClass(f));
+    out[1] = makeUnit({ ...f, pseudo: "🎃 Roi " + f.pseudo }, 0, L.st, "enemy", L.mult, { ghost: true, hpMult: 2, atkMult: 1.1, boss: true, spec: sp[Math.floor(r() * sp.length)] });
+  }
+  return out;
+}
+function renderHaunt() {
+  const box = $("#hauntBox"), on = hwActive();
+  box.classList.toggle("hidden", !on); if (!on) return;
+  const h = hauntState(), list = $("#hauntList"); list.replaceChildren();
+  HAUNT.forEach((L, i) => {
+    const row = el("div", "arow");
+    const mid = el("div", "am"); mid.appendChild(el("b", null, L.nom)); mid.appendChild(el("span", null, `🍬 ${L.candy} · 🪙 ${L.coins}`));
+    const minis = el("div", "hist");
+    for (const u of hauntEnemies(i)) { const m = miniEl(u.card, 0, `${u.card.pseudo} · ${u.spec ? SPECS[u.spec].nom : CLASSES[u.cls].nom}${u.boss ? " · BOSS" : ""}`, u.spec); m.style.filter = "grayscale(.7) hue-rotate(200deg)"; minis.appendChild(m); }
+    mid.appendChild(minis); row.appendChild(mid);
+    const done = h.done.includes(i);
+    const b = el("button", "small-btn" + (done ? " alt" : ""), done ? "✅ Rejouer" : "Entrer");
+    b.title = done ? "Déjà gagnée aujourd'hui : plus de récompense avant demain" : "";
+    b.onclick = () => startHaunt(i); row.appendChild(b);
+    list.appendChild(row);
+  });
+}
+function startHaunt(i) {
+  if (needTeam()) return;
+  if (!hwActive()) return toast("L'événement est terminé 🎃");
+  const L = HAUNT[i], first = !hauntState().done.includes(i);
+  startBattle(teamUnits(), hauntEnemies(i), {
+    title: `🏚️ Maison hantée · ${L.nom}`,
+    onEnd: win => {
+      if (!win) return { lines: ["Les fantômes t'ont eu… 👻 Réessaie quand tu veux !"] };
+      if (!first) return { lines: ["Salle déjà vidée aujourd'hui : pas de récompense avant demain."] };
+      hauntState().done.push(i); state.coins += L.coins;
+      return { lines: [`${L.nom} vidée !`, `+${L.coins} 🪙` + candyTxt(addCandy(L.candy))] };
+    }
+  });
+}
 
 // =====================================================================
 // ---------- MODE MIROIR : la classe contre la même classe ----------
@@ -2506,7 +2691,7 @@ function startMirror(cls) {
       if (!first) return { lines: ["Victoire pour l'honneur 😎 (pas de récompense en rejouant)."] };
       const rw = mirReward(f);
       mirState().best[cls] = f; state.coins += rw.coins; state.fragments += rw.frags;
-      const lines = [`Étage ${f} terminé !`, `+${rw.coins} 🪙` + (rw.frags ? ` · +${rw.frags} fragment${rw.frags > 1 ? "s" : ""} ✦` : "")];
+      const lines = [`Étage ${f} terminé !`, `+${rw.coins} 🪙` + (rw.frags ? ` · +${rw.frags} fragment${rw.frags > 1 ? "s" : ""} ✦` : "") + candyTxt(addCandy(10))];
       if (f === MIR_FLOORS) { lines.push(`🏆 Catégorie terminée : tu deviens ${mirTitle(cls)} !`); confetti(["#ffc23d", "#ff5fa2", "#b46bff"]); }
       return f < MIR_FLOORS ? { lines, buttons: [{ label: `⬆️ Étage ${f + 1}`, fn: () => startMirror(cls) }] } : { lines };
     }
@@ -2559,7 +2744,7 @@ function fightFloor() {
       }
       const coins = 40 + floor * 12;
       RUN.coins += coins; state.coins += coins;
-      const lines = [`Étage ${floor} réussi ! +${coins} 🪙`];
+      const lines = [`Étage ${floor} réussi ! +${coins} 🪙` + candyTxt(addCandy(4))];
       if (floor > t.best) {
         t.best = floor;
         if (floor % 10 === 0) { state.fragments += 2; lines.push("Nouveau palier de la semaine : +2 fragments ✦"); }
@@ -2687,7 +2872,7 @@ function startDuelBattle(doc) {
     onEnd: (win, { timeout }) => {
       const dd = B.duel; clearInterval(dd.poll); clearInterval(dd.tick); DUEL = null;
       if (timeout) return { title: "🤝 Égalité", lines: ["30 tours écoulés, personne n'a gagné."] };
-      if (win) { state.coins += 150; state.duelWins = (state.duelWins || 0) + 1; return { lines: [dd.endMsg || `Tu as battu ${oppName} !`, "+150 🪙"] }; }
+      if (win) { state.coins += 150; state.duelWins = (state.duelWins || 0) + 1; return { lines: [dd.endMsg || `Tu as battu ${oppName} !`, "+150 🪙" + candyTxt(addCandy(10))] }; }
       return { lines: [dd.endMsg || `${oppName} a gagné cette fois.`] };
     }
   });
@@ -2906,7 +3091,9 @@ $("#fuse").onclick = () => {
 $("#spin").onclick = spin;
 $("#daily").onclick = () => {
   if (state.lastDaily === today()) return;
-  state.lastDaily = today(); state.dailyCount++; state.coins += DAILY; afterAction(); sfx("coin"); toast(`+${DAILY} 🪙 Reviens demain !`);
+  state.lastDaily = today(); state.dailyCount++; state.coins += DAILY;
+  const cd = addCandy(25);
+  afterAction(); sfx("coin"); toast(`+${DAILY} 🪙` + (cd ? ` · +${cd} 🍬` : "") + " Reviens demain !");
 };
 $("#reset").onclick = () => {
   if (!confirm("Effacer toute ta collection, tes pièces et tes succès ?")) return;

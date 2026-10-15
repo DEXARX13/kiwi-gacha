@@ -188,6 +188,33 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .detail-info blockquote{margin:16px 0;padding:12px 14px;border-left:3px solid var(--accent);background:#ffffff0d;border-radius:8px;font-style:italic;line-height:1.5;white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto}
 .detail-info .meta{color:var(--mute);font-size:14px}
 
+/* ---------- Compte / connexion ---------- */
+.hright{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.user{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);padding:4px 6px 4px 4px;border-radius:999px;font-weight:700;font-size:14px;max-width:260px}
+.user img{width:30px;height:30px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.user .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user .sync{font-size:13px;flex-shrink:0}
+.user button,.login-btn{background:transparent;border:1px solid var(--line);color:var(--mute);border-radius:999px;padding:4px 9px;font-size:12px;flex-shrink:0}
+.login-btn{background:#5865f2;border-color:#5865f2;color:#fff;font-weight:700;padding:9px 14px;font-size:14px}
+.help-box{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;max-width:440px;line-height:1.6}
+.help-box h3{margin-top:0}
+.help-box ol{padding-left:20px}
+.help-box code{background:#0006;padding:2px 6px;border-radius:6px}
+
+/* ---------- Classement ---------- */
+.lb{display:flex;flex-direction:column;gap:8px}
+.lb-row{display:grid;grid-template-columns:44px 44px 1fr auto;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px 14px}
+.lb-row.me{border-color:var(--accent);box-shadow:0 0 14px #e8263a44}
+.lb-row .rk{font-family:Bungee,sans-serif;font-size:18px;text-align:center;color:var(--mute)}
+.lb-row:nth-child(1) .rk{color:#ffc23d}.lb-row:nth-child(2) .rk{color:#d6dbe6}.lb-row:nth-child(3) .rk{color:#e09a5a}
+.lb-row img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.lb-row .nm{font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-row .sub{color:var(--mute);font-size:12px}
+.lb-row .val{font-weight:800;font-size:18px;text-align:right}
+.lb-row .val small{display:block;font-size:11px;color:var(--mute);font-weight:600}
+.lb-note{color:var(--mute);font-size:14px;margin:0 0 12px}
+@media(max-width:500px){.lb-row{grid-template-columns:30px 36px 1fr auto;gap:8px;padding:8px}.lb-row img{width:36px;height:36px}.user .nm{max-width:90px}}
+
 /* ---------- Confettis ---------- */
 .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
@@ -196,12 +223,16 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <body>
 <header>
   <h1>KIWI GACHA</h1>
-  <div class="coins"><span class="coin"></span><span id="coins">0</span></div>
+  <div class="hright">
+    <div id="userBox"></div>
+    <div class="coins"><span class="coin"></span><span id="coins">0</span></div>
+  </div>
 </header>
 <nav>
   <button data-tab="tirage" class="on">🎰 Tirage</button>
   <button data-tab="collection">📚 Collection</button>
   <button data-tab="succes">🏆 Succès<span id="achBadge"></span></button>
+  <button data-tab="classement">🏅 Classement</button>
   <button data-tab="quiz">❓ Qui est-ce ?</button>
   <button data-tab="regles">📜 Règles</button>
 </nav>
@@ -273,6 +304,16 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
     <div class="ach-list" id="achList"></div>
   </section>
 
+  <section id="tab-classement" class="hidden">
+    <div class="mode" id="lbMode">
+      <button data-k="cartes" class="on">📚 Collection</button>
+      <button data-k="shiny">✨ Shiny</button>
+      <button data-k="tirages">🎰 Tirages</button>
+    </div>
+    <p class="lb-note" id="lbNote"></p>
+    <div class="lb" id="lb"></div>
+  </section>
+
   <section id="tab-quiz" class="hidden">
     <div class="box quiz" id="quiz"></div>
   </section>
@@ -318,11 +359,12 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <ul>
         <li><b>/inscription</b> (+ phrase optionnelle) : crée ta carte.</li>
         <li><b>/maj</b> : met à jour ta pdp, ton pseudo ou ta phrase.</li>
+        <li><b>/connexion</b> : reçois ton lien perso pour sauvegarder ta partie en ligne.</li>
         <li><b>/carte</b>, <b>/liste</b>, <b>/desinscription</b>.</li>
         <li>Admin : <b>/ajouter</b> pour inscrire quelqu'un à sa place, <b>/ajouter-tous</b> pour inscrire tout le serveur (ou un rôle), <b>/rarete</b> pour changer sa rareté, <b>/retirer</b> pour enlever une carte.</li>
       </ul>
       <p>Clique sur une carte pour la voir en grand avec sa phrase en entier.</p>
-      <p>Ta collection est sauvegardée dans ce navigateur.</p>
+      <p>Sans connexion, ta collection est sauvegardée dans ce navigateur. Tape <b>/connexion</b> sur Discord pour la sauvegarder en ligne et apparaître dans le classement.</p>
       <button class="danger" id="reset">Réinitialiser ma partie</button>
     </div>
   </section>
@@ -334,6 +376,19 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
   <div class="ov-btns">
     <button id="revealAll">Tout révéler</button>
     <button id="closeOv">Fermer</button>
+  </div>
+</div>
+<div class="overlay hidden" id="loginHelp">
+  <div class="help-box">
+    <h3>🔗 Se connecter avec Discord</h3>
+    <ol>
+      <li>Va sur le serveur Discord du KIWI GACHA.</li>
+      <li>Tape <code>/connexion</code>.</li>
+      <li>Clique sur le lien que le bot t'envoie (visible que par toi).</li>
+    </ol>
+    <p>Ta partie sera sauvegardée en ligne : tu la retrouves sur tous tes appareils, et tu apparais dans le classement.</p>
+    <p class="lb-note">Si tu n'as pas encore de sauvegarde en ligne, ta partie actuelle sera reprise.</p>
+    <div class="ov-btns"><button id="helpClose">OK</button></div>
   </div>
 </div>
 <div class="overlay hidden" id="detail">
@@ -358,7 +413,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 // Laisse projectId vide pour jouer en mode démo.
 const CONFIG = {
   projectId: "kiwi-gacha",
-  apiKey: ""
+  apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
 };
 // ============================================
 
@@ -387,12 +442,15 @@ function defaultState() {
     coins: 1000, lastDaily: "", dailyCount: 0, pityE: 0, pityL: 0, shinyPity: 0,
     owned: {}, pulls: 0, quizDate: "", quizCount: 0, quizTotal: 0,
     tickets: 0, fragments: 0, free1: 0, free10: 0, wheelDate: "", claimed: {}, notified: {},
-    history: [], bestTen: 0
+    history: [], bestTen: 0, owner: null
   };
 }
 function load() {
   try { state = Object.assign(defaultState(), JSON.parse(localStorage.getItem(SAVE_KEY) || "{}")); }
   catch { state = defaultState(); }
+  migrate();
+}
+function migrate() {
   // Migration des anciennes sauvegardes (shiny = simple drapeau)
   for (const o of Object.values(state.owned)) {
     if (o.shinyCopies == null) o.shinyCopies = o.shiny ? 1 : 0;
@@ -400,7 +458,8 @@ function load() {
     if (o.copies == null) o.copies = 0;
   }
 }
-function save() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch {} }
+function saveLocal() { try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch {} }
+function save() { saveLocal(); scheduleSync(); }
 const own = id => state.owned[id] || { copies: 0, shinyCopies: 0 };
 
 // ---------- Avatars de secours ----------
@@ -408,7 +467,7 @@ function fallbackAvatar(name) {
   const colors = ["#ff5fa2", "#4da3ff", "#b46bff", "#ffc23d", "#3ddc84", "#ff8a3d"];
   let h = 0; for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
   const col = colors[h % colors.length];
-  const initial = (name.trim()[0] || "?").toUpperCase().replace(/[<>&"]/g, "");
+  const initial = ([...name.trim()][0] || "?").toUpperCase().replace(/[<>&"]/g, "");
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="#241015"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><text x="50" y="66" font-family="Arial" font-weight="bold" font-size="48" fill="#fff" text-anchor="middle">${initial}</text></svg>`;
   return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
 }
@@ -841,13 +900,197 @@ function renderQuiz() {
   q.appendChild(ch);
 }
 
+// ---------- Compte Discord & sauvegarde en ligne ----------
+const AUTH_KEY = "kiwi-gacha-auth-v1";
+let AUTH = null;
+const FS = () => `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(CONFIG.projectId)}/databases/(default)/documents`;
+
+function decodeJwt(t) {
+  let p = t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+  p += "=".repeat((4 - p.length % 4) % 4);
+  return JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(p), c => c.charCodeAt(0))));
+}
+function setAuth(idToken, refreshToken) {
+  const c = decodeJwt(idToken);
+  AUTH = { idToken, refreshToken, exp: c.exp * 1000, uid: c.user_id || c.sub, pseudo: c.pseudo || "Joueur", avatar: c.avatar || "" };
+  try { localStorage.setItem(AUTH_KEY, JSON.stringify(AUTH)); } catch {}
+}
+async function signInWithToken(token) {
+  const r = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key=${encodeURIComponent(CONFIG.apiKey)}`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, returnSecureToken: true })
+  });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error((d.error && d.error.message) || ("erreur " + r.status));
+  setAuth(d.idToken, d.refreshToken);
+}
+async function getIdToken() {
+  if (!AUTH) return null;
+  if (Date.now() > AUTH.exp - 60000) {
+    const r = await fetch(`https://securetoken.googleapis.com/v1/token?key=${encodeURIComponent(CONFIG.apiKey)}`, {
+      method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "grant_type=refresh_token&refresh_token=" + encodeURIComponent(AUTH.refreshToken)
+    });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      if (r.status === 400) { logout(); toast("Session expirée : refais /connexion sur Discord"); }
+      throw new Error("refresh " + r.status);
+    }
+    setAuth(d.id_token, d.refresh_token);
+  }
+  return AUTH.idToken;
+}
+
+let syncTimer = null, syncStatus = "ok";
+function setSync(s) { syncStatus = s; const el = document.querySelector("#userBox .sync"); if (el) { el.textContent = { ok: "☁️", pending: "⏳", err: "⚠️" }[s]; el.title = { ok: "Sauvegardé en ligne", pending: "Sauvegarde…", err: "Sauvegarde en ligne impossible pour l'instant" }[s]; } }
+function scheduleSync() {
+  if (!AUTH) return;
+  clearTimeout(syncTimer); setSync("pending");
+  syncTimer = setTimeout(() => cloudSave(), 1500);
+}
+function summary() {
+  return { cartes: countBy(c => own(c.id).copies > 0), shiny: shinyCount(), tirages: state.pulls };
+}
+async function cloudSave(keepalive = false) {
+  if (!AUTH) return;
+  clearTimeout(syncTimer);
+  const s = summary();
+  const body = { fields: {
+    state: { stringValue: JSON.stringify(state) },
+    pseudo: { stringValue: AUTH.pseudo }, avatar: { stringValue: AUTH.avatar },
+    cartes: { integerValue: String(s.cartes) }, shiny: { integerValue: String(s.shiny) }, tirages: { integerValue: String(s.tirages) },
+    maj: { stringValue: new Date().toISOString() }
+  } };
+  try {
+    const r = await fetch(`${FS()}/joueurs/${encodeURIComponent(AUTH.uid)}`, {
+      method: "PATCH", keepalive,
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + await getIdToken() },
+      body: JSON.stringify(body)
+    });
+    if (!r.ok) throw new Error("save " + r.status);
+    setSync("ok"); lbCache = null;
+  } catch (e) { console.warn(e); setSync("err"); }
+}
+async function cloudLoad() {
+  const r = await fetch(`${FS()}/joueurs/${encodeURIComponent(AUTH.uid)}`, { headers: { Authorization: "Bearer " + await getIdToken() } });
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error("load " + r.status);
+  const d = await r.json();
+  try { return JSON.parse(d.fields.state.stringValue); } catch { return null; }
+}
+async function syncOnLogin() {
+  setSync("pending");
+  try {
+    const cloud = await cloudLoad();
+    const localUsable = !state.owner || state.owner === AUTH.uid;
+    if (cloud && !(localUsable && state.pulls > (cloud.pulls || 0))) {
+      state = Object.assign(defaultState(), cloud); migrate();
+    } else if (!localUsable) {
+      state = defaultState();
+    }
+    state.owner = AUTH.uid;
+    saveLocal();
+    await cloudSave();
+  } catch (e) { console.warn(e); setSync("err"); }
+}
+async function initAuth() {
+  try { AUTH = JSON.parse(localStorage.getItem(AUTH_KEY) || "null"); } catch { AUTH = null; }
+  const m = location.hash.match(/token=([^&]+)/);
+  if (m) {
+    history.replaceState(null, "", location.pathname + location.search);
+    if (!CONFIG.apiKey) { showErr("Connexion impossible : l'apiKey n'est pas remplie dans CONFIG."); }
+    else {
+      try { await signInWithToken(decodeURIComponent(m[1])); toast("Connecté en tant que " + AUTH.pseudo + " ✅"); }
+      catch (e) { showErr("Lien de connexion invalide ou expiré (" + e.message + "). Refais /connexion sur Discord."); }
+    }
+  }
+  if (AUTH && CONFIG.apiKey) await syncOnLogin();
+  else if (AUTH) AUTH = null;
+  renderUser();
+}
+function logout() {
+  AUTH = null; clearTimeout(syncTimer);
+  try { localStorage.removeItem(AUTH_KEY); } catch {}
+  state = defaultState(); saveLocal();
+  renderUser(); refresh(); renderCollection(); checkAch(); lbCache = null;
+}
+function showErr(msg) { const b = $("#errBanner"); b.textContent = msg; b.classList.remove("hidden"); }
+function renderUser() {
+  const box = $("#userBox"); box.replaceChildren();
+  if (!CONFIG.projectId) return;
+  if (!AUTH) {
+    const b = el("button", "login-btn", "🔗 Se connecter");
+    b.onclick = () => $("#loginHelp").classList.remove("hidden");
+    box.appendChild(b); return;
+  }
+  const u = el("div", "user");
+  u.appendChild(avatarImg({ pseudo: AUTH.pseudo, avatar: AUTH.avatar }));
+  u.appendChild(el("span", "nm", AUTH.pseudo));
+  u.appendChild(el("span", "sync"));
+  const out = el("button", null, "Déco"); out.title = "Se déconnecter";
+  out.onclick = () => { if (confirm("Te déconnecter ? Ta partie reste sauvegardée en ligne.")) { cloudSave().finally(logout); } };
+  u.appendChild(out);
+  box.appendChild(u); setSync(syncStatus);
+}
+$("#helpClose").onclick = () => $("#loginHelp").classList.add("hidden");
+$("#loginHelp").addEventListener("click", e => { if (e.target.id === "loginHelp") $("#loginHelp").classList.add("hidden"); });
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden" && AUTH && syncStatus === "pending") cloudSave(true); });
+
+// ---------- Classement ----------
+let lbCache = null, lbKey = "cartes";
+async function fetchPlayers() {
+  if (lbCache && Date.now() - lbCache.t < 30000) return lbCache.list;
+  const list = []; let token = "";
+  do {
+    let url = `${FS()}/joueurs?pageSize=300&mask.fieldPaths=pseudo&mask.fieldPaths=avatar&mask.fieldPaths=cartes&mask.fieldPaths=shiny&mask.fieldPaths=tirages`;
+    if (token) url += "&pageToken=" + encodeURIComponent(token);
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("Firebase a répondu " + r.status);
+    const d = await r.json();
+    for (const doc of d.documents || []) {
+      const f = doc.fields || {}; const n = k => Number((f[k] && f[k].integerValue) || 0);
+      list.push({ uid: doc.name.split("/").pop(), pseudo: (f.pseudo && f.pseudo.stringValue) || "?", avatar: (f.avatar && f.avatar.stringValue) || "", cartes: n("cartes"), shiny: n("shiny"), tirages: n("tirages") });
+    }
+    token = d.nextPageToken || "";
+  } while (token);
+  lbCache = { t: Date.now(), list };
+  return list;
+}
+async function renderLeaderboard() {
+  const box = $("#lb"), note = $("#lbNote");
+  document.querySelectorAll("#lbMode button").forEach(b => b.classList.toggle("on", b.dataset.k === lbKey));
+  if (!CONFIG.projectId) { note.textContent = "Le classement n'est pas disponible en mode démo."; box.replaceChildren(); return; }
+  note.textContent = AUTH ? "" : "Connecte-toi avec /connexion sur Discord pour apparaître dans le classement.";
+  box.replaceChildren(el("p", "lb-note", "Chargement…"));
+  let list;
+  try { list = await fetchPlayers(); } catch (e) { box.replaceChildren(el("p", "lb-note", "Impossible de charger le classement (" + e.message + ").")); return; }
+  const other = { cartes: ["shiny", "tirages"], shiny: ["cartes", "tirages"], tirages: ["cartes", "shiny"] }[lbKey];
+  list = [...list].sort((a, b) => b[lbKey] - a[lbKey] || b[other[0]] - a[other[0]] || a.pseudo.localeCompare(b.pseudo)).slice(0, 100);
+  box.replaceChildren();
+  if (!list.length) { box.appendChild(el("p", "lb-note", "Personne pour l'instant. Sois le premier !")); return; }
+  const unit = { cartes: "cartes", shiny: "shiny", tirages: "tirages" };
+  list.forEach((p, i) => {
+    const row = el("div", "lb-row" + (AUTH && p.uid === AUTH.uid ? " me" : ""));
+    row.appendChild(el("div", "rk", i < 3 ? ["🥇", "🥈", "🥉"][i] : String(i + 1)));
+    row.appendChild(avatarImg({ pseudo: p.pseudo, avatar: p.avatar }));
+    const mid = el("div"); mid.appendChild(el("div", "nm", p.pseudo));
+    mid.appendChild(el("div", "sub", `${p.cartes}/${CARDS.length} cartes · ${p.shiny} shiny · ${p.tirages} tirages`));
+    row.appendChild(mid);
+    const v = el("div", "val", String(lbKey === "cartes" && CARDS.length ? p.cartes + "/" + CARDS.length : p[lbKey]));
+    v.appendChild(el("small", null, unit[lbKey])); row.appendChild(v);
+    box.appendChild(row);
+  });
+}
+document.querySelectorAll("#lbMode button").forEach(b => b.onclick = () => { lbKey = b.dataset.k; renderLeaderboard(); });
+
 // ---------- Navigation & boutons ----------
-const TABS = ["tirage", "collection", "succes", "quiz", "regles"];
+const TABS = ["tirage", "collection", "succes", "classement", "quiz", "regles"];
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
   document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
   for (const t of TABS) $("#tab-" + t).classList.toggle("hidden", t !== b.dataset.tab);
   if (b.dataset.tab === "collection") renderCollection();
   if (b.dataset.tab === "succes") renderAch();
+  if (b.dataset.tab === "classement") renderLeaderboard();
   if (b.dataset.tab === "quiz") renderQuiz();
 });
 $("#pull1").onclick = () => doPull(1);
@@ -865,13 +1108,14 @@ $("#daily").onclick = () => {
 };
 $("#reset").onclick = () => {
   if (!confirm("Effacer toute ta collection, tes pièces et tes succès ?")) return;
-  state = defaultState(); afterAction(); renderCollection(); toast("Partie réinitialisée");
+  state = defaultState(); if (AUTH) state.owner = AUTH.uid; afterAction(); renderCollection(); toast("Partie réinitialisée");
 };
 
 (async () => {
   load(); buildWheel();
   try { CARDS = await loadCards(); }
   catch (e) { const b = $("#errBanner"); b.textContent = "Impossible de charger les cartes : " + e.message + ". Vérifie CONFIG et les règles Firestore."; b.classList.remove("hidden"); CARDS = []; }
+  await initAuth();
   renderFeatured(); renderRates(); renderFilters(); renderCollection(); refresh(); checkAch(); save();
 })();
 </script>

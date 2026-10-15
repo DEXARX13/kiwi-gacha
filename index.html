@@ -264,6 +264,68 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .ov-btns{flex-wrap:wrap;justify-content:center}
 .mute{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:999px;width:38px;height:38px;font-size:16px}
 
+/* ---------- Combat : onglet ---------- */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.team-row{display:flex;gap:12px;flex-wrap:wrap;margin:6px 0 12px}
+.tslot .card{width:120px}
+.tslot .rw,.pick .rw{font-size:11px;color:var(--gold);text-align:center;margin-top:4px;font-weight:700}
+.pick.sel .card{outline:3px solid #3ddc84;outline-offset:3px}
+#teamPick .grid{max-width:900px;width:100%;max-height:65vh;overflow:auto;padding:8px}
+.arow{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px}
+.arow>img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.arow .am{flex:1;min-width:0}.arow .am b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.arow .am span{font-size:12px;color:var(--mute)}
+.arow .mini{width:28px;height:28px}
+#bossInfo{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-weight:700}
+#advFoes{margin:8px 0 12px}
+
+/* ---------- Combat : écran ---------- */
+#battle{z-index:58;justify-content:flex-start;padding:12px;background:radial-gradient(900px 500px at 50% 0,#3a0d16,#05040d 70%)}
+.bhead{display:flex;gap:8px;align-items:center;justify-content:space-between;width:100%;max-width:900px;flex-wrap:wrap}
+.bhead h3{margin:0;font-size:17px}
+.bhead .bctrl{display:flex;gap:6px;flex-wrap:wrap}
+.bbtn{background:var(--panel);border:1px solid var(--line);color:var(--txt);padding:9px 14px;border-radius:12px;font-weight:700}
+.bbtn.on{border-color:#3ddc84;color:#3ddc84}
+.bbtn.sk{background:linear-gradient(135deg,#c4001c,#ff3b4f);border:none;color:#fff}
+.bbtn:disabled{opacity:.4;cursor:not-allowed}
+.bteam{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;width:100%;max-width:900px;margin:14px 0}
+.unit{position:relative;width:150px;background:var(--panel);border:2px solid var(--c,var(--line));border-radius:14px;padding:8px;text-align:center;transition:transform .2s,opacity .3s,filter .3s}
+.unit.commun{--c:var(--commun)}.unit.rare{--c:var(--rare)}.unit.epique{--c:var(--epique)}.unit.legendaire{--c:var(--legendaire)}.unit.mythique{--c:var(--mythique)}
+.unit.boss{width:200px;box-shadow:0 0 30px #ff2e4488}
+.unit.active{transform:translateY(-6px) scale(1.04);box-shadow:0 0 22px var(--c)}
+.unit.dead{opacity:.35;filter:grayscale(1)}
+.unit.targetable{cursor:crosshair;animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 4px #ff2e44aa}}
+.unit .uav{width:64px;height:64px;margin:0 auto 6px;border-radius:12px;overflow:hidden}
+.unit.boss .uav{width:96px;height:96px}
+.unit .uav img{width:100%;height:100%;object-fit:cover}
+.unit .uav.shiny img{filter:invert(1)}.unit .uav.gold img{filter:sepia(.55) saturate(1.6)}
+.unit .un{font-weight:800;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hpbar{position:relative;height:9px;background:#0008;border-radius:9px;overflow:hidden;margin-top:6px}
+.hpbar i{position:absolute;left:0;top:0;bottom:0;background:#3ddc84;transition:width .4s}
+.hpbar i.mid{background:#ffc23d}.hpbar i.low{background:#ff4d5e}
+.hpbar b{position:absolute;right:0;top:0;bottom:0;background:#9ee8ffcc}
+.hpt{font-size:11px;color:var(--mute);margin-top:2px}
+.pips{display:flex;gap:3px;justify-content:center;margin-top:4px}
+.pips span{width:12px;height:5px;border-radius:3px;background:#ffffff22}.pips span.on{background:#ffc23d}
+.ust{position:absolute;top:4px;right:6px;font-size:14px}
+.unit.hit{animation:hit .35s}
+@keyframes hit{25%{transform:translateX(-7px);filter:brightness(2) saturate(0)}60%{transform:translateX(6px)}}
+.unit.act{animation:actA .35s}
+@keyframes actA{40%{transform:translateY(-14px) scale(1.06)}}
+.fnum{position:absolute;left:50%;top:30%;transform:translateX(-50%);font-family:Bungee,sans-serif;font-size:22px;pointer-events:none;animation:fup 1.1s ease-out forwards;z-index:3;text-shadow:0 2px 4px #000}
+.fnum.dmg{color:#fff}.fnum.crit{color:#ffc23d;font-size:28px}.fnum.heal{color:#3ddc84}.fnum.shield{color:#9ee8ff;font-size:16px}
+@keyframes fup{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}20%{opacity:1;transform:translate(-50%,-6px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-50px)}}
+.bmid{width:100%;max-width:900px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#bLog{height:150px;overflow:auto;background:#0006;border:1px solid var(--line);border-radius:12px;padding:8px 10px;font-size:13px}
+.bl{padding:2px 0;color:var(--mute)}.bl.round{color:#fff;font-weight:800;margin-top:4px}.bl.skill{color:#ffc23d}.bl.ko{color:#ff8fa8}.bl.win{color:#3ddc84;font-weight:800}.bl.lose{color:#ff4d5e;font-weight:800}
+#bActions{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;background:#0006;border:1px solid var(--line);border-radius:12px;padding:10px}
+.bwait{width:100%;font-weight:700;font-size:14px}
+.bhint{width:100%;font-size:12px;color:var(--mute)}
+#bResult{position:fixed;inset:0;margin:auto;width:min(380px,90vw);height:fit-content;background:var(--panel);border:2px solid var(--gold);border-radius:20px;padding:22px;text-align:center;z-index:59;box-shadow:0 0 60px #000}
+#bResult h2{margin:0 0 10px;font-family:Bungee,sans-serif}
+@media(max-width:640px){.unit{width:31%;min-width:96px;padding:6px}.unit .uav{width:46px;height:46px}.unit.boss{width:60%}.bmid{grid-template-columns:1fr}#bLog{height:90px}}
+
 /* ---------- Confettis ---------- */
 .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
@@ -282,6 +344,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
   <button data-tab="tirage" class="on">🎰 Tirage</button>
   <button data-tab="collection">📚 Collection</button>
   <button data-tab="succes">🏆 Succès<span id="achBadge"></span></button>
+  <button data-tab="combat">⚔️ Combat</button>
   <button data-tab="classement">🏅 Classement</button>
   <button data-tab="quiz">❓ Qui est-ce ?</button>
   <button data-tab="regles">📜 Règles</button>
@@ -361,11 +424,42 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
     <div class="ach-list" id="achList"></div>
   </section>
 
+  <section id="tab-combat" class="hidden">
+    <div class="box" style="margin-bottom:14px">
+      <h3>⚔️ Mon équipe</h3>
+      <p>3 cartes max. Chaque pote a une classe (⚔️ Guerrier, 🛡️ Tank, 🔮 Mage, 💚 Soigneur, 🗡️ Assassin). Ses stats dépendent de sa rareté, de ses étoiles et de sa version (shiny +10 %, Dorée +20 %). Cette équipe sert aussi de défense dans l'Arène.</p>
+      <div class="team-row" id="teamBox"></div>
+      <div class="inv"><b id="teamPower"></b><button class="small-btn" id="teamEdit">Changer l'équipe</button></div>
+    </div>
+    <div class="cgrid">
+      <div class="box">
+        <h3>🗺️ Aventure</h3>
+        <p id="advInfo"></p>
+        <div class="hist" id="advFoes"></div>
+        <p id="advRew" style="color:var(--gold);font-weight:700"></p>
+        <button class="small-btn" id="advBtn">Combattre</button>
+      </div>
+      <div class="box">
+        <h3>👹 Boss du jour</h3>
+        <p>Le pote du jour se transforme en boss géant. Un essai par jour, 12 tours : plus tu fais de dégâts, plus tu gagnes.</p>
+        <div id="bossInfo"></div>
+        <button class="small-btn" id="bossBtn">Affronter</button>
+      </div>
+      <div class="box">
+        <h3>🏟️ Arène</h3>
+        <p>Affronte l'équipe de tes potes (contrôlée par l'ordi) pour gagner des trophées. 5 combats classés par jour.</p>
+        <p id="arenaInfo" style="font-weight:700"></p>
+        <div id="arenaList"></div>
+      </div>
+    </div>
+  </section>
+
   <section id="tab-classement" class="hidden">
     <div class="mode" id="lbMode">
       <button data-k="cartes" class="on">📚 Collection</button>
       <button data-k="shiny">✨ Shiny</button>
       <button data-k="dorees">🏅 Dorées</button>
+      <button data-k="trophees">⚔️ Arène</button>
       <button data-k="tirages">🎰 Tirages</button>
     </div>
     <p class="lb-note" id="lbNote"></p>
@@ -412,6 +506,15 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li>3 emplacements. Une carte part 4 h et revient avec des pièces selon sa rareté et ses étoiles (×2 si shiny).</li>
         <li>Les Épiques, Légendaires et Mythiques peuvent aussi ramener un fragment ✦.</li>
       </ul>
+      <h3>⚔️ Combats</h3>
+      <ul>
+        <li>Combat au tour par tour avec une équipe de 3. À chaque tour : <b>Attaque</b>, <b>Compétence</b> (coûte de l'énergie ⚡) ou <b>Défense</b> (dégâts reçus ÷2, +2⚡).</li>
+        <li>Chaque attaque donne +1⚡. Les cartes Mythiques ont des compétences 30 % plus fortes.</li>
+        <li>Classes : ⚔️ Guerrier (gros coup), 🛡️ Tank (bouclier + provocation : les ennemis doivent le viser), 🔮 Mage (attaque de zone), 💚 Soigneur (soin de groupe), 🗡️ Assassin (achève le plus faible, critique garanti).</li>
+        <li>Modes : 🗺️ Aventure (étapes infinies, boss toutes les 5), 👹 Boss du jour, 🏟️ Arène (trophées, 5 combats classés par jour, il faut être connecté).</li>
+        <li>À partir du tour 9, la 🔥 Rage augmente les dégâts de tout le monde à chaque tour (et réduit les soins et boucliers).</li>
+        <li>Bouton 🤖 Auto pour laisser l'ordi jouer, ⏩ pour accélérer.</li>
+      </ul>
       <h3>📌 Vitrine et annonces</h3>
       <ul>
         <li>Épingle jusqu'à 3 cartes dans ta vitrine : les autres la voient en cliquant sur toi dans le classement.</li>
@@ -451,6 +554,21 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
     <button id="revealAll">Tout révéler</button>
     <button id="closeOv">Fermer</button>
   </div>
+</div>
+<div class="overlay hidden" id="battle">
+  <div class="bhead">
+    <h3 id="bTitle"></h3>
+    <div class="bctrl"><span class="bbtn" id="bRound"></span><button class="bbtn" id="bAuto"></button><button class="bbtn" id="bFast"></button><button class="bbtn" id="bQuit">🏳️ Quitter</button></div>
+  </div>
+  <div class="bteam" id="bEnemies"></div>
+  <div class="bmid"><div id="bLog"></div><div id="bActions"></div></div>
+  <div class="bteam" id="bAllies"></div>
+  <div id="bResult" class="hidden"></div>
+</div>
+<div class="overlay hidden" id="teamPick">
+  <div class="hint-txt">Choisis jusqu'à 3 cartes pour ton équipe · <b id="teamCount"></b></div>
+  <div class="grid" id="teamGrid"></div>
+  <div class="ov-btns"><button id="teamOk">Valider</button><button id="teamCancel">Annuler</button></div>
 </div>
 <div class="overlay hidden" id="picker">
   <div class="hint-txt">Choisis une carte à envoyer en expédition (4 h)</div>
@@ -527,7 +645,8 @@ function defaultState() {
     owned: {}, pulls: 0, quizDate: "", quizCount: 0, quizTotal: 0,
     tickets: 0, fragments: 0, free1: 0, free10: 0, wheelDate: "", claimed: {}, notified: {},
     history: [], bestTen: 0, owner: null,
-    exp: [null, null, null], expDone: 0, vitrine: []
+    exp: [null, null, null], expDone: 0, vitrine: [],
+    team: [], adv: 0, wins: 0, trophies: 0, arenaDate: "", arenaCount: 0, arenaWins: 0, bossDate: "", bossBest: 0, bossKills: 0
   };
 }
 function load() {
@@ -538,6 +657,7 @@ function load() {
 function migrate() {
   if (!Array.isArray(state.exp) || state.exp.length !== 3) state.exp = [null, null, null];
   if (!Array.isArray(state.vitrine)) state.vitrine = [];
+  if (!Array.isArray(state.team)) state.team = [];
   // Migration des anciennes sauvegardes (shiny = simple drapeau)
   for (const o of Object.values(state.owned)) {
     if (o.shinyCopies == null) o.shinyCopies = o.shiny ? 1 : 0;
@@ -876,6 +996,11 @@ const ACH = [
   { id: "gold1", nom: "Or pur", desc: "Crée ta première carte Dorée", val: () => goldCount(), goal: () => 1, rew: { frags: 3 } },
   { id: "gold5", nom: "Midas", desc: "Possède 5 cartes Dorées", val: () => goldCount(), goal: () => Math.max(1, Math.min(5, CARDS.length)), rew: { frags: 5 } },
   { id: "exp10", nom: "Explorateur", desc: "Termine 10 expéditions", val: () => state.expDone, goal: () => 10, rew: { frags: 3 } },
+  { id: "win1", nom: "Premier sang", desc: "Gagne ton premier combat", val: () => state.wins || 0, goal: () => 1, rew: { coins: 500 } },
+  { id: "adv10", nom: "Aventurier", desc: "Termine l'étape 10 de l'Aventure", val: () => state.adv || 0, goal: () => 10, rew: { frags: 3 } },
+  { id: "adv30", nom: "Légende de l'Aventure", desc: "Termine l'étape 30 de l'Aventure", val: () => state.adv || 0, goal: () => 30, rew: { frags: 6 } },
+  { id: "arena10", nom: "Gladiateur", desc: "Gagne 10 combats classés dans l'Arène", val: () => state.arenaWins || 0, goal: () => 10, rew: { frags: 3 } },
+  { id: "boss1", nom: "Chasseur de boss", desc: "Bats le boss du jour", val: () => state.bossKills || 0, goal: () => 1, rew: { frags: 3 } },
 ];
 function pct() { return CARDS.length ? Math.floor(countBy(c => own(c.id).copies > 0) / CARDS.length * 100) : 0; }
 function goldCount() { return countBy(c => !!own(c.id).gold); }
@@ -1097,6 +1222,8 @@ async function cloudSave(keepalive = false) {
     pseudo: { stringValue: AUTH.pseudo }, avatar: { stringValue: AUTH.avatar },
     cartes: { integerValue: String(s.cartes) }, shiny: { integerValue: String(s.shiny) }, tirages: { integerValue: String(s.tirages) },
     dorees: { integerValue: String(s.dorees) }, vitrine: { stringValue: JSON.stringify(state.vitrine.slice(0, 3)) },
+    equipe: { stringValue: JSON.stringify(validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s) }))) },
+    trophees: { integerValue: String(state.trophies || 0) },
     maj: { stringValue: new Date().toISOString() }
   } };
   try {
@@ -1180,14 +1307,14 @@ async function fetchPlayers() {
   if (lbCache && Date.now() - lbCache.t < 30000) return lbCache.list;
   const list = []; let token = "";
   do {
-    let url = `${FS()}/joueurs?pageSize=300&mask.fieldPaths=pseudo&mask.fieldPaths=avatar&mask.fieldPaths=cartes&mask.fieldPaths=shiny&mask.fieldPaths=tirages&mask.fieldPaths=dorees&mask.fieldPaths=vitrine`;
+    let url = `${FS()}/joueurs?pageSize=300&mask.fieldPaths=pseudo&mask.fieldPaths=avatar&mask.fieldPaths=cartes&mask.fieldPaths=shiny&mask.fieldPaths=tirages&mask.fieldPaths=dorees&mask.fieldPaths=vitrine&mask.fieldPaths=equipe&mask.fieldPaths=trophees`;
     if (token) url += "&pageToken=" + encodeURIComponent(token);
     const r = await fetch(url);
     if (!r.ok) throw new Error("Firebase a répondu " + r.status);
     const d = await r.json();
     for (const doc of d.documents || []) {
       const f = doc.fields || {}; const n = k => Number((f[k] && f[k].integerValue) || 0);
-      list.push({ uid: doc.name.split("/").pop(), pseudo: (f.pseudo && f.pseudo.stringValue) || "?", avatar: (f.avatar && f.avatar.stringValue) || "", cartes: n("cartes"), shiny: n("shiny"), tirages: n("tirages"), dorees: n("dorees"), vitrine: parseVitrine(f.vitrine) });
+      list.push({ uid: doc.name.split("/").pop(), pseudo: (f.pseudo && f.pseudo.stringValue) || "?", avatar: (f.avatar && f.avatar.stringValue) || "", cartes: n("cartes"), shiny: n("shiny"), tirages: n("tirages"), dorees: n("dorees"), vitrine: parseVitrine(f.vitrine), equipe: parseEquipe(f.equipe), trophees: n("trophees") });
     }
     token = d.nextPageToken || "";
   } while (token);
@@ -1202,11 +1329,11 @@ async function renderLeaderboard() {
   box.replaceChildren(el("p", "lb-note", "Chargement…"));
   let list;
   try { list = await fetchPlayers(); } catch (e) { box.replaceChildren(el("p", "lb-note", "Impossible de charger le classement (" + e.message + ").")); return; }
-  const other = { cartes: ["shiny", "tirages"], shiny: ["cartes", "tirages"], dorees: ["cartes", "shiny"], tirages: ["cartes", "shiny"] }[lbKey];
+  const other = { cartes: ["shiny", "tirages"], shiny: ["cartes", "tirages"], dorees: ["cartes", "shiny"], trophees: ["cartes", "shiny"], tirages: ["cartes", "shiny"] }[lbKey];
   list = [...list].sort((a, b) => b[lbKey] - a[lbKey] || b[other[0]] - a[other[0]] || a.pseudo.localeCompare(b.pseudo)).slice(0, 100);
   box.replaceChildren();
   if (!list.length) { box.appendChild(el("p", "lb-note", "Personne pour l'instant. Sois le premier !")); return; }
-  const unit = { cartes: "cartes", shiny: "shiny", dorees: "dorées", tirages: "tirages" };
+  const unit = { cartes: "cartes", shiny: "shiny", dorees: "dorées", trophees: "trophées", tirages: "tirages" };
   list.forEach((p, i) => {
     const row = el("div", "lb-row" + (AUTH && p.uid === AUTH.uid ? " me" : ""));
     row.appendChild(el("div", "rk", i < 3 ? ["🥇", "🥈", "🥉"][i] : String(i + 1)));
@@ -1365,14 +1492,455 @@ $("#pickClose").onclick = () => $("#picker").classList.add("hidden");
 $("#picker").addEventListener("click", e => { if (e.target.id === "picker") $("#picker").classList.add("hidden"); });
 setInterval(() => { if (!$("#tab-tirage").classList.contains("hidden")) renderExp(); }, 1000);
 
+// =====================================================================
+// ---------- COMBAT : moteur tour par tour ----------
+// =====================================================================
+const CLASSES = {
+  guerrier: { nom: "Guerrier", ico: "⚔️", hp: 1.05, atk: 1.15, def: 1, spd: 0,
+    skill: { nom: "Coup puissant", desc: "180 % de dégâts sur une cible", cost: 2, target: "enemy" } },
+  tank: { nom: "Tank", ico: "🛡️", hp: 1.35, atk: .8, def: 1.4, spd: -2,
+    skill: { nom: "Rempart", desc: "Bouclier de 30 % de ses PV et provoque les ennemis pendant 2 tours", cost: 2, target: "self" } },
+  mage: { nom: "Mage", ico: "🔮", hp: .85, atk: 1.1, def: .8, spd: 1,
+    skill: { nom: "Tempête", desc: "90 % de dégâts à tous les ennemis", cost: 3, target: "all" } },
+  soigneur: { nom: "Soigneur", ico: "💚", hp: .95, atk: .8, def: 1, spd: 1,
+    skill: { nom: "Soin", desc: "Soigne tous les alliés de 25 % de leurs PV max", cost: 2, target: "allies" } },
+  assassin: { nom: "Assassin", ico: "🗡️", hp: .8, atk: 1.25, def: .8, spd: 4,
+    skill: { nom: "Coup fatal", desc: "160 % de dégâts sur l'ennemi le plus faible, toujours critique", cost: 2, target: "weakest" } },
+};
+const CLASS_IDS = Object.keys(CLASSES);
+const BASE_HP = [100, 120, 145, 175, 210], BASE_ATK = [18, 22, 27, 33, 40], BASE_DEF = [8, 10, 12, 15, 18], BASE_SPD = [10, 11, 12, 13, 14];
+const MAX_ENERGY = 5, RAGE_FROM = 8;
+
+function hashStr(s) { let h = 2166136261; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h; }
+function cardClass(card) { return CLASS_IDS[hashStr(card.id + ":classe") % CLASS_IDS.length]; }
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+
+function makeUnit(card, s = 0, st = 1, side = "ally", mult = 1, extra = {}) {
+  const t = RIDX[card.rarete], cls = cardClass(card), c = CLASSES[cls];
+  const m = (1 + .08 * (Math.max(1, st) - 1)) * (s === 1 ? 1.1 : s === 2 ? 1.2 : 1) * mult;
+  const hp = Math.round(BASE_HP[t] * c.hp * m * (extra.hpMult || 1));
+  return {
+    key: Math.random().toString(36).slice(2), card, s, side, cls, tier: t,
+    hp, maxHp: hp, atk: Math.round(BASE_ATK[t] * c.atk * m * (extra.atkMult || 1)), def: Math.round(BASE_DEF[t] * c.def * m),
+    spd: BASE_SPD[t] + c.spd + hashStr(card.id) % 4, energy: 1, shield: 0, taunt: 0, guard: false, alive: true,
+    boss: !!extra.boss, dealt: 0
+  };
+}
+function rageF() { return B && B.round > RAGE_FROM ? 1 + .2 * (B.round - RAGE_FROM) : 1; }
+function unitPower(u) { return Math.round(u.maxHp / 4 + u.atk * 2 + u.def * 2 + u.spd); }
+function starsOf(id, s) { const o = own(id); return s === 2 ? 5 : stars(s === 1 ? o.shinyCopies : o.copies) || 1; }
+
+let B = null; // combat en cours
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+function bDelay(ms) { return sleep(B && B.fast ? ms / 2.5 : ms); }
+
+function startBattle(allies, enemies, opts) {
+  B = { allies, enemies, all: [...allies, ...enemies], order: [], round: 0, maxRounds: opts.maxRounds || 30,
+    title: opts.title, onEnd: opts.onEnd, auto: !!opts.autoDefault, fast: false, waiting: null, over: false, log: [] };
+  try { const pref = JSON.parse(localStorage.getItem("kiwi-gacha-combat") || "{}"); B.auto = pref.auto ?? B.auto; B.fast = !!pref.fast; } catch {}
+  $("#bLog").replaceChildren(); $("#bResult").classList.add("hidden"); $("#bActions").replaceChildren();
+  $("#battle").classList.remove("hidden");
+  renderBattle(); blog(`⚔️ ${opts.title}`);
+  sfx("r2");
+  setTimeout(nextTurn, 600);
+}
+function saveCombatPref() { try { localStorage.setItem("kiwi-gacha-combat", JSON.stringify({ auto: B.auto, fast: B.fast })); } catch {} }
+const aliveOf = side => B.all.filter(u => u.side === side && u.alive);
+const foes = u => aliveOf(u.side === "ally" ? "enemy" : "ally");
+const friends = u => aliveOf(u.side);
+
+async function nextTurn() {
+  if (!B || B.over) return;
+  if (!aliveOf("enemy").length) return endBattle(true);
+  if (!aliveOf("ally").length) return endBattle(false);
+  if (!B.order.length) {
+    B.round++;
+    if (B.round > B.maxRounds) return endBattle(false, true);
+    for (const u of B.all) if (u.taunt > 0) u.taunt--;
+    B.order = B.all.filter(u => u.alive).sort((a, b) => b.spd - a.spd || Math.random() - .5);
+    blog(`— Tour ${B.round} —`, "round");
+    if (B.round === RAGE_FROM + 1) blog("🔥 Rage : les dégâts augmentent à chaque tour !", "skill");
+  }
+  const u = B.order.shift();
+  if (!u.alive) return nextTurn();
+  u.guard = false; B.active = u; renderBattle();
+  if (u.side === "ally" && !B.auto) { B.waiting = { unit: u, step: "action" }; renderActions(); return; }
+  await bDelay(650);
+  if (!B || B.over) return;
+  const [kind, target] = aiChoose(u);
+  await act(u, kind, target);
+}
+function tauntersOf(u) { return foes(u).filter(f => f.taunt > 0); }
+function validTargets(u) { const t = tauntersOf(u); return t.length ? t : foes(u); }
+function aiChoose(u) {
+  const c = CLASSES[u.cls], f = foes(u), al = friends(u);
+  if (u.energy >= c.skill.cost) {
+    if (u.cls === "soigneur" && al.some(a => a.hp / a.maxHp < .6)) return ["skill"];
+    if (u.cls === "tank" && u.taunt <= 0 && al.length > 1) return ["skill"];
+    if (u.cls === "mage" && f.length >= 2) return ["skill"];
+    if (u.cls === "guerrier" || u.cls === "assassin") return ["skill", pickTarget(u)];
+    if (u.cls === "mage" || u.cls === "tank") return ["skill"];
+  }
+  if (u.hp / u.maxHp < .25 && Math.random() < .3) return ["defend"];
+  return ["attack", pickTarget(u)];
+}
+function pickTarget(u) {
+  const ts = validTargets(u);
+  if (Math.random() < .7) return [...ts].sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp)[0];
+  return ts[Math.floor(Math.random() * ts.length)];
+}
+
+function hitDamage(a, t, mult, forceCrit = false) {
+  const rage = rageF();
+  let d = a.atk * mult * (.9 + Math.random() * .2) * (100 / (100 + t.def * 3.5)) * rage;
+  d = Math.max(1, d);
+  const crit = forceCrit || Math.random() < (a.cls === "assassin" ? .25 : .1);
+  if (crit) d *= 1.5;
+  if (t.guard) d *= .5;
+  d = Math.round(d);
+  let absorbed = 0;
+  if (t.shield > 0) { absorbed = Math.min(t.shield, d); t.shield -= absorbed; d -= absorbed; }
+  t.hp = Math.max(0, t.hp - d);
+  a.dealt += d + absorbed;
+  floatNum(t, crit ? `${d + absorbed}!` : String(d + absorbed), crit ? "crit" : "dmg");
+  animUnit(t, "hit");
+  if (t.hp <= 0) { t.alive = false; t.taunt = 0; blog(`💀 ${t.card.pseudo} est K.O.`, "ko"); sfx("flip"); }
+  return { d: d + absorbed, crit };
+}
+async function act(u, kind, target) {
+  if (!B || B.over) return;
+  B.waiting = null; renderActions();
+  const c = CLASSES[u.cls], who = `${u.card.pseudo}`;
+  const power = u.tier === 4 ? 1.3 : 1; // les Mythiques ont des compétences boostées
+  animUnit(u, "act");
+  if (kind === "attack") {
+    if (!target || !target.alive) target = pickTarget(u);
+    const r = hitDamage(u, target, 1);
+    blog(`${who} attaque ${target.card.pseudo} : ${r.d}${r.crit ? " (critique !)" : ""}`);
+    sfx("flip");
+    u.energy = Math.min(MAX_ENERGY, u.energy + 1);
+  } else if (kind === "defend") {
+    u.guard = true; u.energy = Math.min(MAX_ENERGY, u.energy + 2);
+    blog(`${who} se met en défense 🛡️`);
+  } else if (kind === "skill") {
+    u.energy -= c.skill.cost;
+    sfx("r3");
+    if (u.cls === "guerrier") {
+      if (!target || !target.alive) target = pickTarget(u);
+      const r = hitDamage(u, target, 1.8 * power);
+      blog(`${who} utilise ${c.skill.nom} sur ${target.card.pseudo} : ${r.d} 💥`, "skill");
+    } else if (u.cls === "assassin") {
+      const t = [...validTargets(u)].sort((a, b) => a.hp - b.hp)[0];
+      const r = hitDamage(u, t, 1.6 * power, true);
+      blog(`${who} utilise ${c.skill.nom} sur ${t.card.pseudo} : ${r.d} 🗡️`, "skill");
+    } else if (u.cls === "mage") {
+      blog(`${who} déclenche ${c.skill.nom} 🌪️`, "skill");
+      for (const t of foes(u)) hitDamage(u, t, .9 * power);
+    } else if (u.cls === "tank") {
+      const sh = Math.round(u.maxHp * .3 * power / rageF());
+      u.shield += sh; u.taunt = 2;
+      floatNum(u, `+${sh} 🛡️`, "shield");
+      blog(`${who} utilise ${c.skill.nom} : bouclier ${sh} et provocation 🎯`, "skill");
+    } else if (u.cls === "soigneur") {
+      for (const a of friends(u)) {
+        const h = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * .25 * power / rageF()));
+        a.hp += h; floatNum(a, `+${h}`, "heal");
+      }
+      blog(`${who} utilise ${c.skill.nom} 💚`, "skill");
+    }
+  }
+  renderBattle();
+  await bDelay(700);
+  nextTurn();
+}
+
+function endBattle(win, timeout = false) {
+  if (!B || B.over) return;
+  B.over = true; B.active = null; B.waiting = null; renderBattle(); $("#bActions").replaceChildren();
+  const dealt = B.allies.reduce((s, u) => s + u.dealt, 0);
+  blog(win ? "🏆 Victoire !" : timeout ? "⏱️ Temps écoulé" : "☠️ Défaite…", win ? "win" : "lose");
+  sfx(win ? "gold" : "flip");
+  if (win) confetti(["#ffc23d", "#ff5fa2", "#4da3ff", "#3ddc84"]);
+  if (win) state.wins = (state.wins || 0) + 1;
+  const res = B.onEnd ? B.onEnd(win, { dealt, timeout }) : null;
+  afterAction();
+  const box = $("#bResult"); box.replaceChildren();
+  box.appendChild(el("h2", null, win ? "🏆 Victoire !" : timeout ? "⏱️ Temps écoulé" : "☠️ Défaite"));
+  if (res && res.lines) for (const l of res.lines) box.appendChild(el("p", null, l));
+  const btn = el("button", "small-btn", "Continuer");
+  btn.onclick = closeBattle; box.appendChild(btn);
+  box.classList.remove("hidden");
+}
+function closeBattle() { $("#battle").classList.add("hidden"); $("#bResult").classList.add("hidden"); B = null; renderCombatTab(); }
+
+// ---------- Affichage du combat ----------
+function blog(txt, cls = "") { if (!B) return; B.log.push([txt, cls]); if (B.log.length > 60) B.log.shift(); const l = $("#bLog"); const p = el("div", "bl " + cls, txt); l.appendChild(p); while (l.children.length > 60) l.firstChild.remove(); l.scrollTop = l.scrollHeight; }
+function unitEl(u) {
+  const d = el("div", "unit " + u.card.rarete + (u.alive ? "" : " dead") + (B && B.active === u ? " active" : "") + (u.boss ? " boss" : ""));
+  d.dataset.key = u.key;
+  const av = el("div", "uav" + (u.s === 1 ? " shiny" : u.s === 2 ? " gold" : "")); av.appendChild(avatarImg(u.card)); d.appendChild(av);
+  const nm = el("div", "un", `${CLASSES[u.cls].ico} ${u.card.pseudo}`); d.appendChild(nm);
+  const hb = el("div", "hpbar"); const hi = el("i"); hi.style.width = (u.hp / u.maxHp * 100) + "%";
+  hi.className = u.hp / u.maxHp < .3 ? "low" : u.hp / u.maxHp < .6 ? "mid" : ""; hb.appendChild(hi);
+  if (u.shield > 0) { const si = el("b"); si.style.width = Math.min(100, u.shield / u.maxHp * 100) + "%"; hb.appendChild(si); }
+  d.appendChild(hb);
+  d.appendChild(el("div", "hpt", `${u.hp}/${u.maxHp}` + (u.shield > 0 ? ` +${u.shield}🛡️` : "")));
+  const en = el("div", "pips"); for (let i = 0; i < MAX_ENERGY; i++) en.appendChild(el("span", i < u.energy ? "on" : "")); d.appendChild(en);
+  const st = el("div", "ust", (u.taunt > 0 ? "🎯" : "") + (u.guard ? "🛡️" : "")); d.appendChild(st);
+  if (B && B.waiting && B.waiting.step === "target" && B.waiting.targets.includes(u)) {
+    d.classList.add("targetable"); d.onclick = () => act(B.waiting.unit, B.waiting.kind, u);
+  }
+  return d;
+}
+function renderBattle() {
+  if (!B) return;
+  $("#bTitle").textContent = B.title;
+  $("#bRound").textContent = `Tour ${Math.min(B.maxRounds, Math.max(1, B.round))}/${B.maxRounds}` + (B.round > RAGE_FROM ? " 🔥" : "");
+  $("#bEnemies").replaceChildren(...B.enemies.map(unitEl));
+  $("#bAllies").replaceChildren(...B.allies.map(unitEl));
+  $("#bAuto").classList.toggle("on", B.auto); $("#bAuto").textContent = B.auto ? "🤖 Auto : ON" : "🤖 Auto : OFF";
+  $("#bFast").classList.toggle("on", B.fast); $("#bFast").textContent = B.fast ? "⏩ ×2.5" : "▶️ ×1";
+}
+function renderActions() {
+  const box = $("#bActions"); box.replaceChildren();
+  if (!B || !B.waiting) { box.appendChild(el("div", "bwait", B && !B.over ? (B.active ? `Au tour de ${B.active.card.pseudo}…` : "") : "")); return; }
+  const w = B.waiting, u = w.unit, c = CLASSES[u.cls];
+  if (w.step === "target") {
+    box.appendChild(el("div", "bwait", "🎯 Choisis une cible (clique sur un ennemi)"));
+    const back = el("button", "bbtn", "↩ Retour"); back.onclick = () => { B.waiting = { unit: u, step: "action" }; renderBattle(); renderActions(); }; box.appendChild(back);
+    return;
+  }
+  box.appendChild(el("div", "bwait", `${c.ico} ${u.card.pseudo} (${c.nom}) — que faire ?`));
+  const atk = el("button", "bbtn", "⚔️ Attaque"); atk.onclick = () => askTarget(u, "attack"); box.appendChild(atk);
+  const sk = el("button", "bbtn sk", `✨ ${c.skill.nom} (${c.skill.cost}⚡)`); sk.title = c.skill.desc;
+  sk.disabled = u.energy < c.skill.cost;
+  sk.onclick = () => c.skill.target === "enemy" ? askTarget(u, "skill") : act(u, "skill");
+  box.appendChild(sk);
+  const df = el("button", "bbtn", "🛡️ Défense (+2⚡)"); df.title = "Divise les dégâts reçus par 2 jusqu'à ton prochain tour"; df.onclick = () => act(u, "defend"); box.appendChild(df);
+  box.appendChild(el("div", "bhint", c.skill.desc));
+}
+function askTarget(u, kind) {
+  const targets = validTargets(u);
+  if (targets.length === 1) return act(u, kind, targets[0]);
+  B.waiting = { unit: u, step: "target", kind, targets }; renderBattle(); renderActions();
+}
+function floatNum(u, txt, cls) {
+  const host = document.querySelector(`.unit[data-key="${u.key}"]`); if (!host) return;
+  const f = el("span", "fnum " + cls, txt); host.appendChild(f); setTimeout(() => f.remove(), 1100);
+}
+function animUnit(u, cls) {
+  const host = document.querySelector(`.unit[data-key="${u.key}"]`); if (!host) return;
+  host.classList.remove(cls); void host.offsetWidth; host.classList.add(cls);
+}
+$("#bAuto").onclick = () => { if (!B) return; B.auto = !B.auto; saveCombatPref(); renderBattle(); if (B.auto && B.waiting) { const u = B.waiting.unit; B.waiting = null; const [k, t] = aiChoose(u); act(u, k, t); } };
+$("#bFast").onclick = () => { if (!B) return; B.fast = !B.fast; saveCombatPref(); renderBattle(); };
+$("#bQuit").onclick = () => { if (!B) return; if (B.over) return closeBattle(); if (confirm("Abandonner le combat ? Ça compte comme une défaite.")) endBattle(false); };
+
+// =====================================================================
+// ---------- COMBAT : équipe et modes ----------
+// =====================================================================
+function teamUnits(mult = 1) {
+  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+  return validTeam().map(t => makeUnit(byId[t.id], t.s, starsOf(t.id, t.s), "ally", mult));
+}
+function validTeam() {
+  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+  return (state.team || []).filter(t => byId[t.id] && ownedVariants(t.id).includes(t.s)).slice(0, 3);
+}
+function needTeam() { if (!validTeam().length) { toast("Choisis d'abord ton équipe (jusqu'à 3 cartes) ⚔️"); openTeamPicker(); return true; } return false; }
+
+// ----- Choix de l'équipe -----
+let teamDraft = [];
+function openTeamPicker() {
+  teamDraft = validTeam().map(t => ({ ...t }));
+  renderTeamPicker(); $("#teamPick").classList.remove("hidden");
+}
+function renderTeamPicker() {
+  const g = $("#teamGrid"); g.replaceChildren();
+  const opts = [];
+  for (const c of CARDS) for (const s of ownedVariants(c.id)) opts.push([c, s, unitPower(makeUnit(c, s, starsOf(c.id, s)))]);
+  opts.sort((a, b) => b[2] - a[2]);
+  $("#teamCount").textContent = `${teamDraft.length}/3 sélectionnées`;
+  for (const [c, s, pw] of opts) {
+    const w = el("div", "pick");
+    const sel = teamDraft.some(t => t.id === c.id && t.s === s);
+    if (sel) w.classList.add("sel");
+    w.appendChild(cardEl(c, { shiny: s === 1, gold: s === 2, noDetail: true }));
+    const cl = CLASSES[cardClass(c)];
+    w.appendChild(el("div", "rw", `${cl.ico} ${cl.nom} · 💪 ${pw}`));
+    w.title = `${cl.skill.nom} : ${cl.skill.desc}`;
+    w.onclick = () => {
+      const i = teamDraft.findIndex(t => t.id === c.id && t.s === s);
+      if (i >= 0) teamDraft.splice(i, 1);
+      else { if (teamDraft.some(t => t.id === c.id)) return toast("Une seule version de chaque pote dans l'équipe"); if (teamDraft.length >= 3) return toast("3 cartes maximum"); teamDraft.push({ id: c.id, s }); }
+      renderTeamPicker();
+    };
+    g.appendChild(w);
+  }
+  if (!opts.length) g.appendChild(el("p", "lb-note", "Tu n'as pas encore de cartes. Fais des tirages d'abord !"));
+}
+$("#teamOk").onclick = () => { state.team = teamDraft.slice(0, 3); $("#teamPick").classList.add("hidden"); afterAction(); renderCombatTab(); };
+$("#teamCancel").onclick = () => $("#teamPick").classList.add("hidden");
+
+// ----- Aventure -----
+function advStage() { return (state.adv || 0) + 1; }
+function advEnemies(stage) {
+  const r = rng(stage * 7919 + 13);
+  const mult = .5 + stage * .03;
+  const sorted = [...CARDS].sort((a, b) => a.id.localeCompare(b.id));
+  const maxTier = Math.min(4, Math.floor((stage - 1) / 6));
+  const pool = sorted.filter(c => RIDX[c.rarete] <= maxTier);
+  const src = pool.length ? pool : sorted;
+  const pick = () => src[Math.floor(r() * src.length)];
+  const isBoss = stage % 5 === 0;
+  const n = stage < 4 ? 2 : 3;
+  const out = [];
+  for (let i = 0; i < n; i++) out.push(makeUnit(pick(), 0, 1 + Math.floor(stage / 12), "enemy", mult));
+  if (isBoss) {
+    const bossPool = src.length ? src : sorted;
+    const strongest = [...bossPool].sort((a, b) => RIDX[b.rarete] - RIDX[a.rarete])[0];
+    out[Math.min(1, out.length - 1)] = makeUnit(strongest, stage % 10 === 0 ? 1 : 0, 1 + Math.floor(stage / 12), "enemy", mult, { hpMult: 1.8, atkMult: 1.05, boss: true });
+  }
+  return out;
+}
+function advReward(stage) { return { coins: 100 + stage * 30, frags: stage % 10 === 0 ? 2 : stage % 5 === 0 ? 1 : 0 }; }
+function startAdventure() {
+  if (needTeam()) return;
+  const stage = advStage(), rw = advReward(stage);
+  startBattle(teamUnits(), advEnemies(stage), {
+    title: `🗺️ Aventure · Étape ${stage}${stage % 5 === 0 ? " · BOSS" : ""}`,
+    onEnd: win => {
+      if (!win) return { lines: ["Renforce ton équipe (étoiles, shiny, Dorées) et réessaie !"] };
+      state.adv = stage; state.coins += rw.coins; state.fragments += rw.frags;
+      return { lines: [`Étape ${stage} terminée !`, `+${rw.coins} 🪙` + (rw.frags ? ` · +${rw.frags} fragment${rw.frags > 1 ? "s" : ""} ✦` : "")] };
+    }
+  });
+}
+
+// ----- Arène (duels contre les équipes des potes) -----
+const ARENA_MAX = 5;
+function arenaLeft() { if (state.arenaDate !== today()) { state.arenaDate = today(); state.arenaCount = 0; } return ARENA_MAX - state.arenaCount; }
+function parseEquipe(f) { try { const v = JSON.parse((f && f.stringValue) || "[]"); return Array.isArray(v) ? v : []; } catch { return []; } }
+async function startArena(p) {
+  if (needTeam()) return;
+  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+  const foesU = (p.equipe || []).filter(t => byId[t.id]).slice(0, 3).map(t => makeUnit(byId[t.id], t.s || 0, t.st || 1, "enemy"));
+  if (!foesU.length) return toast("Ce joueur n'a pas d'équipe valide");
+  const rewarded = arenaLeft() > 0;
+  startBattle(teamUnits(), foesU, {
+    title: `🏟️ Arène · contre ${p.pseudo}`,
+    onEnd: win => {
+      const lines = [];
+      if (rewarded) {
+        state.arenaCount++;
+        const diff = (p.trophees || 0) - (state.trophies || 0);
+        if (win) {
+          const gain = Math.max(10, Math.min(40, 20 + Math.round(diff / 20)));
+          state.trophies = (state.trophies || 0) + gain; state.arenaWins = (state.arenaWins || 0) + 1; state.coins += 150;
+          lines.push(`+${gain} 🏆 trophées · +150 🪙`);
+        } else {
+          const loss = Math.max(5, Math.min(20, 10 - Math.round(diff / 40)));
+          state.trophies = Math.max(0, (state.trophies || 0) - loss);
+          lines.push(`−${loss} 🏆 trophées`);
+        }
+        lines.push(`Combats classés restants aujourd'hui : ${ARENA_MAX - state.arenaCount}/${ARENA_MAX}`);
+      } else lines.push("Combat amical (plus de combats classés aujourd'hui).");
+      return { lines };
+    }
+  });
+}
+
+// ----- Boss du jour -----
+function bossUnit() {
+  const f = featured(); if (!f) return null;
+  return makeUnit(f, 2, 5, "enemy", 1.3, { hpMult: 9, atkMult: 1, boss: true });
+}
+function startBoss() {
+  if (needTeam()) return;
+  if (state.bossDate === today()) return toast("Tu as déjà affronté le boss du jour. Reviens demain 👹");
+  const boss = bossUnit(); if (!boss) return;
+  state.bossDate = today(); afterAction();
+  startBattle(teamUnits(), [boss], {
+    title: `👹 Boss du jour · ${boss.card.pseudo}`, maxRounds: 12,
+    onEnd: (win, { dealt }) => {
+      const coins = Math.min(3000, 100 + Math.round(dealt / 2));
+      state.coins += coins; state.bossBest = dealt;
+      const lines = [`Dégâts infligés : ${dealt}`, `+${coins} 🪙`];
+      if (win) { state.bossKills = (state.bossKills || 0) + 1; state.fragments += 2; lines.push("Boss vaincu ! +2 fragments ✦"); }
+      return { lines };
+    }
+  });
+}
+
+// ----- Onglet Combat -----
+let arenaCache = null;
+async function renderCombatTab() {
+  if ($("#tab-combat").classList.contains("hidden")) return;
+  // Équipe
+  const tb = $("#teamBox"); tb.replaceChildren();
+  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+  const team = validTeam();
+  let totalPw = 0;
+  for (const t of team) {
+    const c = byId[t.id], u = makeUnit(c, t.s, starsOf(t.id, t.s)); totalPw += unitPower(u);
+    const w = el("div", "tslot"); w.appendChild(cardEl(c, { shiny: t.s === 1, gold: t.s === 2 }));
+    const cl = CLASSES[u.cls]; w.appendChild(el("div", "rw", `${cl.ico} ${cl.nom} · 💪 ${unitPower(u)}`)); w.title = `${cl.skill.nom} : ${cl.skill.desc}`;
+    tb.appendChild(w);
+  }
+  for (let i = team.length; i < 3; i++) tb.appendChild(el("div", "vslot", "Emplacement libre"));
+  $("#teamPower").textContent = team.length ? `Puissance totale : 💪 ${totalPw}` : "Aucune équipe";
+  // Aventure
+  const st = advStage();
+  $("#advInfo").textContent = `Étape ${st}${st % 5 === 0 ? " · 👹 BOSS" : ""} · Chapitre ${Math.ceil(st / 10)}`;
+  const rw = advReward(st);
+  $("#advRew").textContent = `Récompense : ${rw.coins} 🪙` + (rw.frags ? ` + ${rw.frags} ✦` : "");
+  const prev = $("#advFoes"); prev.replaceChildren();
+  if (CARDS.length) for (const u of advEnemies(st)) { const m = el("div", "mini " + u.card.rarete + (u.s === 2 ? " gold" : "")); m.title = `${u.card.pseudo} · ${CLASSES[u.cls].nom}${u.boss ? " · BOSS" : ""}`; m.appendChild(avatarImg(u.card)); prev.appendChild(m); }
+  // Boss
+  const boss = bossUnit();
+  const bb = $("#bossInfo"); bb.replaceChildren();
+  if (boss) {
+    const m = el("div", "mini " + boss.card.rarete + " gold"); m.appendChild(avatarImg(boss.card)); bb.appendChild(m);
+    bb.appendChild(el("div", null, `${boss.card.pseudo} · ${boss.maxHp} PV`));
+  }
+  const done = state.bossDate === today();
+  $("#bossBtn").disabled = done; $("#bossBtn").textContent = done ? `Déjà fait (${state.bossBest} dégâts)` : "Affronter";
+  // Arène
+  $("#arenaInfo").textContent = `🏆 ${state.trophies || 0} trophées · Combats classés : ${arenaLeft()}/${ARENA_MAX}`;
+  const list = $("#arenaList"); list.replaceChildren();
+  if (!CONFIG.projectId) { list.appendChild(el("p", "lb-note", "Pas disponible en mode démo.")); return; }
+  if (!AUTH) { list.appendChild(el("p", "lb-note", "Connecte-toi avec /connexion sur Discord pour accéder à l'Arène.")); return; }
+  list.appendChild(el("p", "lb-note", "Chargement des adversaires…"));
+  let players;
+  try { players = await fetchPlayers(); } catch (e) { list.replaceChildren(el("p", "lb-note", "Impossible de charger l'Arène.")); return; }
+  const opp = players.filter(p => p.uid !== AUTH.uid && (p.equipe || []).length)
+    .sort((a, b) => Math.abs((a.trophees || 0) - (state.trophies || 0)) - Math.abs((b.trophees || 0) - (state.trophies || 0))).slice(0, 8);
+  list.replaceChildren();
+  if (!opp.length) { list.appendChild(el("p", "lb-note", "Personne n'a encore d'équipe. Dis à tes potes de choisir la leur !")); return; }
+  for (const p of opp) {
+    const row = el("div", "arow");
+    row.appendChild(avatarImg({ pseudo: p.pseudo, avatar: p.avatar }));
+    const mid = el("div", "am"); mid.appendChild(el("b", null, p.pseudo)); mid.appendChild(el("span", null, `🏆 ${p.trophees || 0}`));
+    const minis = el("div", "hist");
+    for (const t of p.equipe.slice(0, 3)) { const c = byId[t.id]; if (!c) continue; const m = el("div", "mini " + c.rarete + (t.s === 1 ? " shiny" : t.s === 2 ? " gold" : "")); m.appendChild(avatarImg(c)); minis.appendChild(m); }
+    mid.appendChild(minis); row.appendChild(mid);
+    const b = el("button", "small-btn", "Défier"); b.onclick = () => startArena(p); row.appendChild(b);
+    list.appendChild(row);
+  }
+}
+$("#teamEdit").onclick = openTeamPicker;
+$("#advBtn").onclick = startAdventure;
+$("#bossBtn").onclick = startBoss;
+
 // ---------- Navigation & boutons ----------
-const TABS = ["tirage", "collection", "succes", "classement", "quiz", "regles"];
+const TABS = ["tirage", "collection", "succes", "combat", "classement", "quiz", "regles"];
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
   document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
   for (const t of TABS) $("#tab-" + t).classList.toggle("hidden", t !== b.dataset.tab);
   if (b.dataset.tab === "collection") renderCollection();
   if (b.dataset.tab === "succes") renderAch();
   if (b.dataset.tab === "classement") renderLeaderboard();
+  if (b.dataset.tab === "combat") renderCombatTab();
   if (b.dataset.tab === "quiz") renderQuiz();
 });
 $("#pull1").onclick = () => doPull(1);

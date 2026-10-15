@@ -215,6 +215,55 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .lb-note{color:var(--mute);font-size:14px;margin:0 0 12px}
 @media(max-width:500px){.lb-row{grid-template-columns:30px 36px 1fr auto;gap:8px;padding:8px}.lb-row img{width:36px;height:36px}.user .nm{max-width:90px}}
 
+/* ---------- Dorées ---------- */
+.card.gold{border-image:none!important;animation:none!important;--c:#ffc23d;background:linear-gradient(160deg,#5a3d00 0%,#2a1a00 60%,#120c00 100%);border-color:#ffd76a;box-shadow:0 0 22px #ffc23d99,inset 0 0 18px #ffc23d33}
+.card.gold::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,#fff3b088 45%,#ffd76a55 50%,transparent 65%);background-size:250% 250%;animation:holo 2.2s ease-in-out infinite;pointer-events:none;mix-blend-mode:screen}
+.card.gold .art img{filter:sepia(.55) saturate(1.6) brightness(1.08)}
+.card.gold .name{color:#ffe7a3}.card.gold .rar{color:#ffd76a}.card.gold .quote{color:#d9bf7a}
+.card.locked.gold-slot .name::before{content:"🏅 "}
+.mode button.on.go{background:linear-gradient(90deg,#ffd76a,#ff9f1c);color:#2a1a00;border-color:transparent}
+.mini.gold{--c:#ffd76a}.mini.gold img{filter:sepia(.55) saturate(1.6)}
+
+/* ---------- Flash Mythique / Shiny ---------- */
+.flash{position:fixed;inset:0;z-index:80;pointer-events:none;display:flex;align-items:center;justify-content:center;animation:flashbg 1.7s ease-out forwards}
+.flash.myth{background:radial-gradient(circle,#ff5fa2cc,#7c2cff88 40%,transparent 75%)}
+.flash.shy{background:radial-gradient(circle,#ffffffcc,#9ee8ff88 40%,transparent 75%)}
+.flash.gld{background:radial-gradient(circle,#fff3b0cc,#ffc23d88 40%,transparent 75%)}
+.flash span{font-family:Bungee,sans-serif;font-size:clamp(34px,8vw,80px);color:#fff;text-shadow:0 0 20px #ff5fa2,0 0 40px #ffc23d;animation:flashtxt 1.7s cubic-bezier(.2,1.6,.4,1) forwards}
+.flash.shy span{color:#1a0b10;text-shadow:0 0 20px #9ee8ff,0 0 40px #ff9ff0}
+@keyframes flashbg{0%{opacity:0}12%{opacity:1}70%{opacity:.9}100%{opacity:0}}
+@keyframes flashtxt{0%{transform:scale(.2) rotate(-8deg);opacity:0}25%{transform:scale(1.15) rotate(2deg);opacity:1}75%{transform:scale(1);opacity:1}100%{transform:scale(1.4);opacity:0}}
+.shake{animation:shake .5s}
+@keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-8px,4px)}40%{transform:translate(7px,-5px)}60%{transform:translate(-5px,-3px)}80%{transform:translate(4px,5px)}}
+
+/* ---------- Expéditions ---------- */
+.exp-slot{display:flex;align-items:center;gap:10px;padding:8px;border:1px dashed var(--line);border-radius:12px;margin-bottom:8px;min-height:58px}
+.exp-slot.busy{border-style:solid}
+.exp-slot .mini{width:40px;height:40px;flex-shrink:0}
+.exp-slot .info{flex:1;min-width:0;font-size:13px}
+.exp-slot .info b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.exp-slot .info span{color:var(--mute)}
+.exp-slot .small-btn{padding:8px 12px;font-size:13px}
+.exp-slot .tbar{height:5px;background:var(--line);border-radius:5px;overflow:hidden;margin-top:4px}
+.exp-slot .tbar i{display:block;height:100%;background:linear-gradient(90deg,#3ddc84,#ffc23d)}
+#picker .grid{max-width:900px;width:100%;max-height:70vh;overflow:auto;padding:6px}
+#picker .pick{cursor:pointer;position:relative}
+#picker .pick .rw{font-size:11px;color:var(--gold);text-align:center;margin-top:4px;font-weight:700}
+
+/* ---------- Vitrine & profil ---------- */
+.vitrine{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap;margin-bottom:18px;padding:12px;border:1px solid var(--line);border-radius:16px;background:#0004}
+.vitrine h4{width:100%;margin:0;font-size:14px;color:var(--mute)}
+.vitrine .card{width:120px}
+.vslot{width:120px;aspect-ratio:3/4.3;border:2px dashed var(--line);border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--mute);font-size:12px;padding:8px}
+.lb-row{cursor:pointer}
+.profile-box{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:20px;max-width:560px;width:100%;text-align:center}
+.profile-box .ph{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:10px}
+.profile-box .ph img{width:56px;height:56px;border-radius:50%;object-fit:cover}
+.profile-box .ph b{font-size:22px}
+.profile-box .vitrine{justify-content:center;background:transparent}
+.ov-btns{flex-wrap:wrap;justify-content:center}
+.mute{background:var(--panel);border:1px solid var(--line);color:var(--txt);border-radius:999px;width:38px;height:38px;font-size:16px}
+
 /* ---------- Confettis ---------- */
 .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
@@ -225,6 +274,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
   <h1>KIWI GACHA</h1>
   <div class="hright">
     <div id="userBox"></div>
+    <button class="mute" id="mute" title="Son">🔊</button>
     <div class="coins"><span class="coin"></span><span id="coins">0</span></div>
   </div>
 </header>
@@ -274,6 +324,11 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <div class="inv"><span class="ticket">🎟️ × <b id="tickets">0</b></span><button class="small-btn" id="useTicket">Utiliser</button></div>
       </div>
       <div class="box">
+        <h3>🧭 Expéditions</h3>
+        <p>Envoie tes cartes en mission 4 h : elles reviennent avec des pièces, et parfois un fragment ✦.</p>
+        <div id="expSlots"></div>
+      </div>
+      <div class="box">
         <h3>📊 Taux</h3>
         <div class="rates" id="rates"></div>
       </div>
@@ -292,7 +347,9 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
     <div class="mode">
       <button id="modeN" class="on">📚 Normales</button>
       <button id="modeS" class="sh">✨ Shiny</button>
+      <button id="modeG" class="go">🏅 Dorées</button>
     </div>
+    <div class="vitrine" id="myVitrine"></div>
     <div class="col-head">
       <div class="progress"><b id="colTxt"></b><div class="bar"><i id="colBar"></i></div></div>
       <div class="filters" id="filters"></div>
@@ -308,6 +365,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
     <div class="mode" id="lbMode">
       <button data-k="cartes" class="on">📚 Collection</button>
       <button data-k="shiny">✨ Shiny</button>
+      <button data-k="dorees">🏅 Dorées</button>
       <button data-k="tirages">🎰 Tirages</button>
     </div>
     <p class="lb-note" id="lbNote"></p>
@@ -344,6 +402,21 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li>Les shiny ont leur <b>propre collection</b>, séparée des cartes normales.</li>
         <li>Un doublon shiny rembourse 3 fois plus qu'un doublon normal.</li>
       </ul>
+      <h3>🏅 Cartes Dorées</h3>
+      <ul>
+        <li>Quand tu as au moins 6 copies normales d'une carte, tu peux en sacrifier 5 pour créer sa version <b>Dorée</b> (depuis sa vue détaillée).</li>
+        <li>Les Dorées ont leur propre collection et leur classement.</li>
+      </ul>
+      <h3>🧭 Expéditions</h3>
+      <ul>
+        <li>3 emplacements. Une carte part 4 h et revient avec des pièces selon sa rareté et ses étoiles (×2 si shiny).</li>
+        <li>Les Épiques, Légendaires et Mythiques peuvent aussi ramener un fragment ✦.</li>
+      </ul>
+      <h3>📌 Vitrine et annonces</h3>
+      <ul>
+        <li>Épingle jusqu'à 3 cartes dans ta vitrine : les autres la voient en cliquant sur toi dans le classement.</li>
+        <li>Si tu es connecté, tes Mythiques, shiny et Dorées sont annoncés sur Discord (si un admin a choisi le salon avec <b>/salon-annonces</b>).</li>
+      </ul>
       <h3>🏆 Succès et tickets Mythiques</h3>
       <ul>
         <li>Les succès rapportent des pièces et des <b>fragments ✦</b>. La roue en donne parfois un aussi.</li>
@@ -360,6 +433,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li><b>/inscription</b> (+ phrase optionnelle) : crée ta carte.</li>
         <li><b>/maj</b> : met à jour ta pdp, ton pseudo ou ta phrase.</li>
         <li><b>/connexion</b> : reçois ton lien perso pour sauvegarder ta partie en ligne.</li>
+        <li><b>/collection</b> : montre ta collection (ou celle d'un pote) directement dans Discord.</li>
         <li><b>/carte</b>, <b>/liste</b>, <b>/desinscription</b>.</li>
         <li>Admin : <b>/ajouter</b> pour inscrire quelqu'un à sa place, <b>/ajouter-tous</b> pour inscrire tout le serveur (ou un rôle), <b>/rarete</b> pour changer sa rareté, <b>/retirer</b> pour enlever une carte.</li>
       </ul>
@@ -377,6 +451,14 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
     <button id="revealAll">Tout révéler</button>
     <button id="closeOv">Fermer</button>
   </div>
+</div>
+<div class="overlay hidden" id="picker">
+  <div class="hint-txt">Choisis une carte à envoyer en expédition (4 h)</div>
+  <div class="grid" id="pickGrid"></div>
+  <div class="ov-btns"><button id="pickClose">Annuler</button></div>
+</div>
+<div class="overlay hidden" id="profile">
+  <div class="profile-box" id="profileBox"></div>
 </div>
 <div class="overlay hidden" id="loginHelp">
   <div class="help-box">
@@ -401,6 +483,8 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <div class="meta" id="dMeta"></div>
       <div class="ov-btns">
         <button id="dSwap">Voir le shiny ✨</button>
+        <button id="dGold">🏅 Fusionner en Dorée</button>
+        <button id="dPin">📌 Vitrine</button>
         <button id="dClose">Fermer</button>
       </div>
     </div>
@@ -427,7 +511,7 @@ const RARITIES = [
 const RIDX = Object.fromEntries(RARITIES.map((r, i) => [r.id, i]));
 const COST1 = 100, COST10 = 900, DAILY = 500, QUIZ_REWARD = 50, QUIZ_MAX = 20;
 const PITY_EPIC = 10, PITY_LEG = 50, SHINY = 0.01, SHINY_PITY = 200, FEATURED_CHANCE = 0.5;
-const FRAG_PER_TICKET = 10;
+const FRAG_PER_TICKET = 10, GOLD_NEED = 6, GOLD_COST = 5;
 const SAVE_KEY = "kiwi-gacha-save-v1";
 
 const $ = s => document.querySelector(s);
@@ -442,7 +526,8 @@ function defaultState() {
     coins: 1000, lastDaily: "", dailyCount: 0, pityE: 0, pityL: 0, shinyPity: 0,
     owned: {}, pulls: 0, quizDate: "", quizCount: 0, quizTotal: 0,
     tickets: 0, fragments: 0, free1: 0, free10: 0, wheelDate: "", claimed: {}, notified: {},
-    history: [], bestTen: 0, owner: null
+    history: [], bestTen: 0, owner: null,
+    exp: [null, null, null], expDone: 0, vitrine: []
   };
 }
 function load() {
@@ -451,6 +536,8 @@ function load() {
   migrate();
 }
 function migrate() {
+  if (!Array.isArray(state.exp) || state.exp.length !== 3) state.exp = [null, null, null];
+  if (!Array.isArray(state.vitrine)) state.vitrine = [];
   // Migration des anciennes sauvegardes (shiny = simple drapeau)
   for (const o of Object.values(state.owned)) {
     if (o.shinyCopies == null) o.shinyCopies = o.shiny ? 1 : 0;
@@ -513,19 +600,20 @@ function cardEl(card, opts = {}) {
   const o = own(card.id);
   const copies = opts.shiny ? o.shinyCopies : o.copies;
   const c = el("div", "card " + card.rarete);
-  if (opts.locked) { c.classList.add("locked"); if (opts.shiny) c.classList.add("shiny-slot"); }
+  if (opts.locked) { c.classList.add("locked"); if (opts.shiny) c.classList.add("shiny-slot"); if (opts.gold) c.classList.add("gold-slot"); }
+  else if (opts.gold) c.classList.add("gold");
   else if (opts.shiny) c.classList.add("shiny");
   if (opts.isNew) c.appendChild(el("span", "tag", "NEW"));
   if (opts.tagShiny) c.appendChild(el("span", "tag sh", "SHINY"));
   const art = el("div", "art"); art.appendChild(avatarImg(card)); c.appendChild(art);
   c.appendChild(el("div", "name", opts.locked ? "???" : card.pseudo));
   c.appendChild(el("div", "rar", RARITIES[RIDX[card.rarete]].nom));
-  c.appendChild(el("div", "stars", opts.locked ? "" : "★".repeat(stars(copies))));
+  c.appendChild(el("div", "stars", opts.locked || opts.hideStars ? "" : opts.gold ? "🏅" : "★".repeat(stars(copies))));
   if (card.phrase && !opts.locked) c.appendChild(el("div", "quote", "« " + card.phrase + " »"));
   c.appendChild(el("div", "glare"));
   if (!opts.locked) {
     attachTilt(c, opts.big ? 18 : 14);
-    if (!opts.noDetail) { c.classList.add("clickable"); c.onclick = () => openDetail(card, !!opts.shiny); }
+    if (!opts.noDetail) { c.classList.add("clickable"); c.onclick = () => openDetail(card, opts.gold ? 2 : opts.shiny ? 1 : 0); }
   }
   return c;
 }
@@ -551,21 +639,50 @@ function attachTilt(c, strength) {
 
 // ---------- Détail d'une carte ----------
 let detailState = null;
-function openDetail(card, shiny) {
-  detailState = { card, shiny };
+const VARIANT_NAMES = ["", " · Shiny", " · Dorée"];
+function ownedVariants(id) { const o = own(id); return [o.copies > 0, o.shinyCopies > 0, !!o.gold].map((v, i) => v ? i : -1).filter(i => i >= 0); }
+function openDetail(card, variant) {
+  if (typeof variant === "boolean") variant = variant ? 1 : 0;
+  detailState = { card, variant };
   const o = own(card.id);
-  const box = $("#detailCard"); box.replaceChildren(cardEl(card, { shiny, big: true, noDetail: true }));
-  $("#dName").textContent = card.pseudo + (shiny ? " ✨" : "");
-  const r = $("#dRar"); r.textContent = RARITIES[RIDX[card.rarete]].nom + (shiny ? " · Shiny" : ""); r.style.color = `var(--${card.rarete})`;
-  const q = $("#dQuote"); q.textContent = card.phrase || "Pas de phrase."; 
-  $("#dMeta").textContent = `Copies : ${o.copies} normale${o.copies > 1 ? "s" : ""} · ${o.shinyCopies} shiny`;
+  const box = $("#detailCard"); box.replaceChildren(cardEl(card, { shiny: variant === 1, gold: variant === 2, big: true, noDetail: true }));
+  $("#dName").textContent = card.pseudo + ["", " ✨", " 🏅"][variant];
+  const r = $("#dRar"); r.textContent = RARITIES[RIDX[card.rarete]].nom + VARIANT_NAMES[variant]; r.style.color = variant === 2 ? "#ffd76a" : `var(--${card.rarete})`;
+  const q = $("#dQuote"); q.textContent = card.phrase || "Pas de phrase.";
+  $("#dMeta").textContent = `Copies : ${o.copies} normale${o.copies > 1 ? "s" : ""} · ${o.shinyCopies} shiny${o.gold ? " · 🏅 Dorée" : ""}`;
+  const vars = ownedVariants(card.id).filter(v => v !== variant);
   const sw = $("#dSwap");
-  const other = shiny ? o.copies > 0 : o.shinyCopies > 0;
-  sw.classList.toggle("hidden", !other);
-  sw.textContent = shiny ? "Voir la normale" : "Voir le shiny ✨";
+  sw.classList.toggle("hidden", !vars.length);
+  if (vars.length) { const nx = vars[0]; sw.textContent = ["Voir la normale", "Voir le shiny ✨", "Voir la Dorée 🏅"][nx]; sw.onclick = () => openDetail(card, nx); }
+  const g = $("#dGold");
+  const canGold = variant === 0 && !o.gold && o.copies > 0;
+  g.classList.toggle("hidden", !canGold);
+  g.disabled = o.copies < GOLD_NEED;
+  g.textContent = o.copies < GOLD_NEED ? `🏅 Dorée : ${o.copies}/${GOLD_NEED} copies` : `🏅 Fusionner en Dorée (−${GOLD_COST} copies)`;
+  const pin = $("#dPin");
+  const owned = ownedVariants(card.id).includes(variant);
+  pin.classList.toggle("hidden", !owned);
+  const pinned = state.vitrine.some(v => v.id === card.id && v.s === variant);
+  pin.textContent = pinned ? "📌 Retirer de la vitrine" : "📌 Mettre en vitrine";
   $("#detail").classList.remove("hidden");
 }
-$("#dSwap").onclick = () => detailState && openDetail(detailState.card, !detailState.shiny);
+$("#dGold").onclick = () => {
+  if (!detailState) return;
+  const { card } = detailState; const o = state.owned[card.id];
+  if (!o || o.gold || o.copies < GOLD_NEED) return;
+  o.copies -= GOLD_COST; o.gold = true;
+  flash("gld", "🏅 DORÉE 🏅"); sfx("gold"); confetti(["#ffd76a", "#fff3b0", "#ff9f1c", "#ffffff"]);
+  sendAnnonce(card.id, "doree");
+  afterAction(); openDetail(card, 2); renderCollection();
+};
+$("#dPin").onclick = () => {
+  if (!detailState) return;
+  const { card, variant } = detailState;
+  const i = state.vitrine.findIndex(v => v.id === card.id && v.s === variant);
+  if (i >= 0) state.vitrine.splice(i, 1);
+  else { if (state.vitrine.length >= 3) return toast("Ta vitrine est pleine (3 cartes max)"); state.vitrine.push({ id: card.id, s: variant }); toast("📌 Ajoutée à ta vitrine"); }
+  afterAction(); openDetail(card, variant); renderVitrine();
+};
 $("#dClose").onclick = () => $("#detail").classList.add("hidden");
 $("#detail").addEventListener("click", e => { if (e.target.id === "detail") $("#detail").classList.add("hidden"); });
 
@@ -644,6 +761,7 @@ function doPull(n) {
     results.push(pullOnce(needRare ? 1 : 0));
   }
   if (n === 10) state.bestTen = Math.max(state.bestTen, results.filter(r => r.tier >= 3).length);
+  announceResults(results);
   afterAction(); showReveal(results);
 }
 function useTicket() {
@@ -651,6 +769,7 @@ function useTicket() {
   if (state.tickets <= 0) return toast("Tu n'as pas de ticket 🎟️");
   state.tickets--;
   const r = pullOnce(0, 4);
+  announceResults([r]);
   afterAction(); showReveal([r]);
 }
 
@@ -678,10 +797,11 @@ function showReveal(results) {
     front.appendChild(cardEl(r.card, { shiny: r.shiny, isNew: r.isNew, tagShiny: r.shiny, noDetail: true }));
     inner.append(back, front); f.appendChild(inner);
     f.onclick = () => {
-      if (f.classList.contains("open")) return openDetail(r.card, r.shiny);
+      if (f.classList.contains("open")) return openDetail(r.card, r.shiny ? 1 : 0);
       f.classList.add("open");
-      if (r.shiny) confetti(["#9ee8ff", "#ff9ff0", "#ffffff", "#fff3a0"]);
-      else if (r.tier === 4) confetti(["#ff5fa2", "#ffc23d", "#4da3ff", "#b46bff"]);
+      sfx("r" + r.tier);
+      if (r.shiny) { confetti(["#9ee8ff", "#ff9ff0", "#ffffff", "#fff3a0"]); flash("shy", "✨ SHINY ✨"); sfx("shiny"); }
+      else if (r.tier === 4) { confetti(["#ff5fa2", "#ffc23d", "#4da3ff", "#b46bff"]); flash("myth", "✦ MYTHIQUE ✦"); sfx("myth"); }
       else if (r.tier === 3) confetti(["#ffc23d", "#fff3b0", "#ff8a3d"]);
     };
     box.appendChild(f);
@@ -753,8 +873,12 @@ const ACH = [
   { id: "star5", nom: "Fan absolu", desc: "Monte une carte à ★5 (20 copies)", val: () => Math.max(0, ...CARDS.map(c => own(c.id).copies)), goal: () => 20, rew: { frags: 5 } },
   { id: "daily7", nom: "Fidèle au poste", desc: "Récupère la récompense du jour 7 fois", val: () => state.dailyCount, goal: () => 7, rew: { frags: 3 } },
   { id: "quiz50", nom: "Détective", desc: "50 bonnes réponses à « Qui est-ce ? »", val: () => state.quizTotal, goal: () => 50, rew: { frags: 3 } },
+  { id: "gold1", nom: "Or pur", desc: "Crée ta première carte Dorée", val: () => goldCount(), goal: () => 1, rew: { frags: 3 } },
+  { id: "gold5", nom: "Midas", desc: "Possède 5 cartes Dorées", val: () => goldCount(), goal: () => Math.max(1, Math.min(5, CARDS.length)), rew: { frags: 5 } },
+  { id: "exp10", nom: "Explorateur", desc: "Termine 10 expéditions", val: () => state.expDone, goal: () => 10, rew: { frags: 3 } },
 ];
 function pct() { return CARDS.length ? Math.floor(countBy(c => own(c.id).copies > 0) / CARDS.length * 100) : 0; }
+function goldCount() { return countBy(c => !!own(c.id).gold); }
 function shinyCount() { return countBy(c => own(c.id).shinyCopies > 0); }
 function rewText(r) { return [r.frags && `✦ ${r.frags} fragment${r.frags > 1 ? "s" : ""}`, r.tickets && `🎟️ ${r.tickets} ticket${r.tickets > 1 ? "s" : ""} Mythique`, r.coins && `🪙 ${r.coins}`].filter(Boolean).join(" + "); }
 const achDone = a => CARDS.length > 0 && a.val() >= a.goal();
@@ -818,7 +942,7 @@ function refresh() {
   $("#fuse").disabled = state.fragments < FRAG_PER_TICKET;
   const owned = countBy(c => own(c.id).copies > 0);
   $("#stats").textContent = `${state.pulls} tirages · ${owned}/${CARDS.length} potes trouvés · ${shinyCount()}/${CARDS.length} shiny`;
-  renderHistory();
+  renderHistory(); renderExp();
 }
 function renderHistory() {
   const h = $("#hist"); h.replaceChildren();
@@ -841,7 +965,7 @@ function renderRates() {
   const row = el("div"); const n = el("span", null, "✨ Shiny"); n.style.fontWeight = 700; n.style.color = "#bff3ff";
   row.append(n, el("span", null, "1 % par carte")); box.appendChild(row);
 }
-let filter = "all", shinyMode = false;
+let filter = "all", colMode = 0; // 0 normales, 1 shiny, 2 dorées
 function renderFilters() {
   const box = $("#filters"); box.replaceChildren();
   for (const [id, nom] of [["all", "Toutes"], ...RARITIES.map(r => [r.id, r.nom]), ["owned", "Obtenues"]]) {
@@ -850,21 +974,34 @@ function renderFilters() {
   }
 }
 function renderCollection() {
-  const has = c => shinyMode ? own(c.id).shinyCopies > 0 : own(c.id).copies > 0;
+  const has = c => colMode === 1 ? own(c.id).shinyCopies > 0 : colMode === 2 ? !!own(c.id).gold : own(c.id).copies > 0;
   const owned = countBy(has);
   const p = CARDS.length ? Math.round(owned / CARDS.length * 100) : 0;
-  $("#colTxt").textContent = `${shinyMode ? "Collection shiny" : "Collection"} : ${owned}/${CARDS.length} (${p} %)`;
+  $("#colTxt").textContent = `${["Collection", "Collection shiny", "Collection Dorée"][colMode]} : ${owned}/${CARDS.length} (${p} %)`;
   $("#colBar").style.width = p + "%";
-  $("#colBar").style.background = shinyMode ? "linear-gradient(90deg,#9ee8ff,#ff9ff0)" : "";
-  $("#modeN").classList.toggle("on", !shinyMode); $("#modeS").classList.toggle("on", shinyMode);
+  $("#colBar").style.background = ["", "linear-gradient(90deg,#9ee8ff,#ff9ff0)", "linear-gradient(90deg,#ffd76a,#ff9f1c)"][colMode];
+  ["#modeN", "#modeS", "#modeG"].forEach((sel, i) => $(sel).classList.toggle("on", colMode === i));
+  renderVitrine();
   const g = $("#grid"); g.replaceChildren();
   const list = CARDS.filter(c => filter === "all" || (filter === "owned" ? has(c) : c.rarete === filter))
     .sort((a, b) => RIDX[b.rarete] - RIDX[a.rarete] || a.pseudo.localeCompare(b.pseudo));
-  for (const c of list) g.appendChild(cardEl(c, { locked: !has(c), shiny: shinyMode }));
+  for (const c of list) g.appendChild(cardEl(c, { locked: !has(c), shiny: colMode === 1, gold: colMode === 2 }));
   if (!list.length) g.appendChild(el("p", null, "Rien ici pour l'instant."));
 }
-$("#modeN").onclick = () => { shinyMode = false; renderCollection(); };
-$("#modeS").onclick = () => { shinyMode = true; renderCollection(); };
+$("#modeN").onclick = () => { colMode = 0; renderCollection(); };
+$("#modeS").onclick = () => { colMode = 1; renderCollection(); };
+$("#modeG").onclick = () => { colMode = 2; renderCollection(); };
+
+function vitrineCards(list) {
+  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+  return (list || []).filter(v => byId[v.id]).slice(0, 3).map(v => ({ card: byId[v.id], s: v.s || 0 }));
+}
+function renderVitrine() {
+  const box = $("#myVitrine"); box.replaceChildren(el("h4", null, "📌 Ma vitrine (visible dans le classement)"));
+  const items = vitrineCards(state.vitrine);
+  for (const { card, s } of items) box.appendChild(cardEl(card, { shiny: s === 1, gold: s === 2 }));
+  for (let i = items.length; i < 3; i++) box.appendChild(el("div", "vslot", "Clique sur une carte puis « 📌 Mettre en vitrine »"));
+}
 
 // ---------- Quiz ----------
 function renderQuiz() {
@@ -949,7 +1086,7 @@ function scheduleSync() {
   syncTimer = setTimeout(() => cloudSave(), 1500);
 }
 function summary() {
-  return { cartes: countBy(c => own(c.id).copies > 0), shiny: shinyCount(), tirages: state.pulls };
+  return { cartes: countBy(c => own(c.id).copies > 0), shiny: shinyCount(), dorees: goldCount(), tirages: state.pulls };
 }
 async function cloudSave(keepalive = false) {
   if (!AUTH) return;
@@ -959,6 +1096,7 @@ async function cloudSave(keepalive = false) {
     state: { stringValue: JSON.stringify(state) },
     pseudo: { stringValue: AUTH.pseudo }, avatar: { stringValue: AUTH.avatar },
     cartes: { integerValue: String(s.cartes) }, shiny: { integerValue: String(s.shiny) }, tirages: { integerValue: String(s.tirages) },
+    dorees: { integerValue: String(s.dorees) }, vitrine: { stringValue: JSON.stringify(state.vitrine.slice(0, 3)) },
     maj: { stringValue: new Date().toISOString() }
   } };
   try {
@@ -1042,14 +1180,14 @@ async function fetchPlayers() {
   if (lbCache && Date.now() - lbCache.t < 30000) return lbCache.list;
   const list = []; let token = "";
   do {
-    let url = `${FS()}/joueurs?pageSize=300&mask.fieldPaths=pseudo&mask.fieldPaths=avatar&mask.fieldPaths=cartes&mask.fieldPaths=shiny&mask.fieldPaths=tirages`;
+    let url = `${FS()}/joueurs?pageSize=300&mask.fieldPaths=pseudo&mask.fieldPaths=avatar&mask.fieldPaths=cartes&mask.fieldPaths=shiny&mask.fieldPaths=tirages&mask.fieldPaths=dorees&mask.fieldPaths=vitrine`;
     if (token) url += "&pageToken=" + encodeURIComponent(token);
     const r = await fetch(url);
     if (!r.ok) throw new Error("Firebase a répondu " + r.status);
     const d = await r.json();
     for (const doc of d.documents || []) {
       const f = doc.fields || {}; const n = k => Number((f[k] && f[k].integerValue) || 0);
-      list.push({ uid: doc.name.split("/").pop(), pseudo: (f.pseudo && f.pseudo.stringValue) || "?", avatar: (f.avatar && f.avatar.stringValue) || "", cartes: n("cartes"), shiny: n("shiny"), tirages: n("tirages") });
+      list.push({ uid: doc.name.split("/").pop(), pseudo: (f.pseudo && f.pseudo.stringValue) || "?", avatar: (f.avatar && f.avatar.stringValue) || "", cartes: n("cartes"), shiny: n("shiny"), tirages: n("tirages"), dorees: n("dorees"), vitrine: parseVitrine(f.vitrine) });
     }
     token = d.nextPageToken || "";
   } while (token);
@@ -1064,17 +1202,18 @@ async function renderLeaderboard() {
   box.replaceChildren(el("p", "lb-note", "Chargement…"));
   let list;
   try { list = await fetchPlayers(); } catch (e) { box.replaceChildren(el("p", "lb-note", "Impossible de charger le classement (" + e.message + ").")); return; }
-  const other = { cartes: ["shiny", "tirages"], shiny: ["cartes", "tirages"], tirages: ["cartes", "shiny"] }[lbKey];
+  const other = { cartes: ["shiny", "tirages"], shiny: ["cartes", "tirages"], dorees: ["cartes", "shiny"], tirages: ["cartes", "shiny"] }[lbKey];
   list = [...list].sort((a, b) => b[lbKey] - a[lbKey] || b[other[0]] - a[other[0]] || a.pseudo.localeCompare(b.pseudo)).slice(0, 100);
   box.replaceChildren();
   if (!list.length) { box.appendChild(el("p", "lb-note", "Personne pour l'instant. Sois le premier !")); return; }
-  const unit = { cartes: "cartes", shiny: "shiny", tirages: "tirages" };
+  const unit = { cartes: "cartes", shiny: "shiny", dorees: "dorées", tirages: "tirages" };
   list.forEach((p, i) => {
     const row = el("div", "lb-row" + (AUTH && p.uid === AUTH.uid ? " me" : ""));
     row.appendChild(el("div", "rk", i < 3 ? ["🥇", "🥈", "🥉"][i] : String(i + 1)));
     row.appendChild(avatarImg({ pseudo: p.pseudo, avatar: p.avatar }));
     const mid = el("div"); mid.appendChild(el("div", "nm", p.pseudo));
-    mid.appendChild(el("div", "sub", `${p.cartes}/${CARDS.length} cartes · ${p.shiny} shiny · ${p.tirages} tirages`));
+    mid.appendChild(el("div", "sub", `${p.cartes}/${CARDS.length} cartes · ${p.shiny} shiny · ${p.dorees} dorées · ${p.tirages} tirages`));
+    row.onclick = () => openProfile(p);
     row.appendChild(mid);
     const v = el("div", "val", String(lbKey === "cartes" && CARDS.length ? p.cartes + "/" + CARDS.length : p[lbKey]));
     v.appendChild(el("small", null, unit[lbKey])); row.appendChild(v);
@@ -1082,6 +1221,149 @@ async function renderLeaderboard() {
   });
 }
 document.querySelectorAll("#lbMode button").forEach(b => b.onclick = () => { lbKey = b.dataset.k; renderLeaderboard(); });
+
+// ---------- Profil (depuis le classement) ----------
+function parseVitrine(f) { try { const v = JSON.parse((f && f.stringValue) || "[]"); return Array.isArray(v) ? v : []; } catch { return []; } }
+function openProfile(p) {
+  const box = $("#profileBox"); box.replaceChildren();
+  const h = el("div", "ph"); h.appendChild(avatarImg({ pseudo: p.pseudo, avatar: p.avatar })); h.appendChild(el("b", null, p.pseudo)); box.appendChild(h);
+  box.appendChild(el("p", "lb-note", `${p.cartes}/${CARDS.length} cartes · ${p.shiny} shiny · ${p.dorees} dorées · ${p.tirages} tirages`));
+  const v = el("div", "vitrine"); v.appendChild(el("h4", null, "📌 Vitrine"));
+  const items = vitrineCards(p.vitrine);
+  for (const { card, s } of items) v.appendChild(cardEl(card, { shiny: s === 1, gold: s === 2, noDetail: true, hideStars: true }));
+  if (!items.length) v.appendChild(el("p", "lb-note", "Pas encore de cartes en vitrine."));
+  box.appendChild(v);
+  const btns = el("div", "ov-btns"); const c = el("button", null, "Fermer"); c.onclick = () => $("#profile").classList.add("hidden"); btns.appendChild(c); box.appendChild(btns);
+  $("#profile").classList.remove("hidden");
+}
+$("#profile").addEventListener("click", e => { if (e.target.id === "profile") $("#profile").classList.add("hidden"); });
+
+// ---------- Annonces Discord ----------
+function announceResults(results) {
+  for (const r of results) {
+    if (r.shiny) sendAnnonce(r.card.id, "shiny");
+    else if (r.tier === 4) sendAnnonce(r.card.id, "mythique");
+  }
+}
+async function sendAnnonce(carte, type) {
+  if (!AUTH || !CONFIG.apiKey) return;
+  try {
+    await fetch(`${FS()}/annonces`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: "Bearer " + await getIdToken() },
+      body: JSON.stringify({ fields: {
+        uid: { stringValue: AUTH.uid }, pseudo: { stringValue: AUTH.pseudo },
+        carte: { stringValue: carte }, type: { stringValue: type }, date: { stringValue: new Date().toISOString() }
+      } })
+    });
+  } catch (e) { console.warn("annonce", e); }
+}
+
+// ---------- Sons ----------
+const MUTE_KEY = "kiwi-gacha-mute";
+let muted = false; try { muted = localStorage.getItem(MUTE_KEY) === "1"; } catch {}
+let actx = null;
+function tone(freq, start, dur, type = "sine", vol = .18) {
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(0, actx.currentTime + start);
+  g.gain.linearRampToValueAtTime(vol, actx.currentTime + start + .01);
+  g.gain.exponentialRampToValueAtTime(.001, actx.currentTime + start + dur);
+  o.connect(g).connect(actx.destination); o.start(actx.currentTime + start); o.stop(actx.currentTime + start + dur + .05);
+}
+function sfx(name) {
+  if (muted) return;
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === "suspended") actx.resume();
+    const N = { C: 523, D: 587, E: 659, G: 784, A: 880, C2: 1047, E2: 1319, G2: 1568 };
+    const seqs = {
+      r0: [[N.C, 0, .12, "triangle"]],
+      r1: [[N.C, 0, .1, "triangle"], [N.E, .07, .14, "triangle"]],
+      r2: [[N.C, 0, .1], [N.E, .07, .1], [N.G, .14, .2]],
+      r3: [[N.C, 0, .1], [N.E, .07, .1], [N.G, .14, .1], [N.C2, .21, .35]],
+      r4: [],
+      myth: [[N.C, 0, .15, "sawtooth", .08], [N.E, .1, .15, "sawtooth", .08], [N.G, .2, .15, "sawtooth", .08], [N.C2, .3, .5, "square", .07], [N.E2, .3, .5, "sine", .15], [N.G2, .45, .7, "sine", .12]],
+      shiny: [[N.G2, 0, .25, "sine", .1], [N.E2, .08, .25, "sine", .1], [N.G2, .16, .25, "sine", .1], [2093, .24, .5, "sine", .1]],
+      gold: [[N.C, 0, .2, "triangle"], [N.G, .12, .2, "triangle"], [N.C2, .24, .3, "triangle"], [N.E2, .36, .6, "sine", .14]],
+      coin: [[N.E2, 0, .07, "square", .06], [N.G2, .06, .15, "square", .06]],
+      flip: [[300, 0, .05, "triangle", .08]],
+    };
+    for (const [f, st, d, t, v] of seqs[name] || []) tone(f, st, d, t, v);
+  } catch {}
+}
+function renderMute() { $("#mute").textContent = muted ? "🔇" : "🔊"; }
+$("#mute").onclick = () => { muted = !muted; try { localStorage.setItem(MUTE_KEY, muted ? "1" : "0"); } catch {} renderMute(); if (!muted) sfx("coin"); };
+
+function flash(kind, text) {
+  const f = el("div", "flash " + kind); f.appendChild(el("span", null, text));
+  document.body.appendChild(f); setTimeout(() => f.remove(), 1800);
+  const r = $("#reveal"); r.classList.remove("shake"); void r.offsetWidth; r.classList.add("shake");
+}
+
+// ---------- Expéditions ----------
+const EXP_MS = 4 * 3600 * 1000;
+const EXP_COINS = [150, 250, 400, 700, 1200];
+const EXP_FRAG = [0, 0, .05, .12, .3];
+function expReward(card, s) {
+  const t = RIDX[card.rarete], st = stars(s === 1 ? own(card.id).shinyCopies : own(card.id).copies) || 1;
+  return Math.round(EXP_COINS[t] * (1 + .15 * (st - 1)) * (s === 1 ? 2 : 1));
+}
+function fmtTime(ms) { const m = Math.ceil(ms / 60000); return m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}` : `${m} min`; }
+function renderExp() {
+  const box = $("#expSlots"); if (!box) return; box.replaceChildren();
+  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+  state.exp.forEach((e, i) => {
+    const slot = el("div", "exp-slot" + (e ? " busy" : ""));
+    if (!e) {
+      slot.appendChild(el("div", "info", "Emplacement libre"));
+      const b = el("button", "small-btn", "Envoyer"); b.onclick = () => openPicker(i); slot.appendChild(b);
+    } else {
+      const card = byId[e.id];
+      const m = el("div", "mini " + (card ? card.rarete : "commun") + (e.s === 1 ? " shiny" : ""));
+      if (card) m.appendChild(avatarImg(card)); slot.appendChild(m);
+      const info = el("div", "info"); info.appendChild(el("b", null, card ? card.pseudo + (e.s === 1 ? " ✨" : "") : "Carte disparue"));
+      const left = e.end - Date.now();
+      info.appendChild(el("span", null, left > 0 ? "Retour dans " + fmtTime(left) : "De retour !"));
+      const tb = el("div", "tbar"); const ti = el("i"); ti.style.width = Math.min(100, (1 - Math.max(0, left) / EXP_MS) * 100) + "%"; tb.appendChild(ti); info.appendChild(tb);
+      slot.appendChild(info);
+      if (left <= 0) { const b = el("button", "small-btn", "Récupérer"); b.onclick = () => claimExp(i); slot.appendChild(b); }
+    }
+    box.appendChild(slot);
+  });
+}
+function openPicker(slot) {
+  const busy = new Set(state.exp.filter(Boolean).map(e => e.id + ":" + e.s));
+  const g = $("#pickGrid"); g.replaceChildren();
+  const opts = [];
+  for (const c of CARDS) {
+    const o = own(c.id);
+    if (o.copies > 0 && !busy.has(c.id + ":0")) opts.push([c, 0]);
+    if (o.shinyCopies > 0 && !busy.has(c.id + ":1")) opts.push([c, 1]);
+  }
+  opts.sort((a, b) => expReward(b[0], b[1]) - expReward(a[0], a[1]));
+  for (const [c, s] of opts) {
+    const w = el("div", "pick"); w.appendChild(cardEl(c, { shiny: s === 1, noDetail: true }));
+    w.appendChild(el("div", "rw", `≈ ${expReward(c, s)} 🪙` + (EXP_FRAG[RIDX[c.rarete]] ? ` · ${Math.round(EXP_FRAG[RIDX[c.rarete]] * 100)} % ✦` : "")));
+    w.onclick = () => { state.exp[slot] = { id: c.id, s, end: Date.now() + EXP_MS }; $("#picker").classList.add("hidden"); sfx("flip"); toast(`🧭 ${c.pseudo} part en expédition !`); afterAction(); };
+    g.appendChild(w);
+  }
+  if (!opts.length) g.appendChild(el("p", "lb-note", "Aucune carte disponible. Fais des tirages d'abord !"));
+  $("#picker").classList.remove("hidden");
+}
+function claimExp(i) {
+  const e = state.exp[i]; if (!e || e.end > Date.now()) return;
+  const card = CARDS.find(c => c.id === e.id);
+  let coins = card ? expReward(card, e.s) : 100, frag = 0;
+  if (card && Math.random() < EXP_FRAG[RIDX[card.rarete]]) frag = 1;
+  state.coins += coins; state.fragments += frag; state.expDone++; state.exp[i] = null;
+  sfx("coin"); toast(`🧭 Expédition terminée : +${coins} 🪙` + (frag ? " + 1 fragment ✦ !" : ""));
+  if (frag) confetti(["#ff5fa2", "#ffc23d", "#b46bff"]);
+  afterAction();
+}
+$("#pickClose").onclick = () => $("#picker").classList.add("hidden");
+$("#picker").addEventListener("click", e => { if (e.target.id === "picker") $("#picker").classList.add("hidden"); });
+setInterval(() => { if (!$("#tab-tirage").classList.contains("hidden")) renderExp(); }, 1000);
 
 // ---------- Navigation & boutons ----------
 const TABS = ["tirage", "collection", "succes", "classement", "quiz", "regles"];
@@ -1104,7 +1386,7 @@ $("#fuse").onclick = () => {
 $("#spin").onclick = spin;
 $("#daily").onclick = () => {
   if (state.lastDaily === today()) return;
-  state.lastDaily = today(); state.dailyCount++; state.coins += DAILY; afterAction(); toast(`+${DAILY} 🪙 Reviens demain !`);
+  state.lastDaily = today(); state.dailyCount++; state.coins += DAILY; afterAction(); sfx("coin"); toast(`+${DAILY} 🪙 Reviens demain !`);
 };
 $("#reset").onclick = () => {
   if (!confirm("Effacer toute ta collection, tes pièces et tes succès ?")) return;
@@ -1115,6 +1397,7 @@ $("#reset").onclick = () => {
   load(); buildWheel();
   try { CARDS = await loadCards(); }
   catch (e) { const b = $("#errBanner"); b.textContent = "Impossible de charger les cartes : " + e.message + ". Vérifie CONFIG et les règles Firestore."; b.classList.remove("hidden"); CARDS = []; }
+  renderMute();
   await initAuth();
   renderFeatured(); renderRates(); renderFilters(); renderCollection(); refresh(); checkAch(); save();
 })();

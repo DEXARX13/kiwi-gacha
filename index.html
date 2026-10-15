@@ -338,6 +338,20 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .guide dd{margin:2px 0 0;color:var(--mute);font-size:14px;line-height:1.5}
 .statline{font-size:10.5px;color:var(--txt);text-align:center;margin-top:2px;opacity:.9}
 
+/* ---------- Builds ---------- */
+.builds{margin-top:16px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#0004}
+.builds h4{margin:0 0 8px;font-size:14px}
+.build-list{display:flex;flex-direction:column;gap:6px}
+.build{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.build.cur{border-color:#3ddc84}
+.build .bn{flex:1;min-width:0;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.build .bm{display:flex;gap:3px}
+.build .bm .mini{width:26px;height:26px}
+.build .bm .sep{width:1px;background:var(--line);margin:0 3px}
+.build button{background:transparent;border:1px solid var(--line);color:var(--txt);border-radius:9px;padding:5px 8px;font-size:12px;white-space:nowrap}
+.build button.ld{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+@media(max-width:560px){.build{flex-wrap:wrap}.build .bn{flex-basis:100%}}
+
 /* ---------- Confettis ---------- */
 .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
@@ -446,6 +460,11 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <p>3 cartes qui ne combattent pas mais donnent un bonus à toute l'équipe. <b>Le bonus grandit avec le nombre de copies</b> (jusqu'à 20) : un Commun avec plein de doublons fait un super soutien !</p>
       <div class="team-row" id="supBox"></div>
       <div class="inv"><b id="supTotal"></b><button class="small-btn" id="supEdit">Changer les soutiens</button></div>
+      <div class="builds">
+        <h4>💾 Mes builds <span class="lb-note" id="buildCount"></span></h4>
+        <div class="build-list" id="buildList"></div>
+        <button class="small-btn" id="buildSave" style="margin-top:8px">+ Sauvegarder le build actuel</button>
+      </div>
     </div>
     <div class="cgrid">
       <div class="box">
@@ -702,7 +721,7 @@ function defaultState() {
     history: [], bestTen: 0, owner: null,
     exp: [null, null, null], expDone: 0, vitrine: [],
     team: [], supports: [], adv: 0, wins: 0, trophies: 0, arenaDate: "", arenaCount: 0, arenaWins: 0, bossDate: "", bossBest: 0, bossKills: 0,
-    tower: null, duelWins: 0
+    tower: null, duelWins: 0, builds: []
   };
 }
 function load() {
@@ -715,6 +734,7 @@ function migrate() {
   if (!Array.isArray(state.vitrine)) state.vitrine = [];
   if (!Array.isArray(state.team)) state.team = [];
   if (!Array.isArray(state.supports)) state.supports = [];
+  if (!Array.isArray(state.builds)) state.builds = [];
   // Migration des anciennes sauvegardes (shiny = simple drapeau)
   for (const o of Object.values(state.owned)) {
     if (o.shinyCopies == null) o.shinyCopies = o.shiny ? 1 : 0;
@@ -2103,6 +2123,7 @@ async function renderCombatTab() {
   }
   const done = state.bossDate === today();
   $("#bossBtn").disabled = done; $("#bossBtn").textContent = done ? `Déjà fait (${state.bossBest} dégâts)` : "Affronter";
+  renderBuilds();
   // Tour
   const tw = towerState();
   $("#towerInfo").textContent = `Semaine ${weekId()} · Ton record : étage ${tw.best} · Montées : ${TOWER_RUNS - tw.runs}/${TOWER_RUNS}`;
@@ -2136,6 +2157,7 @@ async function renderCombatTab() {
   }
 }
 $("#teamEdit").onclick = openTeamPicker;
+$("#buildSave").onclick = saveBuild;
 $("#towerBtn").onclick = startTower;
 $("#statsHelpBtn").onclick = () => $("#statsHelp").classList.remove("hidden");
 $("#statsHelpClose").onclick = () => $("#statsHelp").classList.add("hidden");
@@ -2397,6 +2419,62 @@ function renderDuelBox() {
   inp.onkeydown = e => { if (e.key === "Enter") joinDuel(inp.value); };
   row.append(inp, j); box.appendChild(row);
   box.appendChild(el("p", "lb-note", `Victoires en duel : ${state.duelWins || 0}`));
+}
+
+// ---------- Builds sauvegardés (équipe + soutiens) ----------
+const BUILD_MAX = 8;
+function sameBuild(b) {
+  const t = validTeam(), sp = validSupports();
+  return b.team.length === t.length && b.team.every((x, i) => t[i] && t[i].id === x.id && t[i].s === x.s)
+    && b.supports.length === sp.length && b.supports.every((id, i) => sp[i] === id);
+}
+function askBuildName(def) {
+  const n = prompt("Nom du build :", def);
+  if (n == null) return null;
+  return n.trim().slice(0, 30) || def;
+}
+function saveBuild() {
+  if (!validTeam().length) return toast("Choisis d'abord une équipe");
+  if (state.builds.length >= BUILD_MAX) return toast(`${BUILD_MAX} builds maximum : supprimes-en un ou mets-en un à jour`);
+  const name = askBuildName(`Build ${state.builds.length + 1}`); if (name == null) return;
+  state.builds.push({ name, team: validTeam().map(t => ({ id: t.id, s: t.s })), supports: validSupports().slice() });
+  afterAction(); renderBuilds(); toast(`💾 « ${name} » sauvegardé`);
+}
+function loadBuild(i) {
+  const b = state.builds[i]; if (!b) return;
+  const okTeam = b.team.filter(t => CARDS.some(c => c.id === t.id) && ownedVariants(t.id).includes(t.s));
+  state.team = okTeam.slice(0, 3);
+  state.supports = b.supports.filter(id => CARDS.some(c => c.id === id) && supportCopies(id) > 0 && !okTeam.some(t => t.id === id)).slice(0, 3);
+  const missing = b.team.length - okTeam.length + b.supports.length - state.supports.length;
+  afterAction(); renderCombatTab();
+  toast(missing ? `« ${b.name} » chargé (${missing} carte(s) indisponible(s))` : `✅ « ${b.name} » chargé`);
+}
+function renderBuilds() {
+  const box = $("#buildList"); if (!box) return; box.replaceChildren();
+  $("#buildCount").textContent = `${state.builds.length}/${BUILD_MAX}`;
+  $("#buildSave").disabled = state.builds.length >= BUILD_MAX;
+  const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
+  if (!state.builds.length) box.appendChild(el("p", "lb-note", "Aucun build. Compose ton équipe et tes soutiens, puis sauvegarde-les ici pour les recharger en un clic."));
+  state.builds.forEach((b, i) => {
+    const row = el("div", "build" + (sameBuild(b) ? " cur" : ""));
+    row.appendChild(el("div", "bn", (sameBuild(b) ? "✅ " : "") + b.name));
+    const m = el("div", "bm");
+    for (const t of b.team) { const c = byId[t.id]; if (!c) continue; const x = el("div", "mini " + c.rarete + (t.s === 1 ? " shiny" : t.s === 2 ? " gold" : "")); x.title = c.pseudo + " · " + CLASSES[cardClass(c)].nom; x.appendChild(avatarImg(c)); m.appendChild(x); }
+    if (b.supports.length) m.appendChild(el("div", "sep"));
+    for (const id of b.supports) { const c = byId[id]; if (!c) continue; const x = el("div", "mini " + c.rarete); x.title = c.pseudo + " · " + SUPPORTS[supportType(c)].nom; x.appendChild(avatarImg(c)); m.appendChild(x); }
+    row.appendChild(m);
+    const ld = el("button", "ld", "Charger"); ld.onclick = () => loadBuild(i);
+    const up = el("button", null, "💾"); up.title = "Remplacer par l'équipe actuelle";
+    up.onclick = () => { if (!validTeam().length) return toast("Choisis d'abord une équipe"); if (!confirm(`Remplacer « ${b.name} » par l'équipe et les soutiens actuels ?`)) return; b.team = validTeam().map(t => ({ id: t.id, s: t.s })); b.supports = validSupports().slice(); afterAction(); renderBuilds(); toast("💾 Build mis à jour"); };
+    const rn = el("button", null, "✏️"); rn.title = "Renommer";
+    rn.onclick = () => { const n = askBuildName(b.name); if (n == null) return; b.name = n; afterAction(); renderBuilds(); };
+    const up2 = el("button", null, "▲"); up2.title = "Monter"; up2.disabled = i === 0;
+    up2.onclick = () => { [state.builds[i - 1], state.builds[i]] = [state.builds[i], state.builds[i - 1]]; afterAction(); renderBuilds(); };
+    const del = el("button", null, "🗑️"); del.title = "Supprimer";
+    del.onclick = () => { if (!confirm(`Supprimer le build « ${b.name} » ?`)) return; state.builds.splice(i, 1); afterAction(); renderBuilds(); };
+    row.append(ld, up, rn, up2, del);
+    box.appendChild(row);
+  });
 }
 
 // ---------- Navigation & boutons ----------

@@ -359,6 +359,18 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 @keyframes pop{from{transform:translate(-50%,-30px);opacity:0}}
 #verBar{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:69;background:#3a2a10;border:1px solid #7a5a1a;color:#ffd98a;border-radius:14px;padding:10px 14px;display:flex;gap:10px;align-items:center;max-width:94vw;font-size:14px}
 
+/* ---------- Spécialisations ---------- */
+.spec-box{margin-top:12px}
+.spec-title{font-weight:800;font-size:14px;margin-bottom:4px}
+.spec-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.spec-opt{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--panel);border:2px solid var(--line);color:var(--txt);border-radius:12px;padding:10px;font-size:12px;line-height:1.35}
+.spec-opt b{font-size:14px}
+.spec-opt span{color:var(--mute)}
+.spec-opt i{color:var(--gold);font-style:normal;font-size:11px}
+.spec-opt.on{border-color:#3ddc84;box-shadow:0 0 12px #3ddc8455}
+.spec-opt.on b::after{content:" ✅"}
+@media(max-width:560px){.spec-row{grid-template-columns:1fr}}
+
 /* ---------- Confettis ---------- */
 .confetti{position:fixed;top:-12px;width:9px;height:14px;z-index:70;pointer-events:none;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
@@ -569,6 +581,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li><b>🔰 Soutiens</b> : 3 cartes en plus qui ne combattent pas mais donnent un bonus à l'équipe (⚔️ ATK, ❤️ PV, 🧱 DEF, 💨 vitesse, 🎯 critique, ⚡ énergie de départ ou 🌿 régénération). Le bonus grandit avec le nombre de copies de la carte (max à 20).</li>
         <li>Modes : 🗺️ Aventure (étapes infinies, boss toutes les 5), 👹 Boss du jour, 🏟️ Arène (trophées, 5 combats classés par jour), 🗼 Tour infinie (nouvelle chaque semaine, PV conservés entre les étages, 3 montées par jour) et 🤺 Duel en direct (avec un code à partager). L'Arène et le Duel demandent d'être connecté.</li>
         <li>Le détail de chaque stat est dans le <b>📖 Guide des stats</b> de l'onglet Combat.</li>
+        <li><b>⭐ Spécialisations</b> : à 3★, chaque carte débloque 2 spécialisations au choix (Berserker/Briseur, Paladin/Épineux, Glace/Pyromancien, Prêtre/Barde, Archer/Ninja), à choisir dans sa vue détaillée. Premier choix gratuit, changement 300 🪙. Détails dans le 📖 Guide des stats.</li>
         <li>À partir du tour 9, la 🔥 Rage augmente les dégâts de tout le monde à chaque tour (et réduit les soins et boucliers).</li>
         <li>Bouton 🤖 Auto pour laisser l'ordi jouer, ⏩ pour accélérer.</li>
       </ul>
@@ -633,7 +646,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
     <h3>📖 Guide des stats</h3>
     <dl>
       <dt>❤️ PV (points de vie)</dt><dd>Quand ils tombent à 0, la carte est K.O. et ne joue plus de ce combat.</dd>
-      <dt>⚔️ ATK (attaque)</dt><dd>La base des dégâts infligés. Une attaque normale fait environ 100 % de l'ATK, les compétences plus (Coup puissant 180 %, Coup fatal 150 %, Tempête 105 % sur tous les ennemis).</dd>
+      <dt>⚔️ ATK (attaque)</dt><dd>La base des dégâts infligés. Une attaque normale fait environ 100 % de l'ATK, les compétences plus (Coup puissant 180 %, Coup fatal 150 %, Tempête 115 % sur tous les ennemis).</dd>
       <dt>🧱 DEF (défense)</dt><dd>Réduit les dégâts reçus. Avec 15 DEF, tu prends environ 35 % de dégâts en moins ; avec 30 DEF, environ 50 % en moins. Plus tu en as, moins chaque point compte.</dd>
       <dt>💨 VIT (vitesse)</dt><dd>Décide qui joue en premier : à chaque tour, les cartes jouent de la plus rapide à la plus lente (les deux équipes mélangées). Jouer avant l'ennemi permet de l'achever avant qu'il frappe.</dd>
       <dt>⚡ Énergie</dt><dd>Sert à lancer les compétences (2 ou 3 ⚡). Tu commences à 1⚡, puis +1 par attaque et +2 quand tu te mets en défense. Maximum 5.</dd>
@@ -646,6 +659,13 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <dt>⭐ Étoiles, ✨ shiny, 🏅 Dorée</dt><dd>Chaque étoile au-dessus de la 1re donne +8 % à toutes les stats (jusqu'à +32 % à 5★). Une version shiny a +10 %, une Dorée +20 % (et compte comme 5★).</dd>
       <dt>🌈 Mythiques</dt><dd>Leurs compétences sont 30 % plus fortes.</dd>
       <dt>🔰 Soutiens</dt><dd>3 cartes qui ne combattent pas : leurs bonus (ATK, PV, DEF, VIT, critique, énergie de départ, régénération) s'appliquent à toute l'équipe. Ils grandissent avec le nombre de copies, jusqu'à 20.</dd>
+      <dt>⭐ Spécialisations</dt><dd>À 3★ (5 copies), chaque carte débloque 2 spécialisations au choix (dans sa vue détaillée). C'est ton choix à toi : un autre joueur peut spécialiser la même carte autrement. Le premier choix est gratuit, en changer coûte 300 🪙.<br>
+⚔️ Guerrier : 🪓 Berserker (plus de dégâts quand il a peu de PV) · 🔨 Briseur (casse bouclier et provocation)<br>
+🛡️ Tank : ✝️ Paladin (son Rempart soigne l'équipe) · 🌵 Épineux (renvoie 25 % des dégâts ciblés)<br>
+🔮 Mage : ❄️ Glace (gèle un ennemi) · 🔥 Pyromancien (brûlure + soins reçus −50 %)<br>
+💚 Soigneur : 🙏 Prêtre (gros soin + purification) · 🎵 Barde (+30 % ATK et +3 VIT à l'équipe)<br>
+🗡️ Assassin : 🏹 Archer (ignore la provocation) · 🥷 Ninja (15 % d'esquive)</dd>
+      <dt>❄️ 🔥 💔 🎵 Effets</dt><dd>❄️ Gelé : passe son prochain tour. 🔥 Brûlure : perd des PV au début de ses tours. 💔 Anti-soin : soins reçus divisés par 2. 🎵 Chant : +30 % ATK et +3 VIT.</dd>
       <dt>💪 Puissance</dt><dd>Un chiffre indicatif qui résume PV, ATK, DEF et VIT pour comparer les cartes. La classe et la compétence comptent aussi beaucoup !</dd>
     </dl>
     <div class="ov-btns"><button id="statsHelpClose">OK</button></div>
@@ -680,6 +700,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <div class="r" id="dRar"></div>
       <blockquote id="dQuote"></blockquote>
       <div class="meta" id="dMeta"></div>
+      <div class="spec-box" id="dSpec"></div>
       <div class="ov-btns">
         <button id="dSwap">Voir le shiny ✨</button>
         <button id="dGold">🏅 Fusionner en Dorée</button>
@@ -696,7 +717,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <script>
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
-const APP_VERSION = "2026.10.15-2"; // à changer à chaque mise en ligne : les duels exigent la même version
+const APP_VERSION = "2026.10.15-3"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -871,7 +892,41 @@ function openDetail(card, variant) {
   pin.classList.toggle("hidden", !owned);
   const pinned = state.vitrine.some(v => v.id === card.id && v.s === variant);
   pin.textContent = pinned ? "📌 Retirer de la vitrine" : "📌 Mettre en vitrine";
+  renderSpecBox(card);
   $("#detail").classList.remove("hidden");
+}
+function renderSpecBox(card) {
+  const box = $("#dSpec"); box.replaceChildren();
+  const cls = cardClass(card), cl = CLASSES[cls], o = own(card.id);
+  box.appendChild(el("div", "spec-title", `${cl.ico} ${cl.nom} · ✨ ${cl.skill.nom}`));
+  if (!ownedVariants(card.id).length) return;
+  if (!specUnlocked(card.id)) {
+    box.appendChild(el("div", "lb-note", `⭐ Spécialisation débloquée à 3★ (${Math.max(o.copies || 0, o.shinyCopies || 0)}/${SPEC_NEED} copies)`));
+    return;
+  }
+  const cur = o.spec;
+  box.appendChild(el("div", "lb-note", cur ? `⭐ Spécialisation : changer coûte ${SPEC_RESPEC} 🪙` : "⭐ Choisis une spécialisation (gratuit la première fois) :"));
+  const row = el("div", "spec-row");
+  for (const k of specsOf(cls)) {
+    const sp = SPECS[k];
+    const b = el("button", "spec-opt" + (cur === k ? " on" : ""));
+    b.appendChild(el("b", null, `${sp.ico} ${sp.nom}`));
+    b.appendChild(el("span", null, sp.desc));
+    if (sp.skill) b.appendChild(el("i", null, `✨ ${sp.skill.nom} (${sp.skill.cost}⚡) : ${sp.skill.desc}`));
+    b.onclick = () => {
+      if (cur === k) return;
+      const oo = state.owned[card.id];
+      if (cur) {
+        if (state.coins < SPEC_RESPEC) return toast(`Il faut ${SPEC_RESPEC} 🪙 pour changer de spécialisation`);
+        if (!confirm(`Passer ${card.pseudo} en ${sp.nom} pour ${SPEC_RESPEC} 🪙 ?`)) return;
+        state.coins -= SPEC_RESPEC;
+      }
+      oo.spec = k; sfx("gold"); toast(`${sp.ico} ${card.pseudo} devient ${sp.nom} !`);
+      afterAction(); renderSpecBox(card);
+    };
+    row.appendChild(b);
+  }
+  box.appendChild(row);
 }
 $("#dGold").onclick = () => {
   if (!detailState) return;
@@ -1589,16 +1644,43 @@ setInterval(() => { if (!$("#tab-tirage").classList.contains("hidden")) renderEx
 const CLASSES = {
   guerrier: { nom: "Guerrier", ico: "⚔️", hp: 1.05, atk: 1.1, def: 1, spd: 0,
     skill: { nom: "Coup puissant", desc: "180 % de dégâts sur une cible", cost: 2, target: "enemy" } },
-  tank: { nom: "Tank", ico: "🛡️", hp: 1.3, atk: .85, def: 1.3, spd: -2,
+  tank: { nom: "Tank", ico: "🛡️", hp: 1.35, atk: .85, def: 1.3, spd: -2,
     skill: { nom: "Rempart", desc: "Bouclier de 25 % de ses PV (2 tours, ne se cumule pas) et provoque les ennemis pendant 2 tours", cost: 3, target: "self" } },
   mage: { nom: "Mage", ico: "🔮", hp: .9, atk: 1.15, def: .85, spd: 1,
-    skill: { nom: "Tempête", desc: "105 % de dégâts à tous les ennemis", cost: 3, target: "all" } },
+    skill: { nom: "Tempête", desc: "115 % de dégâts à tous les ennemis", cost: 3, target: "all" } },
   soigneur: { nom: "Soigneur", ico: "💚", hp: 1, atk: .85, def: 1, spd: 1,
     skill: { nom: "Soin", desc: "Soigne tous les alliés de 28 % de leurs PV max", cost: 2, target: "allies" } },
   assassin: { nom: "Assassin", ico: "🗡️", hp: .8, atk: 1.05, def: .8, spd: 3,
     skill: { nom: "Coup fatal", desc: "150 % de dégâts sur l'ennemi le plus faible, toujours critique", cost: 2, target: "weakest" } },
 };
 const CLASS_IDS = Object.keys(CLASSES);
+// ---------- Spécialisations (choisies par chaque joueur, débloquées à 3★) ----------
+const SPECS = {
+  berserker: { cls: "guerrier", nom: "Berserker", ico: "🪓", desc: "Plus il perd de PV, plus il frappe fort (jusqu'à +30 % de dégâts)." },
+  briseur:   { cls: "guerrier", nom: "Briseur", ico: "🔨", desc: "Sa compétence détruit le bouclier et annule la provocation de la cible.",
+               skill: { nom: "Brise-garde", desc: "160 % de dégâts, détruit le bouclier et annule la provocation de la cible", cost: 2, target: "enemy" } },
+  paladin:   { cls: "tank", nom: "Paladin", ico: "✝️", desc: "Son Rempart soigne aussi toute l'équipe de 10 % (bouclier un peu plus petit).",
+               skill: { nom: "Rempart sacré", desc: "Bouclier de 20 % de ses PV + provocation 2 tours, et soigne les alliés de 10 %", cost: 3, target: "self" } },
+  epineux:   { cls: "tank", nom: "Épineux", ico: "🌵", desc: "Renvoie 25 % des dégâts des attaques ciblées qu'il reçoit." },
+  glace:     { cls: "mage", nom: "Glace", ico: "❄️", desc: "Sa Tempête gèle un ennemi : il passe son prochain tour (les boss résistent).",
+               skill: { nom: "Blizzard", desc: "95 % de dégâts à tous les ennemis et gèle l'un d'eux (il passe son tour)", cost: 3, target: "all" } },
+  pyro:      { cls: "mage", nom: "Pyromancien", ico: "🔥", desc: "Brûle les ennemis 2 tours et réduit leurs soins reçus de 50 %.",
+               skill: { nom: "Fournaise", desc: "80 % de dégâts à tous + brûlure 2 tours, soins reçus −50 % pendant 2 tours", cost: 3, target: "all" } },
+  pretre:    { cls: "soigneur", nom: "Prêtre", ico: "🙏", desc: "Gros soin sur l'allié le plus blessé, qui retire brûlure, gel et anti-soin.",
+               skill: { nom: "Grâce", desc: "Soigne l'allié le plus blessé de 40 % de ses PV max et le purifie", cost: 2, target: "self" } },
+  barde:     { cls: "soigneur", nom: "Barde", ico: "🎵", desc: "Ne soigne plus, mais donne +30 % ATK et +3 VIT à toute l'équipe.",
+               skill: { nom: "Chant de guerre", desc: "+30 % ATK et +3 VIT à toute l'équipe pendant 3 tours, et +1⚡ à chaque allié", cost: 2, target: "self" } },
+  archer:    { cls: "assassin", nom: "Archer", ico: "🏹", desc: "Ses attaques ignorent la provocation : il peut viser n'importe qui.",
+               skill: { nom: "Tir précis", desc: "140 % de dégâts sur la cible de ton choix, toujours critique, ignore la provocation", cost: 2, target: "enemy" } },
+  ninja:     { cls: "assassin", nom: "Ninja", ico: "🥷", desc: "15 % de chances d'esquiver les attaques ciblées." },
+};
+const SPEC_NEED = 5, SPEC_RESPEC = 300;
+function specsOf(cls) { return Object.keys(SPECS).filter(k => SPECS[k].cls === cls); }
+function specUnlocked(id) { const o = own(id); return !!o.gold || (o.copies || 0) >= SPEC_NEED || (o.shinyCopies || 0) >= SPEC_NEED; }
+function mySpec(id) { const sp = own(id).spec; return specUnlocked(id) && sp && SPECS[sp] ? sp : null; }
+function roleLabel(card, spec) { const cl = CLASSES[cardClass(card)]; return spec ? `${SPECS[spec].ico} ${SPECS[spec].nom}` : `${cl.ico} ${cl.nom}`; }
+function skillOf(u) { return (u.spec && SPECS[u.spec] && SPECS[u.spec].skill) || CLASSES[u.cls].skill; }
+function unitIco(u) { return u.spec ? SPECS[u.spec].ico : CLASSES[u.cls].ico; }
 const BASE_HP = [100, 120, 145, 175, 210], BASE_ATK = [18, 22, 27, 33, 40], BASE_DEF = [8, 10, 12, 15, 18], BASE_SPD = [10, 11, 12, 13, 14];
 const MAX_ENERGY = 5, RAGE_FROM = 8;
 
@@ -1641,6 +1723,8 @@ function makeUnit(card, s = 0, st = 1, side = "ally", mult = 1, extra = {}) {
     def: Math.round(BASE_DEF[t] * c.def * m * (1 + (bo.def || 0) / 100)),
     spd: BASE_SPD[t] + c.spd + hashStr(card.id) % 4 + Math.round(bo.spd || 0), energy: Math.min(MAX_ENERGY, 1 + (bo.energy || 0)),
     crit: bo.crit || 0, regen: bo.regen || 0, shield: 0, shieldT: 0, taunt: 0, guard: false, alive: true,
+    spec: extra.spec && SPECS[extra.spec] && SPECS[extra.spec].cls === cls ? extra.spec : null,
+    burn: 0, burnDmg: 0, healCut: 0, frozen: 0, buffT: 0,
     boss: !!extra.boss, dealt: 0
   };
 }
@@ -1654,7 +1738,7 @@ function bDelay(ms) { return sleep(B && B.fast ? ms / 2.5 : ms); }
 
 function startBattle(allies, enemies, opts) {
   const all = opts.canon || [...allies, ...enemies];
-  all.forEach((u, i) => { u.ci = i; u.shield = 0; u.shieldT = 0; u.taunt = 0; u.guard = false; });
+  all.forEach((u, i) => { u.ci = i; u.shield = 0; u.shieldT = 0; u.taunt = 0; u.guard = false; u.burn = 0; u.healCut = 0; u.frozen = 0; u.buffT = 0; });
   B = { allies, enemies, all, order: [], round: 0, maxRounds: opts.maxRounds || 30,
     title: opts.title, onEnd: opts.onEnd, auto: !!opts.autoDefault, fast: false, waiting: null, over: false, log: [],
     rand: opts.seed != null ? rng(opts.seed) : Math.random, duel: opts.duel || null };
@@ -1681,15 +1765,28 @@ async function nextTurn() {
     for (const u of B.all) {
       if (u.taunt > 0) u.taunt--;
       if (u.shieldT > 0 && --u.shieldT === 0 && u.shield > 0) { u.shield = 0; blog(`🛡️ Le bouclier de ${u.card.pseudo} disparaît`); }
+      if (u.buffT > 0) u.buffT--;
+      if (u.healCut > 0) u.healCut--;
     }
-    B.order = B.all.filter(u => u.alive).sort((a, b) => b.spd - a.spd || a.ci - b.ci);
+    B.order = B.all.filter(u => u.alive).sort((a, b) => spdOf(b) - spdOf(a) || a.ci - b.ci);
     blog(`— Tour ${B.round} —`, "round");
     if (B.round === RAGE_FROM + 1) blog("🔥 Rage : les dégâts augmentent à chaque tour !", "skill");
   }
   const u = B.order.shift();
   if (!u.alive) return nextTurn();
   u.guard = false; B.active = u;
-  if (u.regen > 0 && u.hp < u.maxHp) { const h = Math.min(u.maxHp - u.hp, Math.round(u.maxHp * u.regen / 100 / rageF())); if (h > 0) { u.hp += h; renderBattle(); floatNum(u, `+${h}`, "heal"); } }
+  renderBattle();
+  if (u.burn > 0) {
+    u.burn--;
+    const bd = Math.min(u.hp, u.burnDmg);
+    u.hp -= bd; floatNum(u, `🔥${bd}`, "dmg"); blog(`🔥 ${u.card.pseudo} brûle : ${bd}`);
+    if (u.hp <= 0) { u.alive = false; u.taunt = 0; blog(`💀 ${u.card.pseudo} est K.O.`, "ko"); renderBattle(); await bDelay(500); return nextTurn(); }
+  }
+  if (u.frozen > 0) {
+    u.frozen--; blog(`❄️ ${u.card.pseudo} est gelé et passe son tour`); renderBattle();
+    await bDelay(600); return nextTurn();
+  }
+  if (u.regen > 0 && u.hp < u.maxHp) heal(u, Math.round(u.maxHp * u.regen / 100 / rageF()));
   renderBattle();
   if (B.duel && u.side === "enemy") { B.waiting = null; B.duel.waitSince = Date.now(); renderActions(); duelTryApply(); return; }
   if (u.side === "ally" && !B.auto) { B.waiting = { unit: u, step: "action" }; renderActions(); return; }
@@ -1704,13 +1801,23 @@ function decide(u, kind, target) {
   return act(u, kind, target);
 }
 function tauntersOf(u) { return foes(u).filter(f => f.taunt > 0); }
-function validTargets(u) { const t = tauntersOf(u); return t.length ? t : foes(u); }
+function validTargets(u) { if (u.spec === "archer") return foes(u); const t = tauntersOf(u); return t.length ? t : foes(u); }
+function spdOf(u) { return u.spd + (u.buffT > 0 ? 3 : 0); }
+function heal(t, amount) {
+  if (t.healCut > 0) amount = Math.round(amount * .5);
+  const h = Math.max(0, Math.min(t.maxHp - t.hp, amount));
+  t.hp += h; if (h > 0) floatNum(t, `+${h}`, "heal");
+  return h;
+}
 function aiChoose(u) {
-  const c = CLASSES[u.cls], f = foes(u), al = friends(u);
-  if (u.energy >= c.skill.cost) {
-    if (u.cls === "soigneur" && al.some(a => a.hp / a.maxHp < .6)) return ["skill"];
+  const sk = skillOf(u), f = foes(u), al = friends(u);
+  if (u.energy >= sk.cost) {
+    if (u.spec === "barde") { if (!al.some(a => a.buffT > 0)) return ["skill"]; }
+    else if (u.spec === "pretre") { if (al.some(a => a.hp / a.maxHp < .55 || a.burn > 0 || a.frozen > 0)) return ["skill"]; }
+    else if (u.cls === "soigneur" && al.some(a => a.hp / a.maxHp < .6)) return ["skill"];
     if (u.cls === "tank" && u.taunt <= 0 && al.length > 1) return ["skill"];
     if (u.cls === "mage" && f.length >= 2) return ["skill"];
+    if (u.spec === "briseur") { const t = f.find(x => x.shield > 0 || x.taunt > 0); return ["skill", t || pickTarget(u)]; }
     if (u.cls === "guerrier" || u.cls === "assassin") return ["skill", pickTarget(u)];
     if (u.cls === "mage" || u.cls === "tank") return ["skill"];
   }
@@ -1723,9 +1830,14 @@ function pickTarget(u) {
   return ts[Math.floor(Math.random() * ts.length)];
 }
 
-function hitDamage(a, t, mult, forceCrit = false) {
+function hitDamage(a, t, mult, forceCrit = false, aoe = false) {
+  if (t.spec === "ninja" && !aoe && B.rand() < .15) {
+    floatNum(t, "Esquive !", "shield"); blog(`🥷 ${t.card.pseudo} esquive !`);
+    return { d: 0, crit: false, dodge: true };
+  }
   const rage = rageF();
-  let d = a.atk * mult * (.9 + B.rand() * .2) * (100 / (100 + t.def * 3.5)) * rage;
+  const atk = a.atk * (a.buffT > 0 ? 1.3 : 1) * (a.spec === "berserker" ? 1 + .3 * (1 - a.hp / a.maxHp) : 1);
+  let d = atk * mult * (.9 + B.rand() * .2) * (100 / (100 + t.def * 3.5)) * rage;
   d = Math.max(1, d);
   const crit = forceCrit || B.rand() < (a.cls === "assassin" ? .15 : .1) + (a.crit || 0) / 100;
   if (crit) d *= 1.5;
@@ -1738,12 +1850,17 @@ function hitDamage(a, t, mult, forceCrit = false) {
   floatNum(t, crit ? `${d + absorbed}!` : String(d + absorbed), crit ? "crit" : "dmg");
   animUnit(t, "hit");
   if (t.hp <= 0) { t.alive = false; t.taunt = 0; blog(`💀 ${t.card.pseudo} est K.O.`, "ko"); sfx("flip"); }
+  if (t.spec === "epineux" && !aoe && a.alive && d + absorbed > 0) {
+    const rf = Math.min(a.hp, Math.max(1, Math.round((d + absorbed) * .25)));
+    a.hp -= rf; floatNum(a, `🌵${rf}`, "dmg");
+    if (a.hp <= 0) { a.alive = false; a.taunt = 0; blog(`💀 ${a.card.pseudo} est K.O. (épines)`, "ko"); }
+  }
   return { d: d + absorbed, crit };
 }
 async function act(u, kind, target) {
   if (!B || B.over) return;
   B.waiting = null; renderActions();
-  const c = CLASSES[u.cls], who = `${u.card.pseudo}`;
+  const c = { skill: skillOf(u) }, who = `${u.card.pseudo}`;
   const power = u.tier === 4 ? 1.3 : 1; // les Mythiques ont des compétences boostées
   animUnit(u, "act");
   if (kind === "attack") {
@@ -1758,7 +1875,40 @@ async function act(u, kind, target) {
   } else if (kind === "skill") {
     u.energy -= c.skill.cost;
     sfx("r3");
-    if (u.cls === "guerrier") {
+    if (u.spec === "briseur") {
+      if (!target || !target.alive || !validTargets(u).includes(target)) target = validTargets(u)[0];
+      const broke = target.shield > 0 || target.taunt > 0;
+      target.shield = 0; target.shieldT = 0; target.taunt = 0;
+      const r = hitDamage(u, target, 1.6 * power);
+      blog(`${who} utilise ${c.skill.nom} sur ${target.card.pseudo} : ${r.d} 🔨${broke ? " (garde brisée !)" : ""}`, "skill");
+    } else if (u.spec === "archer") {
+      if (!target || !target.alive) target = foes(u)[0];
+      const r = hitDamage(u, target, 1.4 * power, true);
+      blog(`${who} utilise ${c.skill.nom} sur ${target.card.pseudo} : ${r.d} 🏹`, "skill");
+    } else if (u.spec === "glace") {
+      blog(`${who} déclenche ${c.skill.nom} ❄️`, "skill");
+      for (const t of foes(u)) hitDamage(u, t, .95 * power, false, true);
+      const cands = foes(u).filter(x => !x.boss && x.frozen <= 0);
+      if (cands.length) { const t = cands[Math.floor(B.rand() * cands.length)]; t.frozen = 1; floatNum(t, "❄️ Gelé", "shield"); blog(`❄️ ${t.card.pseudo} est gelé !`); }
+      else if (foes(u).some(x => x.boss)) blog("Le boss résiste au gel.");
+    } else if (u.spec === "pyro") {
+      blog(`${who} déclenche ${c.skill.nom} 🔥`, "skill");
+      for (const t of foes(u)) { hitDamage(u, t, .8 * power, false, true); if (t.alive) { t.burn = 2; t.burnDmg = Math.max(1, Math.round(u.atk * .3 * power)); t.healCut = 2; } }
+    } else if (u.spec === "paladin") {
+      const sh = Math.round(u.baseHp * .2 * power / rageF());
+      u.shield = Math.max(u.shield, sh); u.shieldT = 2; u.taunt = 2;
+      floatNum(u, `+${sh} 🛡️`, "shield");
+      for (const a of friends(u)) heal(a, Math.round(a.maxHp * .1 * power / rageF()));
+      blog(`${who} utilise ${c.skill.nom} : bouclier ${sh}, provocation 🎯 et soin ✝️`, "skill");
+    } else if (u.spec === "pretre") {
+      const t = [...friends(u)].sort((a, b) => a.hp / a.maxHp - b.hp / b.maxHp || a.ci - b.ci)[0];
+      t.burn = 0; t.frozen = 0; t.healCut = 0;
+      const h = heal(t, Math.round(t.maxHp * .4 * power / rageF()));
+      blog(`${who} utilise ${c.skill.nom} sur ${t.card.pseudo} : +${h} 🙏`, "skill");
+    } else if (u.spec === "barde") {
+      for (const a of friends(u)) { a.buffT = 3; if (a !== u) a.energy = Math.min(MAX_ENERGY, a.energy + 1); floatNum(a, "🎵 +ATK", "shield"); }
+      blog(`${who} utilise ${c.skill.nom} : +30 % ATK et +3 VIT à l'équipe 🎵`, "skill");
+    } else if (u.cls === "guerrier") {
       if (!target || !target.alive || !validTargets(u).includes(target)) target = validTargets(u)[0];
       const r = hitDamage(u, target, 1.8 * power);
       blog(`${who} utilise ${c.skill.nom} sur ${target.card.pseudo} : ${r.d} 💥`, "skill");
@@ -1768,17 +1918,14 @@ async function act(u, kind, target) {
       blog(`${who} utilise ${c.skill.nom} sur ${t.card.pseudo} : ${r.d} 🗡️`, "skill");
     } else if (u.cls === "mage") {
       blog(`${who} déclenche ${c.skill.nom} 🌪️`, "skill");
-      for (const t of foes(u)) hitDamage(u, t, 1.05 * power);
+      for (const t of foes(u)) hitDamage(u, t, 1.15 * power, false, true);
     } else if (u.cls === "tank") {
       const sh = Math.round(u.baseHp * .25 * power / rageF());
       u.shield = Math.max(u.shield, sh); u.shieldT = 2; u.taunt = 2;
       floatNum(u, `+${sh} 🛡️`, "shield");
       blog(`${who} utilise ${c.skill.nom} : bouclier ${sh} et provocation 🎯`, "skill");
     } else if (u.cls === "soigneur") {
-      for (const a of friends(u)) {
-        const h = Math.min(a.maxHp - a.hp, Math.round(a.maxHp * .28 * power / rageF()));
-        a.hp += h; floatNum(a, `+${h}`, "heal");
-      }
+      for (const a of friends(u)) heal(a, Math.round(a.maxHp * .28 * power / rageF()));
       blog(`${who} utilise ${c.skill.nom} 💚`, "skill");
     }
   }
@@ -1819,14 +1966,14 @@ function unitEl(u) {
   const d = el("div", "unit " + u.card.rarete + (u.alive ? "" : " dead") + (B && B.active === u ? " active" : "") + (u.boss ? " boss" : ""));
   d.dataset.key = u.key;
   const av = el("div", "uav" + (u.s === 1 ? " shiny" : u.s === 2 ? " gold" : "")); av.appendChild(avatarImg(u.card)); d.appendChild(av);
-  const nm = el("div", "un", `${CLASSES[u.cls].ico} ${u.card.pseudo}`); d.appendChild(nm);
+  const nm = el("div", "un", `${unitIco(u)} ${u.card.pseudo}`); nm.title = u.spec ? `${SPECS[u.spec].nom} (${CLASSES[u.cls].nom}) : ${SPECS[u.spec].desc}` : CLASSES[u.cls].nom; d.appendChild(nm);
   const hb = el("div", "hpbar"); const hi = el("i"); hi.style.width = (u.hp / u.maxHp * 100) + "%";
   hi.className = u.hp / u.maxHp < .3 ? "low" : u.hp / u.maxHp < .6 ? "mid" : ""; hb.appendChild(hi);
   if (u.shield > 0) { const si = el("b"); si.style.width = Math.min(100, u.shield / u.maxHp * 100) + "%"; hb.appendChild(si); }
   d.appendChild(hb);
   d.appendChild(el("div", "hpt", `${u.hp}/${u.maxHp}` + (u.shield > 0 ? ` +${u.shield}🛡️` : "")));
   const en = el("div", "pips"); for (let i = 0; i < MAX_ENERGY; i++) en.appendChild(el("span", i < u.energy ? "on" : "")); d.appendChild(en);
-  const st = el("div", "ust", (u.taunt > 0 ? "🎯" : "") + (u.guard ? "🛡️" : "")); d.appendChild(st);
+  const st = el("div", "ust", (u.taunt > 0 ? "🎯" : "") + (u.guard ? "🛡️" : "") + (u.frozen > 0 ? "❄️" : "") + (u.burn > 0 ? "🔥" : "") + (u.healCut > 0 ? "💔" : "") + (u.buffT > 0 ? "🎵" : "")); d.appendChild(st);
   if (B && B.waiting && B.waiting.step === "target" && B.waiting.targets.includes(u)) {
     d.classList.add("targetable"); d.onclick = () => decide(B.waiting.unit, B.waiting.kind, u);
   }
@@ -1845,7 +1992,8 @@ function renderActions() {
   const box = $("#bActions"); box.replaceChildren();
   if (B && B.duel && !B.over && B.active && B.active.side === "enemy") { duelWaitPanel(box); return; }
   if (!B || !B.waiting) { box.appendChild(el("div", "bwait", B && !B.over ? (B.active ? `Au tour de ${B.active.card.pseudo}…` : "") : "")); return; }
-  const w = B.waiting, u = w.unit, c = CLASSES[u.cls];
+  const w = B.waiting, u = w.unit, c = { ...CLASSES[u.cls], skill: skillOf(u) };
+  if (u.spec) { c.ico = SPECS[u.spec].ico; c.nom = SPECS[u.spec].nom; }
   if (w.step === "target") {
     box.appendChild(el("div", "bwait", "🎯 Choisis une cible (clique sur un ennemi)"));
     const back = el("button", "bbtn", "↩ Retour"); back.onclick = () => { B.waiting = { unit: u, step: "action" }; renderBattle(); renderActions(); }; box.appendChild(back);
@@ -1888,7 +2036,7 @@ $("#bQuit").onclick = () => {
 function teamUnits(mult = 1) {
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
   const bonus = mySupportBonus();
-  return validTeam().map(t => makeUnit(byId[t.id], t.s, starsOf(t.id, t.s), "ally", mult, { bonus }));
+  return validTeam().map(t => makeUnit(byId[t.id], t.s, starsOf(t.id, t.s), "ally", mult, { bonus, spec: mySpec(t.id) }));
 }
 function validSupports() {
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
@@ -1952,7 +2100,7 @@ function renderSupportPicker() {
 function renderTeamPicker() {
   const g = $("#teamGrid"); g.replaceChildren();
   let opts = [];
-  for (const c of CARDS) for (const s of ownedVariants(c.id)) opts.push([c, s, unitPower(makeUnit(c, s, starsOf(c.id, s)))]);
+  for (const c of CARDS) for (const s of ownedVariants(c.id)) opts.push([c, s, unitPower(makeUnit(c, s, starsOf(c.id, s), "ally", 1, { spec: mySpec(c.id) }))]);
   const cnt = k => opts.filter(([c]) => cardClass(c) === k).length;
   renderPickFilters([["all", "Toutes", opts.length], ...CLASS_IDS.map(k => [k, `${CLASSES[k].ico} ${CLASSES[k].nom}`, cnt(k)])], teamFilter, id => { teamFilter = id; renderTeamPicker(); });
   opts = opts.filter(([c]) => teamFilter === "all" || cardClass(c) === teamFilter);
@@ -1963,9 +2111,9 @@ function renderTeamPicker() {
     const sel = teamDraft.some(t => t.id === c.id && t.s === s);
     if (sel) w.classList.add("sel");
     w.appendChild(cardEl(c, { shiny: s === 1, gold: s === 2, noDetail: true }));
-    const cl = CLASSES[cardClass(c)];
-    w.appendChild(el("div", "rw", `${cl.ico} ${cl.nom} · 💪 ${pw}`));
-    w.title = `${cl.skill.nom} : ${cl.skill.desc}`;
+    const sp = mySpec(c.id), skp = sp && SPECS[sp].skill ? SPECS[sp].skill : CLASSES[cardClass(c)].skill;
+    w.appendChild(el("div", "rw", `${roleLabel(c, sp)} · 💪 ${pw}`));
+    w.title = (sp ? `${SPECS[sp].nom} : ${SPECS[sp].desc}\n` : "") + `${skp.nom} : ${skp.desc}`;
     w.onclick = () => {
       const i = teamDraft.findIndex(t => t.id === c.id && t.s === s);
       if (i >= 0) teamDraft.splice(i, 1);
@@ -2030,7 +2178,7 @@ function parseEquipe(f) {
 }
 function myEquipeJSON() {
   return JSON.stringify({
-    t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s) })),
+    t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s), sp: mySpec(t.id) || "" })),
     sup: validSupports().map(id => ({ id, c: supportCopies(id) }))
   });
 }
@@ -2039,7 +2187,7 @@ async function startArena(p) {
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
   const eq = p.equipe || { t: [], sup: [] };
   const eBonus = sumSupports((eq.sup || []).filter(x => byId[x.id]).slice(0, 3).map(x => ({ card: byId[x.id], copies: x.c || 1 })));
-  const foesU = (eq.t || []).filter(t => byId[t.id]).slice(0, 3).map(t => makeUnit(byId[t.id], t.s || 0, t.st || 1, "enemy", 1, { bonus: eBonus }));
+  const foesU = (eq.t || []).filter(t => byId[t.id]).slice(0, 3).map(t => makeUnit(byId[t.id], t.s || 0, t.st || 1, "enemy", 1, { bonus: eBonus, spec: t.sp || null }));
   if (!foesU.length) return toast("Ce joueur n'a pas d'équipe valide");
   const rewarded = arenaLeft() > 0;
   startBattle(teamUnits(), foesU, {
@@ -2097,12 +2245,14 @@ async function renderCombatTab() {
   const team = validTeam();
   let totalPw = 0;
   for (const t of team) {
-    const c = byId[t.id], u = makeUnit(c, t.s, starsOf(t.id, t.s)); totalPw += unitPower(u);
+    const sp = mySpec(t.id);
+    const c = byId[t.id], u = makeUnit(c, t.s, starsOf(t.id, t.s), "ally", 1, { spec: sp }); totalPw += unitPower(u);
     const w = el("div", "tslot"); w.appendChild(cardEl(c, { shiny: t.s === 1, gold: t.s === 2 }));
-    const cl = CLASSES[u.cls]; w.appendChild(el("div", "rw", `${cl.ico} ${cl.nom} · 💪 ${unitPower(u)}`)); w.title = `${cl.skill.nom} : ${cl.skill.desc}`;
-    const ub = makeUnit(c, t.s, starsOf(t.id, t.s), "ally", 1, { bonus: mySupportBonus() });
+    const skl = skillOf(u);
+    w.appendChild(el("div", "rw", `${roleLabel(c, sp)} · 💪 ${unitPower(u)}`)); w.title = (sp ? `${SPECS[sp].nom} : ${SPECS[sp].desc}\n` : "") + `${skl.nom} : ${skl.desc}`;
+    const ub = makeUnit(c, t.s, starsOf(t.id, t.s), "ally", 1, { bonus: mySupportBonus(), spec: sp });
     w.appendChild(el("div", "statline", `❤️${ub.maxHp} ⚔️${ub.atk} 🧱${ub.def} 💨${ub.spd}`));
-    w.appendChild(el("div", "rw2", `✨ ${cl.skill.nom} (${cl.skill.cost}⚡)`));
+    w.appendChild(el("div", "rw2", `✨ ${skl.nom} (${skl.cost}⚡)` + (!sp && specUnlocked(t.id) ? " · ⭐ spé à choisir !" : "")));
     tb.appendChild(w);
   }
   for (let i = team.length; i < 3; i++) tb.appendChild(el("div", "vslot", "Emplacement libre"));
@@ -2268,7 +2418,7 @@ async function duelPatch(code, fields, extra = "") {
   return r.json();
 }
 function myDuelTeam() {
-  return JSON.stringify({ t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s) })), b: mySupportBonus() });
+  return JSON.stringify({ t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s), sp: mySpec(t.id) || "" })), b: mySupportBonus() });
 }
 async function createDuel(invite = null) {
   if (!AUTH) return toast("Connecte-toi avec /connexion pour jouer en duel");
@@ -2342,7 +2492,7 @@ function startDuelBattle(doc) {
   DUEL.started = true;
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
   const meHost = DUEL.role === "host";
-  const build = (spec, side) => spec.t.filter(x => byId[x.id]).slice(0, 3).map(x => makeUnit(byId[x.id], x.s || 0, x.st || 1, side, 1, { bonus: spec.b }));
+  const build = (spec, side) => spec.t.filter(x => byId[x.id]).slice(0, 3).map(x => makeUnit(byId[x.id], x.s || 0, x.st || 1, side, 1, { bonus: spec.b, spec: x.sp || null }));
   const hostU = build(parseDuelTeam(fsStr(f, "hostTeam")), meHost ? "ally" : "enemy");
   const guestU = build(parseDuelTeam(fsStr(f, "guestTeam")), meHost ? "enemy" : "ally");
   const oppName = meHost ? fsStr(f, "guestName") : fsStr(f, "hostName");
@@ -2479,7 +2629,7 @@ function renderBuilds() {
     const row = el("div", "build" + (sameBuild(b) ? " cur" : ""));
     row.appendChild(el("div", "bn", (sameBuild(b) ? "✅ " : "") + b.name));
     const m = el("div", "bm");
-    for (const t of b.team) { const c = byId[t.id]; if (!c) continue; const x = el("div", "mini " + c.rarete + (t.s === 1 ? " shiny" : t.s === 2 ? " gold" : "")); x.title = c.pseudo + " · " + CLASSES[cardClass(c)].nom; x.appendChild(avatarImg(c)); m.appendChild(x); }
+    for (const t of b.team) { const c = byId[t.id]; if (!c) continue; const x = el("div", "mini " + c.rarete + (t.s === 1 ? " shiny" : t.s === 2 ? " gold" : "")); x.title = c.pseudo + " · " + roleLabel(c, mySpec(c.id)); x.appendChild(avatarImg(c)); m.appendChild(x); }
     if (b.supports.length) m.appendChild(el("div", "sep"));
     for (const id of b.supports) { const c = byId[id]; if (!c) continue; const x = el("div", "mini " + c.rarete); x.title = c.pseudo + " · " + SUPPORTS[supportType(c)].nom; x.appendChild(avatarImg(c)); m.appendChild(x); }
     row.appendChild(m);

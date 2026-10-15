@@ -572,7 +572,8 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
   <div id="bResult" class="hidden"></div>
 </div>
 <div class="overlay hidden" id="teamPick">
-  <div class="hint-txt">Choisis jusqu'à 3 cartes pour ton équipe · <b id="teamCount"></b></div>
+  <div class="hint-txt" id="pickTitle">Choisis jusqu'à 3 cartes pour ton équipe · <b id="teamCount"></b></div>
+  <div class="filters" id="pickFilters" style="justify-content:center;margin-bottom:10px;max-width:900px"></div>
   <div class="grid" id="teamGrid"></div>
   <div class="ov-btns"><button id="teamOk">Valider</button><button id="teamCancel">Annuler</button></div>
 </div>
@@ -1799,22 +1800,34 @@ function validTeam() {
 function needTeam() { if (!validTeam().length) { toast("Choisis d'abord ton équipe (jusqu'à 3 cartes) ⚔️"); openTeamPicker(); return true; } return false; }
 
 // ----- Choix de l'équipe -----
-let teamDraft = [], pickMode = "team", supDraft = [];
+let teamDraft = [], pickMode = "team", supDraft = [], supFilter = "all", teamFilter = "all";
+function renderPickFilters(list, current, onPick) { // list : [[id, label, count]]
+  const box = $("#pickFilters"); box.replaceChildren();
+  for (const [id, label, n] of list) {
+    const b = el("button", current === id ? "on" : "", n != null ? `${label} (${n})` : label);
+    b.disabled = n === 0; b.onclick = () => onPick(id); box.appendChild(b);
+  }
+}
 function openTeamPicker() {
-  pickMode = "team";
+  pickMode = "team"; teamFilter = "all";
+  $("#pickTitle").firstChild.textContent = "Choisis jusqu'à 3 cartes pour ton équipe · ";
   teamDraft = validTeam().map(t => ({ ...t }));
   renderTeamPicker(); $("#teamPick").classList.remove("hidden");
 }
 function openSupportPicker() {
-  pickMode = "support";
+  pickMode = "support"; supFilter = "all";
+  $("#pickTitle").firstChild.textContent = "Choisis jusqu'à 3 soutiens · ";
   supDraft = validSupports().slice();
   renderSupportPicker(); $("#teamPick").classList.remove("hidden");
 }
 function renderSupportPicker() {
   const g = $("#teamGrid"); g.replaceChildren();
   const inTeam = new Set(validTeam().map(t => t.id));
-  const opts = CARDS.filter(c => supportCopies(c.id) > 0 && !inTeam.has(c.id))
-    .map(c => [c, supportCopies(c.id)]).sort((a, b) => b[1] - a[1] || RIDX[a[0].rarete] - RIDX[b[0].rarete]);
+  const all = CARDS.filter(c => supportCopies(c.id) > 0 && !inTeam.has(c.id)).map(c => [c, supportCopies(c.id)]);
+  const cnt = k => all.filter(([c]) => supportType(c) === k).length;
+  renderPickFilters([["all", "Tous", all.length], ...SUPPORT_IDS.map(k => [k, `${SUPPORTS[k].ico} ${SUPPORTS[k].nom}`, cnt(k)])], supFilter, id => { supFilter = id; renderSupportPicker(); });
+  const opts = all.filter(([c]) => supFilter === "all" || supportType(c) === supFilter)
+    .sort((a, b) => supportType(a[0]) === supportType(b[0]) ? supportValue(b[0], b[1]) - supportValue(a[0], a[1]) : SUPPORT_IDS.indexOf(supportType(a[0])) - SUPPORT_IDS.indexOf(supportType(b[0])));
   $("#teamCount").textContent = `Soutiens : ${supDraft.length}/3 · ${bonusText(sumSupports(supDraft.map(id => ({ card: CARDS.find(c => c.id === id), copies: supportCopies(id) }))))}`;
   for (const [c, n] of opts) {
     const w = el("div", "pick"); if (supDraft.includes(c.id)) w.classList.add("sel");
@@ -1832,10 +1845,13 @@ function renderSupportPicker() {
 }
 function renderTeamPicker() {
   const g = $("#teamGrid"); g.replaceChildren();
-  const opts = [];
+  let opts = [];
   for (const c of CARDS) for (const s of ownedVariants(c.id)) opts.push([c, s, unitPower(makeUnit(c, s, starsOf(c.id, s)))]);
+  const cnt = k => opts.filter(([c]) => cardClass(c) === k).length;
+  renderPickFilters([["all", "Toutes", opts.length], ...CLASS_IDS.map(k => [k, `${CLASSES[k].ico} ${CLASSES[k].nom}`, cnt(k)])], teamFilter, id => { teamFilter = id; renderTeamPicker(); });
+  opts = opts.filter(([c]) => teamFilter === "all" || cardClass(c) === teamFilter);
   opts.sort((a, b) => b[2] - a[2]);
-  $("#teamCount").textContent = `${teamDraft.length}/3 sélectionnées`;
+  $("#teamCount").textContent = `${teamDraft.length}/3 sélectionnées` + (teamDraft.length ? " · " + teamDraft.map(t => CLASSES[cardClass(CARDS.find(c => c.id === t.id))].ico).join(" ") : "");
   for (const [c, s, pw] of opts) {
     const w = el("div", "pick");
     const sel = teamDraft.some(t => t.id === c.id && t.s === s);

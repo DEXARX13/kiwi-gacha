@@ -150,6 +150,13 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 /* ---------- Collection : onglets normal / shiny ---------- */
 .mode{display:flex;gap:6px;margin-bottom:14px}
 .mirbox{grid-column:1/-1}
+.train{display:grid;gap:8px}
+.train .ess{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.train .ess b{font-size:18px;color:#7fd8ff}
+.trow{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:8px 12px}
+.trow b{font-size:14px}.trow small{display:block;color:var(--mute);font-size:12px}
+.tpips{display:flex;gap:3px;flex-wrap:wrap}.tpips span{width:12px;height:8px;border-radius:3px;background:var(--line)}.tpips span.on{background:linear-gradient(90deg,#4da3ff,#7fd8ff)}
+@media(max-width:560px){.trow{grid-template-columns:1fr auto}.tpips{grid-column:1/-1;order:3}}
 /* ----- Halloween ----- */
 .hwbanner{background:linear-gradient(90deg,#3a1450,#5a2408);border:1px solid #ff8a1c;color:#ffd9a8;padding:10px 14px;border-radius:12px;margin-bottom:16px;font-size:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .hwbanner b{color:#ffb347}
@@ -555,6 +562,9 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <div class="build-list" id="buildList"></div>
         <button class="small-btn" id="buildSave" style="margin-top:8px">+ Sauvegarder le build actuel</button>
       </div>
+      <h3 style="margin-top:20px">🏋️ Entraînement</h3>
+      <p>Au-delà de 20 copies, les doublons ne servent plus à rien : <b>sacrifie-les en essence 💠</b> (Commune 5, Rare 20, Épique 60, Légendaire 200, Mythique 600, ×3 pour un shiny), puis investis l'essence dans des <b>stats pour toutes tes cartes</b>. Chaque niveau coûte plus cher que le précédent : pense à répartir !</p>
+      <div class="train" id="trainBox"></div>
     </div>
     <div class="cgrid">
       <div class="box">
@@ -666,6 +676,12 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li><b>⭐ Spécialisations</b> : à 3★, chaque carte débloque 2 spécialisations au choix (Berserker/Briseur, Paladin/Épineux, Glace/Pyromancien, Prêtre/Barde, Archer/Ninja), à choisir dans sa vue détaillée. Premier choix gratuit, changement 300 🪙. Détails dans le 📖 Guide des stats.</li>
         <li>À partir du tour 9, la 🔥 Rage augmente les dégâts de tout le monde à chaque tour (et réduit les soins et boucliers).</li>
         <li>Bouton 🤖 Auto pour laisser l'ordi jouer, ⏩ pour accélérer.</li>
+      </ul>
+      <h3>🏋️ Entraînement</h3>
+      <ul>
+        <li>Au-delà de 20 copies d'une carte, les doublons peuvent être sacrifiés en essence 💠 (onglet Combat) : Commune 5, Rare 20, Épique 60, Légendaire 200, Mythique 600, ×3 pour un shiny. La carte garde ses 20 copies.</li>
+        <li>L'essence améliore des stats pour <b>toutes tes cartes</b> : ⚔️ +2 % ATK, ❤️ +2 % PV, 🧱 +3 % DEF, 🎯 +1 % critique par niveau (max 15), 💨 +1 VIT par niveau (max 5). Chaque niveau coûte ×1,35 de plus que le précédent.</li>
+        <li>L'entraînement compte partout, y compris dans l'Arène et les Duels.</li>
       </ul>
       <h3>🎃 Halloween (jusqu'au 1er novembre)</h3>
       <ul>
@@ -807,7 +823,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <script>
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
-const APP_VERSION = "2026.10.16-7"; // à changer à chaque mise en ligne : les duels exigent la même version
+const APP_VERSION = "2026.10.16-8"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -843,7 +859,8 @@ function defaultState() {
     exp: [null, null, null], expDone: 0, vitrine: [],
     team: [], supports: [], adv: 0, wins: 0, trophies: 0, arenaDate: "", arenaCount: 0, arenaWins: 0, bossDate: "", bossBest: 0, bossKills: 0,
     tower: null, duelWins: 0, builds: [], mir: null,
-    candy: 0, candyTotal: 0, shinyBoost: 0, hwTicket: 0, haunt: null
+    candy: 0, candyTotal: 0, shinyBoost: 0, hwTicket: 0, haunt: null,
+    essence: 0, essenceTotal: 0, train: {}
   };
 }
 function load() {
@@ -1260,6 +1277,7 @@ const ACH = [
   { id: "mir1", nom: "Reflet parfait", desc: "Vide une catégorie du Mode Miroir (étage 20)", val: () => mirDoneCount(), goal: () => 1, rew: { frags: 4 } },
   { id: "hw500", nom: "Bonbon ou sort ?", desc: "Gagne 500 🍬 pendant Halloween", val: () => state.candyTotal || 0, goal: () => 500, rew: { frags: 3 } },
   { id: "hw10", nom: "Collection hantée", desc: "Obtiens 10 costumes 🎃", val: () => hwCount(), goal: () => Math.max(1, Math.min(10, CARDS.length)), rew: { tickets: 1 } },
+  { id: "train10", nom: "Sportif", desc: "Atteins 10 niveaux d'entraînement au total", val: () => Object.keys(TRAIN).reduce((s, k) => s + trainLvl(k), 0), goal: () => 10, rew: { frags: 3 } },
   { id: "mir5", nom: "Maître des miroirs", desc: "Termine les 5 catégories du Mode Miroir", val: () => mirDoneCount(), goal: () => 5, rew: { tickets: 1, coins: 3000 } },
 ];
 function pct() { return CARDS.length ? Math.floor(countBy(c => own(c.id).copies > 0) / CARDS.length * 100) : 0; }
@@ -2163,13 +2181,72 @@ $("#bQuit").onclick = () => {
 // =====================================================================
 function teamUnits(mult = 1) {
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
-  const bonus = mySupportBonus();
+  const bonus = myTeamBonus();
   return validTeam().map(t => makeUnit(byId[t.id], t.s, starsOf(t.id, t.s), "ally", mult, { bonus, spec: mySpec(t.id) }));
 }
 function validSupports() {
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
   const inTeam = new Set(validTeam().map(t => t.id));
   return (state.supports || []).filter(id => byId[id] && supportCopies(id) > 0 && !inTeam.has(id)).slice(0, 3);
+}
+// ---------- 🏋️ Entraînement (essence des doublons en trop) ----------
+const DUP_CAP = 20, ESSENCE_PER = [5, 20, 60, 200, 600], ESSENCE_SHINY = 3;
+const TRAIN = {
+  atk:  { nom: "Force",     ico: "⚔️", per: 2, unit: "% ATK",      max: 15, k: 1 },
+  hp:   { nom: "Vitalité",  ico: "❤️", per: 2, unit: "% PV",       max: 15, k: 1 },
+  def:  { nom: "Armure",    ico: "🧱", per: 3, unit: "% DEF",      max: 15, k: 1 },
+  crit: { nom: "Précision", ico: "🎯", per: 1, unit: "% critique", max: 15, k: 1 },
+  spd:  { nom: "Vitesse",   ico: "💨", per: 1, unit: " VIT",       max: 5,  k: 3 },
+};
+function trainLvl(k) { return Math.min(TRAIN[k].max, (state.train || {})[k] || 0); }
+function trainCost(k, lvl) { return Math.round(50 * Math.pow(1.35, lvl) * TRAIN[k].k); }
+function trainBonus(tr) { const b = {}; for (const k in TRAIN) b[k] = Math.min(TRAIN[k].max, (tr || {})[k] || 0) * TRAIN[k].per; return b; }
+function addBonus(a, b) { const o = { ...a }; for (const k in b || {}) o[k] = (o[k] || 0) + (b[k] || 0); return o; }
+function myTrain() { const t = {}; for (const k in TRAIN) if (trainLvl(k)) t[k] = trainLvl(k); return t; }
+function myTeamBonus() { return addBonus(mySupportBonus(), trainBonus(myTrain())); }
+function surplus() {
+  let ess = 0, n = 0;
+  for (const c of CARDS) {
+    const o = own(c.id), t = RIDX[c.rarete];
+    const a = Math.max(0, (o.copies || 0) - DUP_CAP), b = Math.max(0, (o.shinyCopies || 0) - DUP_CAP);
+    n += a + b; ess += a * ESSENCE_PER[t] + b * ESSENCE_PER[t] * ESSENCE_SHINY;
+  }
+  return { n, ess };
+}
+function sacrifice() {
+  const { n, ess } = surplus();
+  if (!n) return toast("Aucun doublon en trop (il faut plus de 20 copies d'une carte)");
+  if (!confirm(`Sacrifier ${n} doublon${n > 1 ? "s" : ""} en trop (au-delà de 20 copies) pour ${ess} 💠 essence ?\nTes cartes gardent leurs 20 copies (5★, soutien au max).`)) return;
+  for (const c of CARDS) { const o = state.owned[c.id]; if (!o) continue; if (o.copies > DUP_CAP) o.copies = DUP_CAP; if (o.shinyCopies > DUP_CAP) o.shinyCopies = DUP_CAP; }
+  state.essence = (state.essence || 0) + ess; state.essenceTotal = (state.essenceTotal || 0) + ess;
+  sfx("gold"); confetti(["#4da3ff", "#7fd8ff", "#ffffff"]); toast(`♻️ +${ess} 💠 essence !`);
+  afterAction(); renderCombatTab();
+}
+function upgradeTrain(k) {
+  const lvl = trainLvl(k), cost = trainCost(k, lvl);
+  if (lvl >= TRAIN[k].max) return;
+  if ((state.essence || 0) < cost) return toast(`Il faut ${cost} 💠`);
+  state.essence -= cost; state.train = state.train || {}; state.train[k] = lvl + 1;
+  sfx("coin"); toast(`${TRAIN[k].ico} ${TRAIN[k].nom} niveau ${lvl + 1} : +${(lvl + 1) * TRAIN[k].per}${TRAIN[k].unit}`);
+  afterAction(); renderCombatTab();
+}
+function renderTrain() {
+  const box = $("#trainBox"); box.replaceChildren();
+  const sp = surplus();
+  const top = el("div", "ess");
+  const left = el("div"); left.append("Essence : "); left.appendChild(el("b", null, `💠 ${state.essence || 0}`)); top.appendChild(left);
+  const sb = el("button", "small-btn", sp.n ? `♻️ Sacrifier ${sp.n} doublon${sp.n > 1 ? "s" : ""} en trop (+${sp.ess} 💠)` : "♻️ Aucun doublon en trop");
+  sb.disabled = !sp.n; sb.onclick = sacrifice; top.appendChild(sb);
+  box.appendChild(top);
+  for (const k in TRAIN) {
+    const T = TRAIN[k], lvl = trainLvl(k), max = lvl >= T.max, cost = trainCost(k, lvl);
+    const row = el("div", "trow");
+    const name = el("div"); name.appendChild(el("b", null, `${T.ico} ${T.nom}`)); name.appendChild(el("small", null, `Niv. ${lvl}/${T.max} · +${lvl * T.per}${T.unit}`));
+    const pips = el("div", "tpips"); for (let i = 0; i < T.max; i++) pips.appendChild(el("span", i < lvl ? "on" : ""));
+    const b = el("button", "small-btn", max ? "MAX" : `+${T.per}${T.unit} · 💠 ${cost}`);
+    b.disabled = max || (state.essence || 0) < cost; b.onclick = () => upgradeTrain(k);
+    row.append(name, pips, b); box.appendChild(row);
+  }
 }
 function mySupportBonus() {
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
@@ -2305,20 +2382,22 @@ function parseEquipe(f) {
   try {
     const v = JSON.parse((f && f.stringValue) || "[]");
     if (Array.isArray(v)) return { t: v, sup: [] };
-    return { t: Array.isArray(v.t) ? v.t : [], sup: Array.isArray(v.sup) ? v.sup : [] };
+    return { t: Array.isArray(v.t) ? v.t : [], sup: Array.isArray(v.sup) ? v.sup : [], tr: v.tr && typeof v.tr === "object" ? v.tr : {} };
   } catch { return { t: [], sup: [] }; }
 }
 function myEquipeJSON() {
   return JSON.stringify({
     t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s), sp: mySpec(t.id) || "", cl: cardClass(CARDS.find(c => c.id === t.id)) })),
-    sup: validSupports().map(id => ({ id, c: supportCopies(id), ty: supportType(CARDS.find(c => c.id === id)) }))
+    sup: validSupports().map(id => ({ id, c: supportCopies(id), ty: supportType(CARDS.find(c => c.id === id)) })),
+    tr: myTrain()
   });
 }
 async function startArena(p) {
   if (needTeam()) return;
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
   const eq = p.equipe || { t: [], sup: [] };
-  const eBonus = sumSupports((eq.sup || []).filter(x => byId[x.id]).slice(0, 3).map(x => ({ card: { ...byId[x.id], soutien: x.ty || byId[x.id].soutien }, copies: x.c || 1 })));
+  const eBonus0 = sumSupports((eq.sup || []).filter(x => byId[x.id]).slice(0, 3).map(x => ({ card: { ...byId[x.id], soutien: x.ty || byId[x.id].soutien }, copies: x.c || 1 })));
+  const eBonus = addBonus(eBonus0, trainBonus(eq.tr));
   const foesU = (eq.t || []).filter(t => byId[t.id]).slice(0, 3).map(t => makeUnit(byId[t.id], t.s || 0, t.st || 1, "enemy", 1, { bonus: eBonus, spec: t.sp || null, cls: t.cl || null }));
   if (!foesU.length) return toast("Ce joueur n'a pas d'équipe valide");
   const rewarded = arenaLeft() > 0;
@@ -2382,7 +2461,7 @@ async function renderCombatTab() {
     const w = el("div", "tslot"); w.appendChild(cardEl(c, { shiny: t.s === 1, gold: t.s === 2 }));
     const skl = skillOf(u);
     w.appendChild(el("div", "rw", `${roleLabel(c, sp)} · 💪 ${unitPower(u)}`)); w.title = (sp ? `${SPECS[sp].nom} : ${SPECS[sp].desc}\n` : "") + `${skl.nom} : ${skl.desc}`;
-    const ub = makeUnit(c, t.s, starsOf(t.id, t.s), "ally", 1, { bonus: mySupportBonus(), spec: sp });
+    const ub = makeUnit(c, t.s, starsOf(t.id, t.s), "ally", 1, { bonus: myTeamBonus(), spec: sp });
     w.appendChild(el("div", "statline", `❤️${ub.maxHp} ⚔️${ub.atk} 🧱${ub.def} 💨${ub.spd}`));
     w.appendChild(el("div", "rw2", `✨ ${skl.nom} (${skl.cost}⚡)` + (!sp && specUnlocked(t.id) ? " · ⭐ spé à choisir !" : "")));
     tb.appendChild(w);
@@ -2398,7 +2477,8 @@ async function renderCombatTab() {
     sb.appendChild(w);
   }
   for (let i = sups.length; i < 3; i++) sb.appendChild(el("div", "vslot", "Soutien libre"));
-  $("#supTotal").textContent = "Bonus de l'équipe : " + bonusText(mySupportBonus());
+  $("#supTotal").textContent = "Bonus de l'équipe : " + bonusText(myTeamBonus());
+  renderTrain();
   // Aventure
   const st = advStage();
   $("#advInfo").textContent = `Étape ${st}${st % 5 === 0 ? " · 👹 BOSS" : ""} · Chapitre ${Math.ceil(st / 10)}`;
@@ -2631,7 +2711,7 @@ function mirSupports(cls) {
 }
 function mirUnits(cls) {
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
-  const bonus = sumSupports(mirSupports(cls).map(id => ({ card: byId[id], copies: supportCopies(id) })));
+  const bonus = addBonus(sumSupports(mirSupports(cls).map(id => ({ card: byId[id], copies: supportCopies(id) }))), trainBonus(myTrain()));
   return mirTeam(cls).map(t => makeUnit(byId[t.id], t.s, starsOf(t.id, t.s), "ally", 1, { bonus, spec: mySpec(t.id) }));
 }
 // Soutiens aléatoires des ennemis (à partir de l'étage 4, de plus en plus forts)
@@ -2831,7 +2911,7 @@ async function duelPatch(code, fields, extra = "") {
   return r.json();
 }
 function myDuelTeam() {
-  return JSON.stringify({ t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s), sp: mySpec(t.id) || "", cl: cardClass(CARDS.find(c => c.id === t.id)) })), b: mySupportBonus() });
+  return JSON.stringify({ t: validTeam().map(t => ({ id: t.id, s: t.s, st: starsOf(t.id, t.s), sp: mySpec(t.id) || "", cl: cardClass(CARDS.find(c => c.id === t.id)) })), b: myTeamBonus() });
 }
 async function createDuel(invite = null) {
   if (!AUTH) return toast("Connecte-toi avec /connexion pour jouer en duel");

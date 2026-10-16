@@ -584,7 +584,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       </div>
       <div class="box mirbox">
         <h3>🪞 Mode Miroir</h3>
-        <p>Ta classe contre la même classe ! Dans chaque catégorie, ton équipe ne peut contenir <b>que des cartes de cette classe</b>, et tu affrontes des ennemis de la même classe, avec leurs spécialisations (et des soutiens à partir de l'étage 6). 20 étages par catégorie, boss tous les 5.</p>
+        <p>Ta classe contre la même classe ! Dans chaque catégorie, ton équipe ne peut contenir <b>que des cartes de cette classe</b>, et tu affrontes des ennemis de la même classe, avec leurs spécialisations (et des soutiens à partir de l'étage 4). 20 étages par catégorie, boss tous les 5. <b>Les donjons changent chaque jour</b> : à minuit, nouveaux ennemis et retour à l'étage 1 (ton record est gardé).</p>
         <div class="mtabs" id="mirTabs"></div>
         <div id="mirPanel"></div>
       </div>
@@ -661,7 +661,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
         <li>Chaque attaque donne +1⚡. Les cartes Mythiques ont des compétences 30 % plus fortes.</li>
         <li>Classes : ⚔️ Guerrier (gros coup), 🛡️ Tank (bouclier + provocation : les ennemis doivent le viser), 🔮 Mage (attaque de zone), 💚 Soigneur (soin de groupe), 🗡️ Assassin (achève le plus faible, critique garanti).</li>
         <li><b>🔰 Soutiens</b> : 3 cartes en plus qui ne combattent pas mais donnent un bonus à l'équipe (⚔️ ATK, ❤️ PV, 🧱 DEF, 💨 vitesse, 🎯 critique, ⚡ énergie de départ ou 🌿 régénération). Le bonus grandit avec le nombre de copies de la carte (max à 20).</li>
-        <li>Modes : 🗺️ Aventure (étapes infinies, boss toutes les 5), 👹 Boss du jour, 🏟️ Arène (trophées, 5 combats classés par jour), 🗼 Tour infinie (nouvelle chaque semaine, PV conservés entre les étages, 3 montées par jour), 🪞 Mode Miroir (une catégorie par classe : que des cartes de cette classe contre la même classe, 20 étages) et 🤺 Duel en direct (avec un code à partager). L'Arène et le Duel demandent d'être connecté.</li>
+        <li>Modes : 🗺️ Aventure (étapes infinies, boss toutes les 5), 👹 Boss du jour, 🏟️ Arène (trophées, 5 combats classés par jour), 🗼 Tour infinie (nouvelle chaque semaine, PV conservés entre les étages, 3 montées par jour), 🪞 Mode Miroir (une catégorie par classe : que des cartes de cette classe contre la même classe, 20 étages, nouveaux donjons chaque jour) et 🤺 Duel en direct (avec un code à partager). L'Arène et le Duel demandent d'être connecté.</li>
         <li>Le détail de chaque stat est dans le <b>📖 Guide des stats</b> de l'onglet Combat.</li>
         <li><b>⭐ Spécialisations</b> : à 3★, chaque carte débloque 2 spécialisations au choix (Berserker/Briseur, Paladin/Épineux, Glace/Pyromancien, Prêtre/Barde, Archer/Ninja), à choisir dans sa vue détaillée. Premier choix gratuit, changement 300 🪙. Détails dans le 📖 Guide des stats.</li>
         <li>À partir du tour 9, la 🔥 Rage augmente les dégâts de tout le monde à chaque tour (et réduit les soins et boucliers).</li>
@@ -807,7 +807,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <script>
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
-const APP_VERSION = "2026.10.16-5"; // à changer à chaque mise en ligne : les duels exigent la même version
+const APP_VERSION = "2026.10.16-6"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -1257,7 +1257,7 @@ const ACH = [
   { id: "tour10", nom: "Grimpeur", desc: "Atteins l'étage 10 de la Tour", val: () => (state.tower && state.tower.max) || 0, goal: () => 10, rew: { frags: 3 } },
   { id: "tour25", nom: "Sommet", desc: "Atteins l'étage 25 de la Tour", val: () => (state.tower && state.tower.max) || 0, goal: () => 25, rew: { frags: 6 } },
   { id: "duel5", nom: "Duelliste", desc: "Gagne 5 duels en direct", val: () => state.duelWins || 0, goal: () => 5, rew: { frags: 3 } },
-  { id: "mir1", nom: "Reflet parfait", desc: "Termine une catégorie du Mode Miroir (étage 20)", val: () => mirDoneCount(), goal: () => 1, rew: { frags: 4 } },
+  { id: "mir1", nom: "Reflet parfait", desc: "Vide une catégorie du Mode Miroir (étage 20)", val: () => mirDoneCount(), goal: () => 1, rew: { frags: 4 } },
   { id: "hw500", nom: "Bonbon ou sort ?", desc: "Gagne 500 🍬 pendant Halloween", val: () => state.candyTotal || 0, goal: () => 500, rew: { frags: 3 } },
   { id: "hw10", nom: "Collection hantée", desc: "Obtiens 10 costumes 🎃", val: () => hwCount(), goal: () => Math.max(1, Math.min(10, CARDS.length)), rew: { tickets: 1 } },
   { id: "mir5", nom: "Maître des miroirs", desc: "Termine les 5 catégories du Mode Miroir", val: () => mirDoneCount(), goal: () => 5, rew: { tickets: 1, coins: 3000 } },
@@ -2606,13 +2606,20 @@ function startHaunt(i) {
 // =====================================================================
 const MIR_FLOORS = 20;
 let mirCls = "guerrier";
+// Les donjons changent chaque jour : la progression du jour repart de 0 à minuit, le record reste.
 function mirState() {
   const m = state.mir || (state.mir = { best: {}, team: {}, sel: "guerrier" });
-  m.best = m.best || {}; m.team = m.team || {};
+  m.best = m.best || {}; m.team = m.team || {}; m.rec = m.rec || {};
+  if (m.day !== today()) {
+    for (const k of Object.keys(m.best)) m.rec[k] = Math.max(m.rec[k] || 0, m.best[k] || 0);
+    m.best = {}; m.day = today();
+  }
   return m;
 }
 function mirBest(cls) { return Math.min(MIR_FLOORS, mirState().best[cls] || 0); }
-function mirDoneCount() { return CLASS_IDS.filter(k => mirBest(k) >= MIR_FLOORS).length; }
+function mirRec(cls) { const m = mirState(); return Math.min(MIR_FLOORS, Math.max(m.rec[cls] || 0, m.best[cls] || 0)); }
+function mirDoneCount() { return CLASS_IDS.filter(k => mirRec(k) >= MIR_FLOORS).length; }
+function mirSeed(cls, f) { return rng(hashStr("miroir:" + today() + ":" + cls) + f * 131); }
 function mirTeam(cls) {
   const byId = Object.fromEntries(CARDS.map(c => [c.id, c]));
   return (mirState().team[cls] || []).filter(t => byId[t.id] && ownedVariants(t.id).includes(t.s) && cardClass(byId[t.id]) === cls).slice(0, 3);
@@ -2627,21 +2634,21 @@ function mirUnits(cls) {
   const bonus = sumSupports(mirSupports(cls).map(id => ({ card: byId[id], copies: supportCopies(id) })));
   return mirTeam(cls).map(t => makeUnit(byId[t.id], t.s, starsOf(t.id, t.s), "ally", 1, { bonus, spec: mySpec(t.id) }));
 }
-// Soutiens aléatoires des ennemis (à partir de l'étage 6, de plus en plus forts)
+// Soutiens aléatoires des ennemis (à partir de l'étage 4, de plus en plus forts)
 function mirFoeBonus(r, f) {
   const b = Object.fromEntries(SUPPORT_IDS.map(k => [k, 0]));
-  if (f < 6) return b;
-  const n = Math.min(3, 1 + Math.floor((f - 6) / 5)), tier = Math.min(3, Math.floor((f - 1) / 5)), copies = Math.floor(f / 2);
+  if (f < 4) return b;
+  const n = Math.min(3, 1 + Math.floor((f - 4) / 5)), tier = Math.min(3, Math.floor(f / 5)), copies = f;
   for (let i = 0; i < n; i++) { const k = SUPPORT_IDS[Math.floor(r() * SUPPORT_IDS.length)]; b[k] += SUPPORTS[k].calc(tier, copies); }
   b.energy = Math.min(3, b.energy);
   return b;
 }
 function mirEnemies(cls, f) {
-  const r = rng(hashStr("miroir:" + cls) + f * 131);
-  const sorted = [...CARDS].sort((a, b) => a.id.localeCompare(b.id));
+  const r = mirSeed(cls, f);
+  const sorted = [...cardsBefore(startOfToday())].sort((a, b) => a.id.localeCompare(b.id));
   if (!sorted.length) return [];
   // Rareté max des ennemis qui monte avec l'étage (les Mythiques sont réservées aux boss)
-  const maxTier = Math.min(3, Math.floor((f + 1) / 4));
+  const maxTier = Math.min(3, Math.floor(f / 4));
   const mkPool = tier => {
     const eligible = sorted.filter(c => RIDX[c.rarete] <= tier);
     const base = eligible.length ? eligible : sorted;
@@ -2651,17 +2658,18 @@ function mirEnemies(cls, f) {
   };
   const pool = mkPool(maxTier);
   const specs = specsOf(cls), bonus = mirFoeBonus(r, f);
-  const mult = .68 + f * .019, st = 1 + Math.floor((f - 1) / 5);
+  const mult = .95 + f * .028, st = Math.min(5, 1 + Math.floor(f / 4));
   const spec = () => f >= 3 ? specs[Math.floor(r() * specs.length)] : null;
   const out = [];
   for (let i = 0; i < (f < 3 ? 2 : 3); i++) out.push(makeUnit(pool[Math.floor(r() * pool.length)], 0, st, "enemy", mult, { cls, spec: spec(), bonus }));
   if (f % 5 === 0) {
     const big = [...mkPool(f >= 15 ? 4 : maxTier)].sort((a, b) => RIDX[b.rarete] - RIDX[a.rarete] || a.id.localeCompare(b.id))[0];
-    out[Math.min(1, out.length - 1)] = makeUnit(big, f % 10 === 0 ? 1 : 0, st, "enemy", mult, { cls, spec: spec(), bonus, hpMult: 1.35, boss: true });
+    out[Math.min(1, out.length - 1)] = makeUnit(big, f % 10 === 0 ? 1 : 0, st, "enemy", mult, { cls, spec: spec(), bonus, hpMult: 1.6, atkMult: 1.05, boss: true });
   }
   return out;
 }
-function mirReward(f) { return { coins: 80 + f * 25, frags: f === MIR_FLOORS ? 3 : f % 5 === 0 ? 1 : 0 }; }
+// Récompenses gagnables chaque jour (donc plus petites) ; bonus la 1re fois qu'on finit une catégorie
+function mirReward(f) { return { coins: 20 + f * 6, frags: f === MIR_FLOORS ? 1 : 0 }; }
 function mirTitle(cls) { return `👑 Maître ${CLASSES[cls].nom}`; }
 function openMirPicker(cls) {
   pickMode = "mirror"; mirCls = cls;
@@ -2680,16 +2688,16 @@ function renderMirror() {
   const cls = ms.sel, C = CLASSES[cls];
   const tabs = $("#mirTabs"); tabs.replaceChildren();
   for (const k of CLASS_IDS) {
-    const best = mirBest(k), done = best >= MIR_FLOORS;
+    const best = mirBest(k), done = best >= MIR_FLOORS, rec = mirRec(k);
     const b = el("button", (k === cls ? "on" : "") + (done ? " done" : ""));
-    b.append(`${CLASSES[k].ico} ${CLASSES[k].nom}`, el("small", null, done ? "👑 Terminé" : `Étage ${best}/${MIR_FLOORS}`));
+    b.append(`${CLASSES[k].ico} ${CLASSES[k].nom}` + (rec >= MIR_FLOORS ? " 👑" : ""), el("small", null, done ? "✅ Vidé aujourd'hui" : `Aujourd'hui : ${best}/${MIR_FLOORS} · record ${rec}`));
     b.onclick = () => { ms.sel = k; save(); renderMirror(); };
     tabs.appendChild(b);
   }
   const p = $("#mirPanel"); p.replaceChildren();
   const best = mirBest(cls), done = best >= MIR_FLOORS, f = Math.min(MIR_FLOORS, best + 1);
   const bar = el("div", "mbar"); const bi = el("i"); bi.style.width = (best / MIR_FLOORS * 100) + "%"; bar.appendChild(bi);
-  p.append(el("p", null, done ? `${mirTitle(cls)} : catégorie terminée ! Tu peux rejouer l'étage 20 pour le plaisir (sans récompense).` : `${C.ico} ${C.nom} contre ${C.ico} ${C.nom} · Prochain : étage ${f}${f % 5 === 0 ? " · 👹 BOSS" : ""}`), bar);
+  p.append(el("p", null, done ? `Donjon ${C.nom} vidé pour aujourd'hui ! Nouveaux ennemis dans ${timeToMidnight()} (tu peux rejouer l'étage 20 sans récompense).` : `${C.ico} ${C.nom} contre ${C.ico} ${C.nom} · Prochain : étage ${f}${f % 5 === 0 ? " · 👹 BOSS" : ""} · nouveaux ennemis et retour à l'étage 1 dans ${timeToMidnight()}`), bar);
   const grid = el("div", "mirgrid");
   // Mon équipe
   const left = el("div");
@@ -2708,10 +2716,10 @@ function renderMirror() {
   const fh = el("div", "hist");
   for (const u of mirEnemies(cls, f)) fh.appendChild(miniEl(u.card, u.s, `${u.card.pseudo} · ${u.spec ? SPECS[u.spec].nom : C.nom}${u.boss ? " · BOSS" : ""}`, u.spec));
   right.appendChild(fh);
-  const fb = mirFoeBonus(rng(hashStr("miroir:" + cls) + f * 131), f);
-  if (f >= 6) right.appendChild(el("p", "lb-note", "Leurs soutiens : " + bonusText(fb)));
+  const fb = mirFoeBonus(mirSeed(cls, f), f);
+  if (f >= 4) right.appendChild(el("p", "lb-note", "Leurs soutiens : " + bonusText(fb)));
   const rw = mirReward(f);
-  if (!done) right.appendChild(el("p", null, `Récompense (1re fois) : ${rw.coins} 🪙` + (rw.frags ? ` + ${rw.frags} ✦` : "") + (f === MIR_FLOORS ? ` + titre ${mirTitle(cls)}` : "")));
+  if (!done) right.appendChild(el("p", null, `Récompense du jour : ${rw.coins} 🪙` + (rw.frags ? ` + ${rw.frags} ✦` : "") + (f === MIR_FLOORS && mirRec(cls) < MIR_FLOORS ? ` · 1re fois : +3 ✦ et titre ${mirTitle(cls)}` : "")));
   const go = el("button", "small-btn", done ? "Rejouer l'étage 20" : `Combattre (étage ${f})`);
   go.disabled = !CARDS.length; go.onclick = () => startMirror(cls); right.appendChild(go);
   grid.append(left, right); p.appendChild(grid);
@@ -2725,10 +2733,11 @@ function startMirror(cls) {
     onEnd: win => {
       if (!win) return { lines: ["Essaie une autre combinaison de spés ou de soutiens, ou renforce tes cartes " + C.nom + " !"] };
       if (!first) return { lines: ["Victoire pour l'honneur 😎 (pas de récompense en rejouant)."] };
-      const rw = mirReward(f);
-      mirState().best[cls] = f; state.coins += rw.coins; state.fragments += rw.frags;
-      const lines = [`Étage ${f} terminé !`, `+${rw.coins} 🪙` + (rw.frags ? ` · +${rw.frags} fragment${rw.frags > 1 ? "s" : ""} ✦` : "") + candyTxt(addCandy(10))];
-      if (f === MIR_FLOORS) { lines.push(`🏆 Catégorie terminée : tu deviens ${mirTitle(cls)} !`); confetti(["#ffc23d", "#ff5fa2", "#b46bff"]); }
+      const rw = mirReward(f), firstEver = f === MIR_FLOORS && mirRec(cls) < MIR_FLOORS;
+      mirState().best[cls] = f; state.coins += rw.coins; state.fragments += rw.frags + (firstEver ? 3 : 0);
+      const lines = [`Étage ${f} terminé !`, `+${rw.coins} 🪙` + (rw.frags ? ` · +${rw.frags} fragment ✦` : "") + candyTxt(addCandy(3))];
+      if (firstEver) { lines.push(`🏆 Première fois que tu vides ce donjon : +3 ✦ et tu deviens ${mirTitle(cls)} !`); confetti(["#ffc23d", "#ff5fa2", "#b46bff"]); }
+      else if (f === MIR_FLOORS) lines.push("Donjon vidé pour aujourd'hui ! Reviens demain pour de nouveaux ennemis.");
       return f < MIR_FLOORS ? { lines, buttons: [{ label: `⬆️ Étage ${f + 1}`, fn: () => startMirror(cls) }] } : { lines };
     }
   });

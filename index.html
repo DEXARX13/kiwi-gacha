@@ -807,7 +807,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <script>
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
-const APP_VERSION = "2026.10.16-6"; // à changer à chaque mise en ligne : les duels exigent la même version
+const APP_VERSION = "2026.10.16-7"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -966,9 +966,9 @@ const VARIANT_NAMES = ["", " · Shiny", " · Dorée"];
 function ownedVariants(id) { const o = own(id); return [o.copies > 0, o.shinyCopies > 0, !!o.gold].map((v, i) => v ? i : -1).filter(i => i >= 0); }
 function openDetail(card, variant, hw = false) {
   if (typeof variant === "boolean") variant = variant ? 1 : 0;
-  detailState = { card, variant };
   const o = own(card.id);
   if (hw && !o.hw) hw = false;
+  detailState = { card, variant, hw, pv: hw ? 3 : variant }; // pv : version épinglée (3 = costume 🎃)
   const box = $("#detailCard"); box.replaceChildren(cardEl(card, { shiny: variant === 1, gold: variant === 2, hw, big: true, noDetail: true }));
   $("#dName").textContent = card.pseudo + (hw ? " 🎃" : ["", " ✨", " 🏅"][variant]);
   const r = $("#dRar"); r.textContent = RARITIES[RIDX[card.rarete]].nom + (hw ? ` · 🎃 Costume (${HW_FX[hwFxOf(card.id)][2]})` : VARIANT_NAMES[variant]); r.style.color = variant === 2 ? "#ffd76a" : `var(--${card.rarete})`;
@@ -985,9 +985,9 @@ function openDetail(card, variant, hw = false) {
   g.disabled = o.copies < GOLD_NEED;
   g.textContent = o.copies < GOLD_NEED ? `🏅 Dorée : ${o.copies}/${GOLD_NEED} copies` : `🏅 Fusionner en Dorée (−${GOLD_COST} copies)`;
   const pin = $("#dPin");
-  const owned = ownedVariants(card.id).includes(variant);
+  const owned = hw ? !!o.hw : ownedVariants(card.id).includes(variant);
   pin.classList.toggle("hidden", !owned);
-  const pinned = state.vitrine.some(v => v.id === card.id && v.s === variant);
+  const pinned = state.vitrine.some(v => v.id === card.id && v.s === detailState.pv);
   pin.textContent = pinned ? "📌 Retirer de la vitrine" : "📌 Mettre en vitrine";
   renderSpecBox(card);
   $("#detail").classList.remove("hidden");
@@ -1036,11 +1036,11 @@ $("#dGold").onclick = () => {
 };
 $("#dPin").onclick = () => {
   if (!detailState) return;
-  const { card, variant } = detailState;
-  const i = state.vitrine.findIndex(v => v.id === card.id && v.s === variant);
+  const { card, variant, hw, pv } = detailState;
+  const i = state.vitrine.findIndex(v => v.id === card.id && v.s === pv);
   if (i >= 0) state.vitrine.splice(i, 1);
-  else { if (state.vitrine.length >= 3) return toast("Ta vitrine est pleine (3 cartes max)"); state.vitrine.push({ id: card.id, s: variant }); toast("📌 Ajoutée à ta vitrine"); }
-  afterAction(); openDetail(card, variant); renderVitrine();
+  else { if (state.vitrine.length >= 3) return toast("Ta vitrine est pleine (3 cartes max)"); state.vitrine.push({ id: card.id, s: pv }); toast("📌 Ajoutée à ta vitrine"); }
+  afterAction(); openDetail(card, variant, hw); renderVitrine();
 };
 $("#dClose").onclick = () => $("#detail").classList.add("hidden");
 $("#detail").addEventListener("click", e => { if (e.target.id === "detail") $("#detail").classList.add("hidden"); });
@@ -1390,7 +1390,7 @@ function vitrineCards(list) {
 function renderVitrine() {
   const box = $("#myVitrine"); box.replaceChildren(el("h4", null, "📌 Ma vitrine (visible dans le classement)"));
   const items = vitrineCards(state.vitrine);
-  for (const { card, s } of items) box.appendChild(cardEl(card, { shiny: s === 1, gold: s === 2 }));
+  for (const { card, s } of items) box.appendChild(cardEl(card, { shiny: s === 1, gold: s === 2, hw: s === 3 }));
   for (let i = items.length; i < 3; i++) box.appendChild(el("div", "vslot", "Clique sur une carte puis « 📌 Mettre en vitrine »"));
 }
 
@@ -1624,7 +1624,7 @@ function openProfile(p) {
   box.appendChild(el("p", "lb-note", `${p.cartes}/${CARDS.length} cartes · ${p.shiny} shiny · ${p.dorees} dorées · ${p.tirages} tirages`));
   const v = el("div", "vitrine"); v.appendChild(el("h4", null, "📌 Vitrine"));
   const items = vitrineCards(p.vitrine);
-  for (const { card, s } of items) v.appendChild(cardEl(card, { shiny: s === 1, gold: s === 2, noDetail: true, hideStars: true }));
+  for (const { card, s } of items) v.appendChild(cardEl(card, { shiny: s === 1, gold: s === 2, hw: s === 3, noDetail: true, hideStars: true }));
   if (!items.length) v.appendChild(el("p", "lb-note", "Pas encore de cartes en vitrine."));
   box.appendChild(v);
   const btns = el("div", "ov-btns"); const c = el("button", null, "Fermer"); c.onclick = () => $("#profile").classList.add("hidden"); btns.appendChild(c); box.appendChild(btns);

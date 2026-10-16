@@ -162,7 +162,31 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 .hwitem button{white-space:nowrap}
 .card.hw{border-image:none!important;animation:none!important;--c:#ff8a1c;background:linear-gradient(160deg,#5a2408 0%,#2b1235 60%,#140818 100%);border-color:#ff8a1c;box-shadow:0 0 22px #ff8a1c88,inset 0 0 18px #b46bff33}
 .card.hw::before{content:"🎃";position:absolute;right:6px;top:4px;font-size:18px;z-index:2;filter:drop-shadow(0 0 4px #ff8a1c)}
-.card.hw::after{content:"🦇";position:absolute;left:8px;bottom:6px;font-size:13px;opacity:.8;pointer-events:none}
+/* Effets spéciaux uniques des costumes (un par pote) */
+.hwfx{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1;border-radius:12px}
+.hwfx span{position:absolute;line-height:1}
+.fx-ghosts span{top:105%;left:calc(12% + var(--i) * 28%);font-size:18px;opacity:0;animation:fxGhost 4.2s ease-in infinite;animation-delay:calc(var(--i) * 1.4s)}
+@keyframes fxGhost{0%{top:105%;opacity:0;transform:translateX(0)}20%{opacity:.85}50%{transform:translateX(10px)}100%{top:-15%;opacity:0;transform:translateX(-8px)}}
+.fx-spider::before{content:"🕸️";position:absolute;left:4px;top:2px;font-size:28px;opacity:.55}
+.fx-spider span{top:0;right:20%;font-size:17px;animation:fxSpider 5s ease-in-out infinite}
+.fx-spider span::before{content:"";position:absolute;bottom:80%;left:50%;width:1px;height:300px;background:#ffffffaa}
+@keyframes fxSpider{0%,100%{transform:translateY(-25px)}35%,65%{transform:translateY(85px)}50%{transform:translateY(80px) rotate(8deg)}}
+.fx-wisps span{width:13px;height:13px;border-radius:50%;left:calc(8% + var(--i) * 24%);top:calc(18% + var(--i) * 17%);background:radial-gradient(#d8ffb8,#3ddc8455 60%,transparent);box-shadow:0 0 18px 7px #3ddc84aa;animation:fxWisp 3.6s ease-in-out infinite;animation-delay:calc(var(--i) * -.9s)}
+.fx-wisps span:nth-child(even){background:radial-gradient(#f0d8ff,#b46bff55 60%,transparent);box-shadow:0 0 18px 7px #b46bffbb}
+@keyframes fxWisp{0%,100%{transform:translate(0,0);opacity:.35}50%{transform:translate(16px,-22px);opacity:1}}
+.fx-storm span{inset:0;background:#ece6ff;opacity:0;animation:fxFlash 6s infinite}
+.fx-storm::after{content:"";position:absolute;left:-40%;right:-40%;bottom:-5%;height:45%;background:linear-gradient(transparent,#c9b8f070);filter:blur(8px);animation:fxFog 7s ease-in-out infinite alternate}
+@keyframes fxFlash{0%,86%,100%{opacity:0}87%{opacity:.6}88.5%{opacity:0}90%{opacity:.4}92%{opacity:0}}
+@keyframes fxFog{from{transform:translateX(-12%)}to{transform:translateX(12%)}}
+.fx-bats span{left:-15%;top:calc(8% + var(--i) * 19%);font-size:14px;animation:fxBats 4s linear infinite;animation-delay:calc(var(--i) * -1.05s)}
+@keyframes fxBats{0%{left:-15%;transform:translateY(0) scaleX(-1)}50%{transform:translateY(-12px) scaleX(-1)}100%{left:110%;transform:translateY(6px) scaleX(-1)}}
+.fx-candy span{top:-10%;left:calc(4% + var(--i) * 16%);font-size:13px;animation:fxCandy 3.2s linear infinite;animation-delay:calc(var(--i) * -.55s)}
+@keyframes fxCandy{0%{top:-10%;transform:rotate(0)}100%{top:105%;transform:rotate(380deg)}}
+.fx-moon::before{content:"";position:absolute;width:70px;height:70px;border-radius:50%;left:-14px;top:-14px;background:radial-gradient(circle at 40% 40%,#fff8d6,#ffd76a 55%,#ff8a1c00 72%);box-shadow:0 0 30px 10px #ffd76a55;animation:fxMoon 4s ease-in-out infinite}
+.fx-moon span{right:14px;top:20px;font-size:14px;animation:fxWitch 9s linear infinite}
+@keyframes fxMoon{0%,100%{opacity:.75;transform:scale(1)}50%{opacity:1;transform:scale(1.08)}}
+@keyframes fxWitch{0%{right:-20%;top:40px}100%{right:120%;top:10px}}
+@media (prefers-reduced-motion:reduce){.hwfx span,.hwfx::before,.hwfx::after{animation:none!important}.fx-ghosts span,.fx-candy span,.fx-storm span{display:none}}
 .card.hw .art img{filter:sepia(.35) hue-rotate(-15deg) saturate(1.5) contrast(1.05)}
 .card.hw .name{color:#ffd0a0}.card.hw .rar{color:#ffb347}.card.hw .quote{color:#c9a3d9}
 .card.locked.hw-slot .name::before{content:"🎃 "}
@@ -610,7 +634,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <h3>🎰 Les tirages</h3>
       <ul>
         <li>×1 = 100 pièces. ×10 = 900 pièces avec au moins un Rare garanti.</li>
-        <li>Taux : Commun 60 %, Rare 25 %, Épique 10 %, Légendaire 4 %, Mythique 1 %.</li>
+        <li>Taux : Commun 60,5 %, Rare 25 %, Épique 10 %, Légendaire 4 %, Mythique 0,5 %.</li>
         <li><b>Pitié</b> : un Épique ou mieux tous les 10 tirages max, un Légendaire ou mieux tous les 50 tirages max.</li>
         <li><b>Pote du jour</b> : chaque jour, un pote est en vedette. Quand tu tombes sur sa rareté, tu as 1 chance sur 2 que ce soit lui.</li>
       </ul>
@@ -646,7 +670,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <h3>🎃 Halloween (jusqu'au 1er novembre)</h3>
       <ul>
         <li>Gagne des 🍬 bonbons : +1 par tirage, +25 avec la récompense du jour, et à chaque victoire qui rapporte des pièces (Aventure, Tour, Miroir, Arène classée, Boss, Duel) et dans la 🏚️ Maison hantée.</li>
-        <li>Chaque tirage a 4 % de chances de donner aussi le <b>costume 🎃</b> du pote (un cadre Halloween à collectionner dans 📚 Collection → 🎃 Halloween).</li>
+        <li>Chaque tirage a 4 % de chances de donner aussi le <b>costume 🎃</b> du pote (un cadre Halloween à collectionner dans 📚 Collection → 🎃 Halloween). Chaque costume a son <b>effet spécial unique</b> : fantômes, araignée, feux follets, orage, chauves-souris, pluie de bonbons ou pleine lune.</li>
         <li>La 🎃 Boutique d'Halloween (onglet Tirage) échange tes bonbons contre des costumes, des tirages ×10, des fragments, des potions de shiny et un ticket Mythique.</li>
         <li>Les bonbons et la boutique disparaissent après l'événement, mais les costumes restent à vie !</li>
       </ul>
@@ -722,7 +746,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
       <dt>🎯 Provocation</dt><dd>Pendant 2 tours, les ennemis sont obligés de viser le Tank avec leurs attaques ciblées (les attaques de zone touchent quand même tout le monde).</dd>
       <dt>🌿 Régénération</dt><dd>Bonus de soutien : au début de chacun de ses tours, la carte récupère ce pourcentage de ses PV max.</dd>
       <dt>🔥 Rage</dt><dd>À partir du tour 9, tous les dégâts augmentent de 20 % par tour, et les soins / boucliers diminuent d'autant. Ça empêche les combats interminables.</dd>
-      <dt>⭐ Étoiles, ✨ shiny, 🏅 Dorée</dt><dd>Chaque étoile au-dessus de la 1re donne +8 % à toutes les stats (jusqu'à +32 % à 5★). Une version shiny a +10 %, une Dorée +20 % (et compte comme 5★). Les Mythiques sont plus fortes encore : shiny Mythique +25 % et +1⚡ au départ (✨ Aura scintillante), Dorée Mythique +30 %.</dd>
+      <dt>⭐ Étoiles, ✨ shiny, 🏅 Dorée</dt><dd>Chaque étoile au-dessus de la 1re donne +8 % à toutes les stats (jusqu'à +32 % à 5★). Une version shiny a +10 %, une Dorée +20 %. Une Dorée compte au moins comme 3★, et ses étoiles montent avec les copies normales que tu continues d'obtenir (les 5 copies fusionnées comptent). Les Mythiques sont plus fortes encore : shiny Mythique +25 % et +1⚡ au départ (✨ Aura scintillante), Dorée Mythique +30 %.</dd>
       <dt>🌈 Mythiques</dt><dd>Leurs compétences sont 30 % plus fortes.</dd>
       <dt>🔰 Soutiens</dt><dd>3 cartes qui ne combattent pas : leurs bonus (ATK, PV, DEF, VIT, critique, énergie de départ, régénération) s'appliquent à toute l'équipe. Ils grandissent avec le nombre de copies, jusqu'à 20.</dd>
       <dt>⭐ Spécialisations</dt><dd>À 3★ (5 copies), chaque carte débloque 2 spécialisations au choix (dans sa vue détaillée). C'est ton choix à toi : un autre joueur peut spécialiser la même carte autrement. Le premier choix est gratuit, en changer coûte 300 🪙.<br>
@@ -783,7 +807,7 @@ main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
 <script>
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
-const APP_VERSION = "2026.10.16-3"; // à changer à chaque mise en ligne : les duels exigent la même version
+const APP_VERSION = "2026.10.16-5"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -791,11 +815,11 @@ const CONFIG = {
 // ============================================
 
 const RARITIES = [
-  { id: "commun",     nom: "Commun",     taux: 60, refund: 10 },
+  { id: "commun",     nom: "Commun",     taux: 60.5, refund: 10 },
   { id: "rare",       nom: "Rare",       taux: 25, refund: 20 },
   { id: "epique",     nom: "Épique",     taux: 10, refund: 40 },
   { id: "legendaire", nom: "Légendaire", taux: 4,  refund: 80 },
-  { id: "mythique",   nom: "Mythique",   taux: 1,  refund: 150 },
+  { id: "mythique",   nom: "Mythique",   taux: 0.5, refund: 150 },
 ];
 const RIDX = Object.fromEntries(RARITIES.map((r, i) => [r.id, i]));
 const COST1 = 100, COST10 = 900, DAILY = 500, QUIZ_REWARD = 50, QUIZ_MAX = 20;
@@ -904,6 +928,7 @@ function cardEl(card, opts = {}) {
   if (opts.tagShiny) c.appendChild(el("span", "tag sh", "SHINY"));
   if (opts.tagHw) c.appendChild(el("span", "tag hwt", "🎃 COSTUME"));
   const art = el("div", "art"); art.appendChild(avatarImg(card)); c.appendChild(art);
+  if (opts.hw && !opts.locked) { c.appendChild(hwFxEl(card.id)); c.title = "Effet du costume : " + HW_FX[hwFxOf(card.id)][2]; }
   c.appendChild(el("div", "name", opts.locked ? "???" : card.pseudo));
   c.appendChild(el("div", "rar", RARITIES[RIDX[card.rarete]].nom));
   c.appendChild(el("div", "stars", opts.locked || opts.hideStars ? "" : opts.gold ? "🏅" : "★".repeat(stars(copies))));
@@ -946,7 +971,7 @@ function openDetail(card, variant, hw = false) {
   if (hw && !o.hw) hw = false;
   const box = $("#detailCard"); box.replaceChildren(cardEl(card, { shiny: variant === 1, gold: variant === 2, hw, big: true, noDetail: true }));
   $("#dName").textContent = card.pseudo + (hw ? " 🎃" : ["", " ✨", " 🏅"][variant]);
-  const r = $("#dRar"); r.textContent = RARITIES[RIDX[card.rarete]].nom + VARIANT_NAMES[variant]; r.style.color = variant === 2 ? "#ffd76a" : `var(--${card.rarete})`;
+  const r = $("#dRar"); r.textContent = RARITIES[RIDX[card.rarete]].nom + (hw ? ` · 🎃 Costume (${HW_FX[hwFxOf(card.id)][2]})` : VARIANT_NAMES[variant]); r.style.color = variant === 2 ? "#ffd76a" : `var(--${card.rarete})`;
   const q = $("#dQuote"); q.textContent = card.phrase || "Pas de phrase.";
   $("#dMeta").textContent = `Copies : ${o.copies} normale${o.copies > 1 ? "s" : ""} · ${o.shinyCopies} shiny${o.gold ? " · 🏅 Dorée" : ""}`;
   const vars = ownedVariants(card.id).filter(v => v !== variant);
@@ -1052,7 +1077,7 @@ function renderFeatured() {
 function rollTier(minTier = 0) {
   state.pityE++; state.pityL++;
   let t;
-  if (state.pityL >= PITY_LEG) t = Math.random() < 0.2 ? 4 : 3;
+  if (state.pityL >= PITY_LEG) t = Math.random() < 0.1 ? 4 : 3;
   else {
     let r = Math.random() * 100; t = 0;
     for (let i = 0; i < RARITIES.length; i++) { r -= RARITIES[i].taux; if (r < 0) { t = i; break; } }
@@ -1323,7 +1348,7 @@ function renderRates() {
   for (const r of RARITIES) {
     const row = el("div"); const n = el("span", null, r.nom); n.style.color = `var(--${r.id})`; n.style.fontWeight = 700;
     const count = countBy(c => c.rarete === r.id);
-    row.append(n, el("span", null, `${r.taux} % · ${count} carte${count > 1 ? "s" : ""}`)); box.appendChild(row);
+    row.append(n, el("span", null, `${String(r.taux).replace(".", ",")} % · ${count} carte${count > 1 ? "s" : ""}`)); box.appendChild(row);
   }
   const row = el("div"); const n = el("span", null, "✨ Shiny"); n.style.fontWeight = 700; n.style.color = "#bff3ff";
   row.append(n, el("span", null, "1 % par carte")); box.appendChild(row);
@@ -1832,7 +1857,8 @@ function makeUnit(card, s = 0, st = 1, side = "ally", mult = 1, extra = {}) {
 }
 function rageF() { return B && B.round > RAGE_FROM ? 1 + .2 * (B.round - RAGE_FROM) : 1; }
 function unitPower(u) { return Math.round(u.maxHp / 4 + u.atk * 2 + u.def * 2 + u.spd); }
-function starsOf(id, s) { const o = own(id); return s === 2 ? 5 : stars(s === 1 ? o.shinyCopies : o.copies) || 1; }
+// Dorée : ses étoiles comptent aussi les 5 copies fusionnées (min 3★), et montent avec les nouvelles copies normales
+function starsOf(id, s) { const o = own(id); return s === 2 ? Math.max(3, stars((o.copies || 0) + GOLD_COST)) : stars(s === 1 ? o.shinyCopies : o.copies) || 1; }
 
 let B = null; // combat en cours
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -2445,6 +2471,15 @@ $("#bossBtn").onclick = startBoss;
 // =====================================================================
 const HW_START = new Date(2026, 9, 16).getTime(), HW_END = new Date(2026, 10, 2).getTime(); // jusqu'au 1er novembre inclus
 const HW_DROP = 0.04;
+// Chaque pote a son propre effet spécial de costume (toujours le même)
+const HW_FX = { ghosts: ["👻", 3, "👻 Fantômes"], spider: ["🕷️", 1, "🕷️ Araignée"], wisps: ["", 4, "✨ Feux follets"], storm: ["", 1, "⚡ Orage"],
+                bats: ["🦇", 4, "🦇 Nuée de chauves-souris"], candy: ["🍬", 6, "🍬 Pluie de bonbons"], moon: ["🧹", 1, "🌕 Pleine lune"] };
+function hwFxOf(id) { const k = Object.keys(HW_FX); return k[hashStr(id + ":hwfx") % k.length]; }
+function hwFxEl(id) {
+  const k = hwFxOf(id), [ico, n] = HW_FX[k], d = el("div", "hwfx fx-" + k);
+  for (let i = 0; i < n; i++) { const sp = el("span", null, ico); sp.style.setProperty("--i", i); d.appendChild(sp); }
+  return d;
+}
 function hwActive() { const n = Date.now(); return n >= HW_START && n < HW_END; }
 function hwLeft() { const ms = HW_END - Date.now(), d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5); return d ? `${d} j ${h} h` : `${h} h ${Math.floor(ms % 36e5 / 6e4)} min`; }
 function hwCount() { return countBy(c => !!own(c.id).hw); }

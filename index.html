@@ -962,7 +962,7 @@ if (LANG === "en") {
 // I18N-END
 // ================== CONFIG ==================
 // Laisse projectId vide pour jouer en mode démo.
-const APP_VERSION = "2026.10.18-1"; // à changer à chaque mise en ligne : les duels exigent la même version
+const APP_VERSION = "2026.10.18-2"; // à changer à chaque mise en ligne : les duels exigent la même version
 const CONFIG = {
   projectId: "kiwi-gacha",
   apiKey: "AIzaSyBHRxAYSXMoU8IXlpzUwAR1umhFi8pfCTs"
@@ -1050,15 +1050,34 @@ const DEMO = [
   ["Hugo", "commun", "Dort en vocal"], ["Chloé", "legendaire", "Admin suprême"],
 ].map(([p, r, q], i) => ({ id: "demo" + i, pseudo: p, rarete: r, phrase: q, avatar: fallbackAvatar(p) }));
 
+// Les cartes changent rarement : on les garde 10 min dans le navigateur pour économiser le quota Firebase
+const CARDS_CACHE = "kiwi-gacha-cards", CARDS_TTL = 10 * 60000;
+function cachedCards(maxAge) {
+  try { const c = JSON.parse(localStorage.getItem(CARDS_CACHE) || "null"); if (c && Array.isArray(c.list) && Date.now() - c.t < maxAge) return c.list; } catch {}
+  return null;
+}
 async function loadCards() {
   if (!CONFIG.projectId) { $("#demoBanner").classList.remove("hidden"); return DEMO; }
+  const fresh = cachedCards(CARDS_TTL);
+  if (fresh) return fresh;
+  try {
+    const list = await fetchCards();
+    try { localStorage.setItem(CARDS_CACHE, JSON.stringify({ t: Date.now(), list })); } catch {}
+    return list;
+  } catch (e) {
+    const old = cachedCards(7 * 864e5); // Firebase indisponible (quota…) : on garde les dernières cartes connues
+    if (old) { console.warn("Cartes en cache utilisées :", e.message); return old; }
+    throw e;
+  }
+}
+async function fetchCards() {
   const out = []; let token = "";
   do {
     let url = `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(CONFIG.projectId)}/databases/(default)/documents/cartes?pageSize=300`;
     if (token) url += "&pageToken=" + encodeURIComponent(token);
     if (CONFIG.apiKey) url += "&key=" + encodeURIComponent(CONFIG.apiKey);
     const res = await fetch(url);
-    if (!res.ok) throw new Error("Firebase a répondu " + res.status);
+    if (!res.ok) throw new Error(res.status === 429 ? "quota Firebase du jour dépassé (429), réessaie plus tard" : "Firebase a répondu " + res.status);
     const data = await res.json();
     for (const d of data.documents || []) {
       const f = d.fields || {}; const s = k => (f[k] && f[k].stringValue) || "";
@@ -1640,7 +1659,7 @@ function setSync(s) { syncStatus = s; const el = document.querySelector("#userBo
 function scheduleSync() {
   if (!AUTH) return;
   clearTimeout(syncTimer); setSync("pending");
-  syncTimer = setTimeout(() => cloudSave(), 1500);
+  syncTimer = setTimeout(() => cloudSave(), 5000);
 }
 function summary() {
   return { cartes: countBy(c => own(c.id).copies > 0), shiny: shinyCount(), dorees: goldCount(), tirages: state.pulls };
@@ -1666,7 +1685,7 @@ async function cloudSave(keepalive = false) {
       body: JSON.stringify(body)
     });
     if (!r.ok) throw new Error("save " + r.status);
-    setSync("ok"); lbCache = null;
+    setSync("ok");
   } catch (e) { console.warn(e); setSync("err"); }
 }
 async function cloudLoad() {
@@ -1737,7 +1756,7 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
 // ---------- Classement ----------
 let lbCache = null, lbKey = "cartes";
 async function fetchPlayers() {
-  if (lbCache && Date.now() - lbCache.t < 30000) return lbCache.list;
+  if (lbCache && Date.now() - lbCache.t < 3 * 60000) return lbCache.list;
   const list = []; let token = "";
   do {
     let url = `${FS()}/joueurs?pageSize=300&mask.fieldPaths=pseudo&mask.fieldPaths=avatar&mask.fieldPaths=cartes&mask.fieldPaths=shiny&mask.fieldPaths=tirages&mask.fieldPaths=dorees&mask.fieldPaths=vitrine&mask.fieldPaths=equipe&mask.fieldPaths=trophees&mask.fieldPaths=tour&mask.fieldPaths=tourSem`;
@@ -3254,7 +3273,7 @@ async function createDuel(invite = null) {
   DUEL = { code, role: "host", inviteName: invite ? invite.pseudo : "" };
   if (invite) { document.querySelectorAll("nav button").forEach(x => { if (x.dataset.tab === "combat") x.click(); }); toast(`🤺 Invitation envoyée à ${invite.pseudo}`); }
   renderDuelBox();
-  DUEL.poll = setInterval(duelLobbyPoll, 1500);
+  DUEL.poll = setInterval(duelLobbyPoll, 3000);
   $("#duelBox").scrollIntoView({ behavior: "smooth", block: "center" });
 }
 async function duelLobbyPoll() {
@@ -3324,7 +3343,7 @@ function startDuelBattle(doc) {
       return { lines: [dd.endMsg || `${oppName} a gagné cette fois.`] };
     }
   });
-  B.duel.poll = setInterval(duelBattlePoll, 800);
+  B.duel.poll = setInterval(duelBattlePoll, 2000);
   B.duel.tick = setInterval(() => { if (B && B.duel && !B.over) renderActions(); }, 1000);
   blog(`Code du duel : ${code}`);
 }
@@ -3495,7 +3514,7 @@ function showInvite(d) {
   sfx("shiny");
   setTimeout(() => bar.classList.add("hidden"), 60000);
 }
-setInterval(pollInvites, 6000);
+setInterval(pollInvites, 30000);
 
 // ---------- Détection d'une nouvelle version du site ----------
 async function checkVersion(force = false) {
